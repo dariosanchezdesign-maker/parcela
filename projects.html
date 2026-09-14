@@ -6,6 +6,7 @@
   <title>My Projects — Parcela</title>
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/pages.css" />
+  <link rel="stylesheet" href="css/workspace.css" />
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -21,6 +22,8 @@
         Parcela
       </a>
       <ul class="nav-links">
+        <li class="nav-hide-mobile"><a href="professionals.html">Professionals</a></li>
+        <li class="nav-hide-mobile"><a href="pricing.html">Pricing</a></li>
         <li><a href="analyze.html" class="btn btn-primary btn-sm">Analyze a Property</a></li>
       </ul>
     </div>
@@ -34,21 +37,63 @@
           <h1>My Projects</h1>
         </div>
       </div>
+      <div id="workspaces-root" style="margin-bottom: var(--sp-7);"></div>
+      <div class="section-title"><h2>Saved analyses</h2></div>
       <div id="projects-root"></div>
     </div>
   </main>
 
   <script src="js/data/zoning-rules.js"></script>
   <script src="js/data/properties.js"></script>
+  <script src="js/data/professionals.js"></script>
+  <script src="js/data/permitTemplates.js"></script>
   <script src="js/engine/analyzeProperty.js"></script>
+  <script src="js/engine/permitEngine.js"></script>
+  <script src="js/engine/budgetEngine.js"></script>
+  <script src="js/engine/nextMove.js"></script>
   <script src="js/state/projects.js"></script>
+  <script src="js/state/workspace.js"></script>
   <script src="js/state/session.js"></script>
   <script src="js/ui/icons.js"></script>
   <script src="js/ui/render.js"></script>
+  <script src="js/ui/workspaceRender.js"></script>
   <script>
     (function () {
       const R = window.PARCELA_RENDER;
+      const WSR = window.PARCELA_WS_RENDER;
       const root = document.getElementById("projects-root");
+      const wsRoot = document.getElementById("workspaces-root");
+
+      function renderWorkspaces() {
+        window.PARCELA_WORKSPACE.seedFlagship();
+        const workspaces = window.PARCELA_WORKSPACE.list();
+        if (!workspaces.length) { wsRoot.innerHTML = ""; return; }
+        wsRoot.innerHTML = `<div class="section-title"><h2>Active projects</h2></div><div class="project-list">${workspaces.map((w) => {
+          const property = window.PARCELA_PROPERTIES.find((p) => p.id === w.propertyId);
+          if (!property) return "";
+          const zoning = window.PARCELA_ZONING[property.zoningCode];
+          const flood = window.PARCELA_FLOOD_ZONES[property.floodZone];
+          const roadmap = window.PARCELA_PERMIT_ENGINE.buildRoadmap(property, zoning, flood, w.scenarioId, w.permitStatus, w.status, w.assignments);
+          const progress = window.PARCELA_PERMIT_ENGINE.progress(roadmap);
+          const budgetSummary = window.PARCELA_BUDGET_ENGINE.summary(w, w.scenarioId);
+          const nextMove = window.PARCELA_NEXT_MOVE.compute(w, roadmap, budgetSummary);
+          return `
+            <div class="card project-card">
+              <div class="pc-main">
+                <h3>${property.address}</h3>
+                <div class="pc-meta">
+                  <span>${w.scenarioTitle}</span>
+                  ${WSR.statusPill(w.status, w.status)}
+                  <span>${progress.done}/${progress.total} permit steps</span>
+                </div>
+                <p class="text-sm" style="margin-top:8px; margin-bottom:0;"><strong>Next move:</strong> ${nextMove.headline}</p>
+              </div>
+              <div class="pc-actions">
+                <a href="project.html?id=${w.id}" class="btn btn-primary btn-sm">Open workspace</a>
+              </div>
+            </div>`;
+        }).join("")}</div>`;
+      }
 
       function render() {
         const saved = window.PARCELA_PROJECTS.list();
@@ -92,6 +137,7 @@
         });
       }
 
+      renderWorkspaces();
       render();
     })();
   </script>

@@ -50,7 +50,7 @@ window.PARCELA_RENDER = (function () {
     </div>`;
   }
 
-  function scenarioCard(s) {
+  function scenarioCard(s, propertyId, goalId) {
     return `
       <div class="card scenario-card">
         ${s.matchesGoal ? `<div class="matches-goal">${window.parcelaIcon("check", 12)} Matches your goal</div>` : ""}
@@ -82,6 +82,7 @@ window.PARCELA_RENDER = (function () {
         </div>
         <div class="scenario-footer">
           <div class="next-step"><strong>Recommended next step:</strong> ${s.nextStep}</div>
+          ${propertyId ? `<button type="button" class="btn btn-primary btn-sm start-project-btn" data-scenario-id="${s.id}" data-scenario-title="${s.title.replace(/"/g, "&quot;")}" data-property-id="${propertyId}" data-goal-id="${goalId}">Start this project →</button>` : ""}
         </div>
       </div>`;
   }

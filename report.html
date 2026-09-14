@@ -53,6 +53,7 @@
   <script src="js/data/properties.js"></script>
   <script src="js/engine/analyzeProperty.js"></script>
   <script src="js/state/projects.js"></script>
+  <script src="js/state/workspace.js"></script>
   <script src="js/ui/icons.js"></script>
   <script src="js/ui/render.js"></script>
   <script>
@@ -127,7 +128,7 @@
 
         <div class="report-section">
           <div class="section-title"><h2>Potential development options</h2></div>
-          <div>${report.scenarios.map(R.scenarioCard).join("")}</div>
+          <div>${report.scenarios.map((s) => R.scenarioCard(s, property.id, goalId)).join("")}</div>
         </div>
 
         <div class="report-section reco-panel" style="margin:0;">
@@ -145,6 +146,15 @@
         <p class="text-sm muted">Parcela is a decision-support tool, not a legal or professional determination. Confirm findings with a licensed professional or the relevant agency before acting.</p>
       `;
       R.attachWhyToggles(root);
+      root.querySelectorAll(".start-project-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const ws = window.PARCELA_WORKSPACE.create({
+            propertyId: btn.dataset.propertyId, scenarioId: btn.dataset.scenarioId,
+            scenarioTitle: btn.dataset.scenarioTitle, goalId: btn.dataset.goalId
+          });
+          window.location.href = `project.html?id=${ws.id}`;
+        });
+      });
     })();
   </script>
 </body>

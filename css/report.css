@@ -30,4 +30,5 @@
   .report-shell { padding-top: 0; }
   .scenario-card { break-inside: avoid; }
   .roadmap-item { break-inside: avoid; }
+  .start-project-btn { display: none !important; }
 }

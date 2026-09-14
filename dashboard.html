@@ -44,6 +44,7 @@
   <script src="js/data/properties.js"></script>
   <script src="js/engine/analyzeProperty.js"></script>
   <script src="js/state/projects.js"></script>
+  <script src="js/state/workspace.js"></script>
   <script src="js/ui/icons.js"></script>
   <script src="js/ui/render.js"></script>
   <script>
@@ -135,7 +136,7 @@
                 <h2>Potential development options</h2>
               </div>
             </div>
-            <div>${report.scenarios.map(R.scenarioCard).join("")}</div>
+            <div>${report.scenarios.map((s) => R.scenarioCard(s, property.id, goalId)).join("")}</div>
 
             <div class="reco-panel">
               <p class="eyebrow">AI recommendation</p>
@@ -161,6 +162,16 @@
       document.getElementById("save-btn").addEventListener("click", (e) => {
         window.PARCELA_PROJECTS.save({ propertyId: property.id, goalId });
         e.target.textContent = "Saved to My Projects";
+      });
+
+      root.querySelectorAll(".start-project-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const ws = window.PARCELA_WORKSPACE.create({
+            propertyId: btn.dataset.propertyId, scenarioId: btn.dataset.scenarioId,
+            scenarioTitle: btn.dataset.scenarioTitle, goalId: btn.dataset.goalId
+          });
+          window.location.href = `project.html?id=${ws.id}`;
+        });
       });
     })();
   </script>
