@@ -1,0 +1,79 @@
+/* Parcela design tokens.
+   Palette: deep ocean teal as the anchor, a single warm clay accent for
+   action, warm paper neutrals for surfaces. Deliberately not tropical
+   cliché (no turquoise/coral/sunset gradients) — reads as a serious data
+   product with a Puerto Rico accent, not a vacation brand. */
+
+:root {
+  color-scheme: light;
+
+  /* ---- ink & paper ---- */
+  --ink: #12181c;
+  --ink-soft: #4c5860;
+  --ink-faint: #7c8892;
+  --paper: #faf8f3;
+  --surface: #ffffff;
+  --surface-sunken: #f1ede4;
+  --line: #e3ddd0;
+  --line-strong: #cdc4b2;
+
+  /* ---- brand: deep ocean teal ---- */
+  --teal-900: #0a2e30;
+  --teal-800: #0e3f42;
+  --teal-700: #12595c;
+  --teal-600: #17696c;
+  --teal-500: #1f8386;
+  --teal-100: #e2eeed;
+  --teal-050: #f0f6f5;
+
+  /* ---- accent: clay ---- */
+  --clay-700: #a4491f;
+  --clay-600: #c1602e;
+  --clay-500: #d6753f;
+  --clay-100: #fbe8db;
+  --clay-050: #fdf3ec;
+
+  /* ---- semantic: feasibility / status ---- */
+  --green-700: #205e3e;
+  --green-600: #2f7a4f;
+  --green-100: #e2f0e6;
+
+  --gold-700: #8a6110;
+  --gold-600: #a6791a;
+  --gold-100: #f6ecd7;
+
+  --rust-700: #7e2f22;
+  --rust-600: #a23b2e;
+  --rust-100: #f6e0da;
+
+  /* ---- type ---- */
+  --font-display: "Sora", system-ui, sans-serif;
+  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* ---- spacing scale (4px base) ---- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 96px;
+  --sp-10: 128px;
+
+  /* ---- radius ---- */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+
+  /* ---- shadow: hairline + soft, never heavy ---- */
+  --shadow-sm: 0 1px 2px rgba(18, 24, 28, 0.06);
+  --shadow-md: 0 4px 16px rgba(18, 24, 28, 0.08);
+  --shadow-lg: 0 12px 32px rgba(18, 24, 28, 0.10);
+
+  /* ---- layout ---- */
+  --max-w: 1180px;
+  --max-w-narrow: 760px;
+}

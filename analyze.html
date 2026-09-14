@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Analyze a Property — Parcela</title>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/analyze.css" />
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <nav class="site-nav">
+    <div class="wrap">
+      <a href="index.html" class="brand">
+        <svg class="brand-mark" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M13 1.5 L24 7.5 V18.5 L13 24.5 L2 18.5 V7.5 Z" stroke="#12595c" stroke-width="1.6" fill="#e2eeed"/>
+          <path d="M13 1.5 V13 L24 7.5" stroke="#12595c" stroke-width="1.6" fill="none"/>
+          <path d="M13 13 L2 18.5 M13 13 L13 24.5" stroke="#12595c" stroke-width="1.6" fill="none"/>
+        </svg>
+        Parcela
+      </a>
+      <ul class="nav-links">
+        <li><a href="projects.html">My Projects</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main" class="analyze-shell">
+    <div class="wrap">
+
+      <!-- STEP 1: input -->
+      <section id="step-input">
+        <div class="analyze-head">
+          <p class="eyebrow" style="justify-content:center;">Step 1 of 2</p>
+          <h1>What are you working with?</h1>
+          <p>Give us an address and a goal — the more specific the goal, the more targeted the report.</p>
+        </div>
+
+        <div class="step-panel">
+          <div class="address-field">
+            <label for="address-input">Property address</label>
+            <input type="text" id="address-input" autocomplete="off" placeholder="Start typing an address in Puerto Rico…" />
+            <div class="address-suggestions" id="address-suggestions" hidden></div>
+            <div class="address-empty" id="address-empty" hidden></div>
+          </div>
+
+          <div class="upload-zone" id="upload-zone">
+            <label style="text-align:center;">Parcel or property documents <span class="muted" style="font-weight:400;">(optional)</span></label>
+            <p class="text-sm" style="margin-bottom:0;">Drop a deed, survey, or catastro printout here — or skip this. <span class="muted">Document parsing isn't wired up in this prototype; we'll analyze using municipal-record data either way.</span></p>
+            <div class="up-file-name" id="up-file-name"></div>
+            <input type="file" id="up-file" accept=".pdf,.jpg,.jpeg,.png" />
+          </div>
+
+          <label>What are you trying to do?</label>
+          <div class="goal-grid" id="goal-grid"></div>
+
+          <button class="btn btn-primary btn-block" id="submit-btn" disabled>Analyze this property</button>
+        </div>
+      </section>
+
+      <!-- STEP 2: loading -->
+      <section id="step-loading" hidden>
+        <div class="loading-panel">
+          <p class="eyebrow" style="justify-content:center;">Step 2 of 2</p>
+          <h1 id="loading-title">Analyzing your property</h1>
+          <p class="lead-line" id="loading-address"></p>
+          <div class="stage-list" id="stage-list"></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="js/data/zoning-rules.js"></script>
+  <script src="js/data/properties.js"></script>
+  <script src="js/engine/analyzeProperty.js"></script>
+  <script src="js/state/projects.js"></script>
+  <script src="js/ui/icons.js"></script>
+  <script>
+    (function () {
+      const properties = window.PARCELA_PROPERTIES;
+      const addressInput = document.getElementById("address-input");
+      const suggestionsBox = document.getElementById("address-suggestions");
+      const emptyBox = document.getElementById("address-empty");
+      const goalGrid = document.getElementById("goal-grid");
+      const submitBtn = document.getElementById("submit-btn");
+      const uploadInput = document.getElementById("up-file");
+      const upFileName = document.getElementById("up-file-name");
+
+      let selectedPropertyId = null;
+      let selectedGoal = null;
+
+      function fullLabel(p) { return `${p.address}, ${p.barrio}, ${p.municipio}`; }
+
+      // Strip accents so "Rincon" matches "Rincón", "Bo." matches "Bo.", etc. —
+      // Puerto Rico place names are full of diacritics users often skip when typing.
+      function foldAccents(s) { return s.normalize("NFD").replace(/\p{Diacritic}/gu, ""); }
+
+      function renderSuggestions(matches) {
+        if (!matches.length) { suggestionsBox.hidden = true; return; }
+        suggestionsBox.innerHTML = matches.map((p) =>
+          `<button type="button" data-id="${p.id}"><div>${p.address}</div><div class="muni">${p.barrio}, ${p.municipio}</div></button>`
+        ).join("");
+        suggestionsBox.hidden = false;
+        suggestionsBox.querySelectorAll("button").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const p = properties.find((x) => x.id === btn.dataset.id);
+            selectedPropertyId = p.id;
+            addressInput.value = fullLabel(p);
+            suggestionsBox.hidden = true;
+            emptyBox.hidden = true;
+            updateSubmit();
+          });
+        });
+      }
+
+      addressInput.addEventListener("input", () => {
+        selectedPropertyId = null;
+        updateSubmit();
+        const q = foldAccents(addressInput.value.trim().toLowerCase());
+        if (q.length < 2) { suggestionsBox.hidden = true; emptyBox.hidden = true; return; }
+        const matches = properties.filter((p) => foldAccents(fullLabel(p).toLowerCase()).includes(q));
+        if (matches.length) {
+          renderSuggestions(matches);
+          emptyBox.hidden = true;
+        } else {
+          suggestionsBox.hidden = true;
+          emptyBox.hidden = false;
+          emptyBox.innerHTML = `We don't have cadastral data for that exact address in this demo. Try a sample property instead — ${properties.slice(0, 3).map((p) => `<a href="#" data-id="${p.id}" class="pick-sample" style="color:var(--teal-700); font-weight:600;">${p.address}</a>`).join(", ")}.`;
+          emptyBox.querySelectorAll(".pick-sample").forEach((a) => {
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              const p = properties.find((x) => x.id === a.dataset.id);
+              selectedPropertyId = p.id;
+              addressInput.value = fullLabel(p);
+              emptyBox.hidden = true;
+              updateSubmit();
+            });
+          });
+        }
+      });
+      addressInput.addEventListener("focus", () => { if (!addressInput.value) return; addressInput.dispatchEvent(new Event("input")); });
+      document.addEventListener("click", (e) => {
+        if (!suggestionsBox.contains(e.target) && e.target !== addressInput) suggestionsBox.hidden = true;
+      });
+
+      uploadInput.addEventListener("change", () => {
+        upFileName.textContent = uploadInput.files.length ? `Attached: ${uploadInput.files[0].name}` : "";
+      });
+
+      window.PARCELA_GOALS.forEach((g) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "goal-btn";
+        btn.dataset.id = g.id;
+        btn.innerHTML = `${window.parcelaIcon(g.icon, 22)}<span>${g.label}</span>`;
+        btn.addEventListener("click", () => {
+          selectedGoal = g.id;
+          goalGrid.querySelectorAll(".goal-btn").forEach((b) => b.classList.remove("selected"));
+          btn.classList.add("selected");
+          updateSubmit();
+        });
+        goalGrid.appendChild(btn);
+      });
+
+      function updateSubmit() {
+        submitBtn.disabled = !(selectedPropertyId && selectedGoal);
+      }
+
+      submitBtn.addEventListener("click", () => {
+        const property = properties.find((p) => p.id === selectedPropertyId);
+        const report = window.PARCELA_ENGINE.analyzeProperty(property, selectedGoal);
+        document.getElementById("step-input").hidden = true;
+        const loadingSection = document.getElementById("step-loading");
+        loadingSection.hidden = false;
+        document.getElementById("loading-address").textContent = fullLabel(property);
+
+        const stageList = document.getElementById("stage-list");
+        stageList.innerHTML = report.stages.map((s, i) =>
+          `<div class="stage-item" data-i="${i}">
+             <span class="stage-icon">${window.parcelaIcon("check", 12)}</span>
+             <div class="stage-text">
+               <div class="stage-label">${s.label}</div>
+               <div class="stage-detail">${s.detail}</div>
+             </div>
+           </div>`
+        ).join("");
+        const items = Array.from(stageList.querySelectorAll(".stage-item"));
+
+        let i = 0;
+        function advance() {
+          if (i > 0) items[i - 1].classList.replace("active", "done");
+          if (i >= items.length) {
+            window.PARCELA_PROJECTS.save({ propertyId: property.id, goalId: selectedGoal });
+            setTimeout(() => {
+              window.location.href = `dashboard.html?id=${property.id}&goal=${selectedGoal}`;
+            }, 350);
+            return;
+          }
+          items[i].classList.add("active");
+          i++;
+          setTimeout(advance, 620 + Math.random() * 260);
+        }
+        setTimeout(advance, 300);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Parcela — Puerto Rico Property Intelligence</title>
+  <meta name="description" content="Enter a Puerto Rico property address and a goal — Parcela analyzes zoning, geographic, environmental, and regulatory data into a clear feasibility report." />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <nav class="site-nav">
+    <div class="wrap">
+      <a href="index.html" class="brand">
+        <svg class="brand-mark" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M13 1.5 L24 7.5 V18.5 L13 24.5 L2 18.5 V7.5 Z" stroke="#12595c" stroke-width="1.6" fill="#e2eeed"/>
+          <path d="M13 1.5 V13 L24 7.5" stroke="#12595c" stroke-width="1.6" fill="none"/>
+          <path d="M13 13 L2 18.5 M13 13 L13 24.5" stroke="#12595c" stroke-width="1.6" fill="none"/>
+        </svg>
+        Parcela
+      </a>
+      <ul class="nav-links">
+        <li class="nav-hide-mobile"><a href="index.html#how-it-works">How it works</a></li>
+        <li class="nav-hide-mobile"><a href="index.html#method">Our method</a></li>
+        <li><a href="projects.html">My Projects</a></li>
+        <li><a href="analyze.html" class="btn btn-primary btn-sm">Analyze a Property</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="eyebrow">Property Intelligence · Puerto Rico</p>
+          <h1>Before you build, know what you can build.</h1>
+          <p class="lede">Tell Parcela a property address and what you're trying to do — build, renovate, rent, or something you haven't figured out yet. It reads the zoning, geography, and environmental data and turns it into a plain-language feasibility report.</p>
+          <div class="hero-ctas">
+            <a href="analyze.html" class="btn btn-primary">Analyze a Property</a>
+            <a href="dashboard.html?id=caguas-turabo&amp;goal=build-home" class="btn btn-ghost">See a sample report</a>
+          </div>
+        </div>
+        <div class="map-panel" aria-hidden="true">
+          <svg viewBox="0 0 420 340" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid" width="34" height="34" patternUnits="userSpaceOnUse">
+                <path d="M0 0 H34 V34" fill="none" stroke="rgba(250,248,243,0.08)" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect width="420" height="340" fill="url(#grid)"/>
+            <path d="M60 260 L150 230 L170 140 L100 90 L40 130 Z" fill="rgba(31,131,134,0.35)" stroke="#5fb3b5" stroke-width="2"/>
+            <path d="M170 140 L260 110 L320 170 L250 240 L150 230 Z" fill="rgba(214,117,63,0.22)" stroke="#d6753f" stroke-width="2"/>
+            <path d="M40 40 L400 40 L400 300 L40 300" fill="none" stroke="rgba(250,248,243,0.15)" stroke-width="1" stroke-dasharray="2 6"/>
+            <circle cx="150" cy="180" r="3.5" fill="#d6753f"/>
+          </svg>
+          <span class="map-chip chip-zoning"><span class="dot"></span> R-1 · Residential</span>
+          <span class="map-chip chip-flood"><span class="dot" style="background:#a6791a"></span> Zone X · Minimal flood risk</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="steps-section" id="how-it-works">
+      <div class="wrap">
+        <p class="eyebrow">How it works</p>
+        <h2>Three steps to a real answer</h2>
+        <div class="steps-grid">
+          <div class="card step-card">
+            <div class="step-num">01</div>
+            <h3>Tell it where and why</h3>
+            <p>Enter an address and pick a goal — a home, an ADU, a business, or "I don't know."</p>
+          </div>
+          <div class="card step-card">
+            <div class="step-num">02</div>
+            <h3>It reads the property</h3>
+            <p>Zoning district, lot geometry, flood mapping, coastal proximity, existing structures — cross-referenced together, not looked up one at a time.</p>
+          </div>
+          <div class="card step-card">
+            <div class="step-num">03</div>
+            <h3>You get ranked options</h3>
+            <p>3–5 scenarios ranked by feasibility and complexity, plus what to investigate first.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="method-section" id="method">
+      <div class="wrap">
+        <p class="eyebrow">Our method</p>
+        <h2>We label what we don't know — on purpose</h2>
+        <p style="color:rgba(250,248,243,0.75); max-width:60ch;">Property and zoning data is often incomplete or out of date. Parcela never quietly treats a guess as a fact — every finding is tagged by how sure we actually are.</p>
+        <div class="method-grid">
+          <div class="method-card">
+            <h4><span class="confidence-dot confidence-verified"></span>Verified</h4>
+            <p>Matched directly against a cadastral, zoning, or flood-mapping record.</p>
+          </div>
+          <div class="method-card">
+            <h4><span class="confidence-dot confidence-estimated"></span>Estimated</h4>
+            <p>A reasonable read from available data — like structure condition from a recent assessment.</p>
+          </div>
+          <div class="method-card">
+            <h4><span class="confidence-dot confidence-assumption"></span>Assumption</h4>
+            <p>Inferred logically, but not directly confirmed — flagged for a professional to verify.</p>
+          </div>
+          <div class="method-card">
+            <h4><span class="confidence-dot confidence-unknown"></span>Unknown</h4>
+            <p>Not in this dataset at all. We say so, instead of guessing.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sample-section">
+      <div class="wrap">
+        <p class="eyebrow">Try it now</p>
+        <h2>Sample properties</h2>
+        <p>No address on hand? Jump straight into a report for one of these seeded properties.</p>
+        <div class="sample-grid" id="sample-grid"></div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="wrap">
+        <h2>Have an address in mind?</h2>
+        <p>Get a feasibility report in about a minute — no account needed.</p>
+        <a href="analyze.html" class="btn btn-primary">Analyze a Property</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap foot-grid">
+      <div>
+        <a href="index.html" class="brand" style="margin-bottom:8px;">Parcela</a>
+        <p class="disclaimer">Parcela is a decision-support tool, not a legal or professional determination. Zoning, environmental, and regulatory conclusions should be confirmed with a licensed architect, engineer, surveyor, or the relevant government agency before you act on them. This prototype uses seeded mock data.</p>
+      </div>
+      <div class="text-sm muted">© 2026 Parcela. Puerto Rico.</div>
+    </div>
+  </footer>
+
+  <script src="js/data/zoning-rules.js"></script>
+  <script src="js/data/properties.js"></script>
+  <script>
+    (function () {
+      const grid = document.getElementById("sample-grid");
+      const picks = ["santurce-loiza", "rincon-costa", "guaynabo-rio"];
+      const goalFor = { "santurce-loiza": "business", "rincon-costa": "str", "guaynabo-rio": "multifamily" };
+      picks.forEach((id) => {
+        const p = window.PARCELA_PROPERTIES.find((x) => x.id === id);
+        const z = window.PARCELA_ZONING[p.zoningCode];
+        const f = window.PARCELA_FLOOD_ZONES[p.floodZone];
+        const a = document.createElement("a");
+        a.href = `dashboard.html?id=${p.id}&goal=${goalFor[id]}`;
+        a.className = "card sample-card";
+        a.innerHTML = `
+          <span class="muni">${p.municipio}</span>
+          <h4>${p.address}</h4>
+          <p class="text-sm" style="margin-bottom:0;">${p.blurb}</p>
+          <div class="badges">
+            <span class="badge badge-teal">${z.code}</span>
+            <span class="badge badge-neutral">${f.label}</span>
+          </div>`;
+        grid.appendChild(a);
+      });
+    })();
+  </script>
+</body>
+</html>

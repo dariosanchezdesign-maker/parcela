@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Projects — Parcela</title>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <nav class="site-nav">
+    <div class="wrap">
+      <a href="index.html" class="brand">
+        <svg class="brand-mark" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M13 1.5 L24 7.5 V18.5 L13 24.5 L2 18.5 V7.5 Z" stroke="#12595c" stroke-width="1.6" fill="#e2eeed"/>
+          <path d="M13 1.5 V13 L24 7.5" stroke="#12595c" stroke-width="1.6" fill="none"/>
+          <path d="M13 13 L2 18.5 M13 13 L13 24.5" stroke="#12595c" stroke-width="1.6" fill="none"/>
+        </svg>
+        Parcela
+      </a>
+      <ul class="nav-links">
+        <li><a href="analyze.html" class="btn btn-primary btn-sm">Analyze a Property</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main" class="projects-shell">
+    <div class="wrap">
+      <div class="projects-head">
+        <div>
+          <p class="eyebrow">Signed in as Guest</p>
+          <h1>My Projects</h1>
+        </div>
+      </div>
+      <div id="projects-root"></div>
+    </div>
+  </main>
+
+  <script src="js/data/zoning-rules.js"></script>
+  <script src="js/data/properties.js"></script>
+  <script src="js/engine/analyzeProperty.js"></script>
+  <script src="js/state/projects.js"></script>
+  <script src="js/state/session.js"></script>
+  <script src="js/ui/icons.js"></script>
+  <script src="js/ui/render.js"></script>
+  <script>
+    (function () {
+      const R = window.PARCELA_RENDER;
+      const root = document.getElementById("projects-root");
+
+      function render() {
+        const saved = window.PARCELA_PROJECTS.list();
+        if (!saved.length) {
+          root.innerHTML = `
+            <div class="card empty-state">
+              <h2>No saved analyses yet</h2>
+              <p>Run an analysis and hit "Save to My Projects" from the dashboard — it'll show up here, stored in this browser.</p>
+              <a href="analyze.html" class="btn btn-primary">Analyze a property</a>
+            </div>`;
+          return;
+        }
+        root.innerHTML = `<div class="project-list">${saved.map((rec) => {
+          const property = window.PARCELA_PROPERTIES.find((p) => p.id === rec.propertyId);
+          if (!property) return "";
+          const report = window.PARCELA_ENGINE.analyzeProperty(property, rec.goalId);
+          const top = report.scenarios[0];
+          return `
+            <div class="card project-card" data-id="${rec.id}">
+              <div class="pc-main">
+                <h3>${property.address}</h3>
+                <div class="pc-meta">
+                  <span>${property.barrio}, ${property.municipio}</span>
+                  <span class="badge badge-teal">${R.goalLabel(rec.goalId)}</span>
+                  ${top ? `<span class="badge ${R.feasibilityBadgeClass(top.feasibility)}">Top option: ${top.feasibility}</span>` : ""}
+                  <span>Saved ${new Date(rec.createdAt).toLocaleDateString()}</span>
+                </div>
+              </div>
+              <div class="pc-actions">
+                <a href="dashboard.html?id=${property.id}&goal=${rec.goalId}" class="btn btn-ghost btn-sm">View dashboard</a>
+                <button class="btn btn-ghost btn-sm remove-btn" data-id="${rec.id}">Remove</button>
+              </div>
+            </div>`;
+        }).join("")}</div>`;
+
+        root.querySelectorAll(".remove-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            window.PARCELA_PROJECTS.remove(btn.dataset.id);
+            render();
+          });
+        });
+      }
+
+      render();
+    })();
+  </script>
+</body>
+</html>

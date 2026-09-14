@@ -1,0 +1,33 @@
+.report-toolbar {
+  position: sticky; top: 0; z-index: 40;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+  padding: var(--sp-3) 0;
+}
+.report-toolbar .wrap-narrow { display:flex; justify-content: space-between; align-items:center; gap: var(--sp-3); flex-wrap: wrap; }
+.report-toolbar .toolbar-actions { display:flex; gap: var(--sp-2); }
+
+.report-shell { padding: var(--sp-7) 0 var(--sp-9); }
+.report-head { margin-bottom: var(--sp-7); }
+.report-head .eyebrow { justify-content: flex-start; }
+.report-head h1 { margin: var(--sp-2) 0 var(--sp-2); }
+.report-meta { display:flex; gap: var(--sp-4); flex-wrap:wrap; font-size: 0.85rem; color: var(--ink-faint); }
+
+.report-section { margin-bottom: var(--sp-7); }
+.report-section > .section-title h2 { font-size: 1.2rem; }
+
+.exec-summary { background: var(--surface-sunken); border-radius: var(--r-lg); padding: var(--sp-5); }
+.exec-summary p:last-child { margin-bottom: 0; }
+
+@media (max-width: 640px) {
+  .report-toolbar .wrap-narrow { flex-direction: column; align-items: flex-start; }
+}
+
+@media print {
+  .site-nav, .report-toolbar, .site-footer, .no-print { display: none !important; }
+  body { background: #fff; }
+  .card, .panel { box-shadow: none !important; }
+  a { text-decoration: none; color: inherit; }
+  .report-shell { padding-top: 0; }
+  .scenario-card { break-inside: avoid; }
+  .roadmap-item { break-inside: avoid; }
+}
