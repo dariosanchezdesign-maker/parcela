@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project setup — Parcela</title>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+</head>
+<body>
+  <header class="onboard-topbar">
+    <a href="landing.html" class="brand">
+      <span class="onboard-brand-mark" aria-hidden="true"></span>
+      Parcela
+    </a>
+    <span id="lang-toggle-slot"></span>
+  </header>
+
+  <main class="onboard-main">
+    <div class="onboard-stage">
+      <div class="onboard-step" data-i18n="setup_step">Step 3 of 3</div>
+      <h1 data-i18n="setup_title">What are you thinking of building?</h1>
+      <p class="onboard-sub">123 Example Avenue, San Juan, Puerto Rico</p>
+
+      <div class="type-grid" id="type-grid">
+        <button class="type-option is-selected" data-type="Multifamily" data-i18n="setup_multifamily">Multifamily</button>
+        <button class="type-option" data-type="Commercial" data-i18n="setup_commercial">Commercial</button>
+        <button class="type-option" data-type="Hospitality" data-i18n="setup_hospitality">Hospitality</button>
+        <button class="type-option" data-type="Industrial" data-i18n="setup_industrial">Industrial</button>
+        <button class="type-option" data-type="Mixed-use" data-i18n="setup_mixedUse">Mixed-use</button>
+        <button class="type-option" data-type="Residential" data-i18n="setup_residential">Residential</button>
+        <button class="type-option" data-type="Other" data-i18n="setup_other">Other</button>
+      </div>
+
+      <div class="assumption-row">
+        <div class="assumption-field">
+          <div class="field-label-row">
+            <label for="units" data-i18n="setup_targetUnits">Target units</label>
+            <span class="optional-tag" data-i18n="common_optional">Optional</span>
+          </div>
+          <input type="text" id="units" placeholder="e.g. 60–80" value="60–80" />
+        </div>
+        <div class="assumption-field">
+          <div class="field-label-row">
+            <label for="investment" data-i18n="setup_approxInvestment">Approximate investment</label>
+            <span class="optional-tag" data-i18n="common_optional">Optional</span>
+          </div>
+          <input type="text" id="investment" placeholder="e.g. $10M–$15M" value="$10M–$15M" />
+        </div>
+      </div>
+
+      <div class="onboard-actions">
+        <button type="button" class="btn btn-primary" id="analyze-cta" data-i18n="setup_cta">Analyze site</button>
+        <a href="identify.html" class="btn btn-ghost" data-i18n="setup_back">Back</a>
+      </div>
+    </div>
+  </main>
+
+  <div class="analyzing-overlay" id="analyzing-overlay" role="status" aria-live="polite">
+    <div class="analyzing-box">
+      <div class="eyebrow" data-i18n="property_preliminaryFeasibility">Preliminary feasibility</div>
+      <h2 data-i18n="analyzing_title">Analyzing 123 Example Avenue…</h2>
+      <p class="analyzing-sub" data-i18n="analyzing_subtitle">This usually takes a few seconds.</p>
+      <ul class="analyzing-steps" id="analyzing-steps">
+        <li class="analyzing-step" data-step="0">
+          <span class="step-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span data-i18n="analyzing_step1">Reading zoning and land-use records</span>
+        </li>
+        <li class="analyzing-step" data-step="1">
+          <span class="step-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span data-i18n="analyzing_step2">Cross-referencing flood and environmental maps</span>
+        </li>
+        <li class="analyzing-step" data-step="2">
+          <span class="step-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span data-i18n="analyzing_step3">Checking permit and development history</span>
+        </li>
+        <li class="analyzing-step" data-step="3">
+          <span class="step-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span data-i18n="analyzing_step4">Compiling preliminary feasibility</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="js/i18n.js"></script>
+  <script>
+    (function () {
+      const grid = document.getElementById("type-grid");
+      grid.querySelectorAll(".type-option").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          grid.querySelectorAll(".type-option").forEach((b) => b.classList.remove("is-selected"));
+          btn.classList.add("is-selected");
+        });
+      });
+
+      const overlay = document.getElementById("analyzing-overlay");
+      const steps = [...document.querySelectorAll(".analyzing-step")];
+      document.getElementById("analyze-cta").addEventListener("click", () => {
+        overlay.classList.add("is-visible");
+        let i = 0;
+        function advance() {
+          if (i > 0) steps[i - 1].classList.remove("is-active");
+          if (i > 0) steps[i - 1].classList.add("is-done");
+          if (i < steps.length) {
+            steps[i].classList.add("is-active");
+            i++;
+            setTimeout(advance, 480);
+          } else {
+            setTimeout(() => { window.location.href = "property.html"; }, 350);
+          }
+        }
+        advance();
+      });
+    })();
+  </script>
+</body>
+</html>

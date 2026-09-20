@@ -1,79 +1,96 @@
-/* Parcela design tokens.
-   Palette: deep ocean teal as the anchor, a single warm clay accent for
-   action, warm paper neutrals for surfaces. Deliberately not tropical
-   cliché (no turquoise/coral/sunset gradients) — reads as a serious data
-   product with a Puerto Rico accent, not a vacation brand. */
+/* Parcela design tokens — V3, development-intelligence platform.
+   Restrained neutral foundation (off-white/near-black), accent color used
+   only for meaning (favorable/investigate/constraint/unknown), never as
+   decoration. Built to read as premium enterprise GIS + financial software,
+   not a consumer app. */
 
 :root {
   color-scheme: light;
 
   /* ---- ink & paper ---- */
-  --ink: #12181c;
-  --ink-soft: #4c5860;
-  --ink-faint: #7c8892;
-  --paper: #faf8f3;
+  --ink: #14161a;
+  --ink-soft: #52565e;
+  --ink-faint: #8a8e96;
+  --paper: #f6f5f2;
   --surface: #ffffff;
-  --surface-sunken: #f1ede4;
-  --line: #e3ddd0;
-  --line-strong: #cdc4b2;
+  --surface-sunken: #eeece6;
+  --surface-raised: #ffffff;
+  --line: #e0ded7;
+  --line-strong: #c7c4ba;
+  --line-on-dark: rgba(255, 255, 255, 0.14);
 
-  /* ---- brand: deep ocean teal ---- */
-  --teal-900: #0a2e30;
-  --teal-800: #0e3f42;
-  --teal-700: #12595c;
-  --teal-600: #17696c;
-  --teal-500: #1f8386;
-  --teal-100: #e2eeed;
-  --teal-050: #f0f6f5;
+  /* ---- brand ink (near-black, used for primary CTAs / selected state) ---- */
+  --brand: #14161a;
+  --brand-hover: #2a2d33;
 
-  /* ---- accent: clay ---- */
-  --clay-700: #a4491f;
-  --clay-600: #c1602e;
-  --clay-500: #d6753f;
-  --clay-100: #fbe8db;
-  --clay-050: #fdf3ec;
+  /* ---- semantic: finding status ---- */
+  --favorable-fg: #235c3f;
+  --favorable-fg-strong: #1a4630;
+  --favorable-bg: #e9f1ea;
+  --favorable-line: #c3d9c6;
+  --favorable-dot: #3d8557;
 
-  /* ---- semantic: feasibility / status ---- */
-  --green-700: #205e3e;
-  --green-600: #2f7a4f;
-  --green-100: #e2f0e6;
+  --investigate-fg: #8a5f10;
+  --investigate-fg-strong: #6b4a0c;
+  --investigate-bg: #faf3e2;
+  --investigate-line: #e6d3a4;
+  --investigate-dot: #b9821c;
 
-  --gold-700: #8a6110;
-  --gold-600: #a6791a;
-  --gold-100: #f6ecd7;
+  --constraint-fg: #8f3527;
+  --constraint-fg-strong: #6e281d;
+  --constraint-bg: #f8ece9;
+  --constraint-line: #e3c3bb;
+  --constraint-dot: #b64a37;
 
-  --rust-700: #7e2f22;
-  --rust-600: #a23b2e;
-  --rust-100: #f6e0da;
+  --unknown-fg: #55585f;
+  --unknown-fg-strong: #3c3f45;
+  --unknown-bg: #eeede9;
+  --unknown-line: #d6d3c9;
+  --unknown-dot: #8a8d94;
+
+  /* ---- map layers (muted, distinct at a glance) ---- */
+  --map-base-land: #dcd8cc;
+  --map-base-block: #c9c4b3;
+  --map-parcel: #b7b19c;
+  --map-road: #f2f0ea;
+  --map-selected: #14161a;
+  --map-flood-ae: rgba(59, 92, 170, 0.32);
+  --map-flood-x: rgba(59, 92, 170, 0.12);
+  --map-zoning-r: rgba(63, 133, 87, 0.28);
+  --map-zoning-c: rgba(185, 130, 28, 0.28);
+  --map-zoning-mu: rgba(122, 92, 170, 0.28);
+  --map-infra-line: #3b5caa;
+  --map-dev-marker: #14161a;
 
   /* ---- type ---- */
-  --font-display: "Sora", system-ui, sans-serif;
-  --font-body: "Hanken Grotesk", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "Host Grotesk", system-ui, sans-serif;
+  --font-body: "Host Grotesk", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
   /* ---- spacing scale (4px base) ---- */
   --sp-1: 4px;
   --sp-2: 8px;
   --sp-3: 12px;
   --sp-4: 16px;
-  --sp-5: 24px;
-  --sp-6: 32px;
-  --sp-7: 48px;
-  --sp-8: 64px;
-  --sp-9: 96px;
-  --sp-10: 128px;
+  --sp-5: 20px;
+  --sp-6: 28px;
+  --sp-7: 40px;
+  --sp-8: 56px;
+  --sp-9: 80px;
 
-  /* ---- radius ---- */
+  /* ---- radius (small, precise — not consumer-rounded) ---- */
+  --r-xs: 4px;
   --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 16px;
+  --r-md: 8px;
+  --r-lg: 12px;
 
-  /* ---- shadow: hairline + soft, never heavy ---- */
-  --shadow-sm: 0 1px 2px rgba(18, 24, 28, 0.06);
-  --shadow-md: 0 4px 16px rgba(18, 24, 28, 0.08);
-  --shadow-lg: 0 12px 32px rgba(18, 24, 28, 0.10);
+  /* ---- shadow: hairline first, shadow only for floating layers ---- */
+  --shadow-sm: 0 1px 2px rgba(20, 22, 26, 0.05);
+  --shadow-md: 0 6px 20px rgba(20, 22, 26, 0.10);
+  --shadow-lg: 0 16px 40px rgba(20, 22, 26, 0.14);
 
   /* ---- layout ---- */
-  --max-w: 1180px;
-  --max-w-narrow: 760px;
+  --shell-nav-w: 224px;
+  --header-h: 60px;
+  --max-w: 1360px;
 }
