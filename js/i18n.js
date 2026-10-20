@@ -48,7 +48,7 @@ window.ParcelaI18N = (function () {
     common_status_constraint: { es: "Posibles limitaciones", en: "Potential constraints" },
     common_status_unknown: { es: "Desconocido", en: "Unknown" },
 
-    // ---- search (index.html) ----
+    // ---- search (search.html) ----
     search_step: { es: "Paso 1 de 3", en: "Step 1 of 3" },
     search_title: { es: "¿Qué propiedad estás evaluando?", en: "What are you looking at?" },
     search_subtitle: { es: "Ingresa una dirección, número de catastro o ubicación para iniciar un análisis preliminar de viabilidad.", en: "Enter an address, cadastral number, or location to start a preliminary feasibility analysis." },
@@ -223,7 +223,7 @@ window.ParcelaI18N = (function () {
     explore_emptyTitle: { es: "Ninguna propiedad coincide con estos filtros", en: "No properties match these filters" },
     explore_emptySub: { es: "Intenta ampliar tus criterios o restablece los filtros para ver todas las propiedades.", en: "Try widening your criteria, or reset the filters to see every property." },
 
-    // ---- landing.html ----
+    // ---- index.html ----
     // 1. nav
     landing_nav_explore: { es: "Explorar", en: "Explore" },
     landing_nav_how: { es: "Cómo funciona", en: "How it works" },

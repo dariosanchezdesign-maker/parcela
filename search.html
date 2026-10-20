@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Parcela — Know what you're getting into before you develop</title>
+  <meta name="description" content="Parcela is a development-intelligence platform for Puerto Rico. Give it a property and a project — get a preliminary feasibility analysis with evidence, confidence, and next actions." />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+</head>
+<body>
+  <header class="onboard-topbar">
+    <a href="index.html" class="brand">
+      <span class="onboard-brand-mark" aria-hidden="true"></span>
+      Parcela
+    </a>
+    <span id="lang-toggle-slot"></span>
+  </header>
+
+  <main class="onboard-main">
+    <div class="onboard-stage">
+      <div class="onboard-step" data-i18n="search_step">Step 1 of 3</div>
+      <h1 data-i18n="search_title">What are you looking at?</h1>
+      <p class="onboard-sub" data-i18n="search_subtitle">Enter an address, cadastral number, or location to start a preliminary feasibility analysis.</p>
+
+      <form id="search-form">
+        <div class="search-field">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="M18 18l-4.3-4.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <input type="search" id="search-input" data-i18n-placeholder="search_placeholder" placeholder="Search an address, parcel, or location" autocomplete="off" value="123 Example Avenue, San Juan" />
+        </div>
+        <div class="search-suggestions" id="search-suggestions">
+          <button type="button" data-pick="example-ave-123">
+            <span class="s-addr">123 Example Avenue</span>
+            <span class="s-meta" data-i18n="search_sugg1">San Juan, Puerto Rico · Cadastral 115-042-018-09-901</span>
+          </button>
+          <button type="button" data-pick="ashford-ave-88">
+            <span class="s-addr">88 Ashford Avenue</span>
+            <span class="s-meta" data-i18n="search_sugg2">San Juan, Puerto Rico · Cadastral 115-041-006-04-902</span>
+          </button>
+          <button type="button" data-pick="isla-verde-ave-410">
+            <span class="s-addr">410 Isla Verde Avenue</span>
+            <span class="s-meta" data-i18n="search_sugg3">Carolina, Puerto Rico · Cadastral 058-013-221-11-903</span>
+          </button>
+        </div>
+        <div class="field-error" id="search-error">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11" r="0.75" fill="currentColor"/></svg>
+          <span data-i18n="search_notFound">We couldn't find a confident match for that address in this prototype's data. Try one of the sample addresses below.</span>
+        </div>
+        <div class="onboard-actions">
+          <button type="submit" class="btn btn-primary" data-i18n="common_analyzeProperty">Analyze property</button>
+          <a href="explore.html" class="btn btn-ghost" data-i18n="search_exploreMap">Explore the map</a>
+        </div>
+      </form>
+      <p class="onboard-hint" data-i18n="search_hint">Prototype data — property, zoning, and regulatory information shown throughout this demo is fictional.</p>
+    </div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script>
+    (function () {
+      const input = document.getElementById("search-input");
+      const suggestions = document.getElementById("search-suggestions");
+      const form = document.getElementById("search-form");
+      const errorBox = document.getElementById("search-error");
+      const KNOWN = ["123 example avenue", "88 ashford avenue", "410 isla verde avenue"];
+
+      input.addEventListener("focus", () => suggestions.classList.add("is-open"));
+      input.addEventListener("input", () => errorBox.classList.remove("is-visible"));
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".search-field") && !e.target.closest(".search-suggestions")) {
+          suggestions.classList.remove("is-open");
+        }
+      });
+      suggestions.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          input.value = btn.querySelector(".s-addr").textContent;
+          suggestions.classList.remove("is-open");
+          errorBox.classList.remove("is-visible");
+        });
+      });
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const val = input.value.trim().toLowerCase();
+        const matches = KNOWN.some((k) => val.includes(k));
+        if (!matches) {
+          errorBox.classList.add("is-visible");
+          return;
+        }
+        errorBox.classList.remove("is-visible");
+        window.location.href = "identify.html";
+      });
+    })();
+  </script>
+</body>
+</html>

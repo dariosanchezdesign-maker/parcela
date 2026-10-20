@@ -23,14 +23,14 @@ npx serve .
 python -m http.server 5173
 ```
 
-Then open the printed local URL. `landing.html` is the marketing page;
-`index.html` is the start of the app flow.
+Then open the printed local URL. `index.html` is the marketing landing page;
+`search.html` is the start of the app flow.
 
 ## Structure
 
 Core flow:
 
-- `index.html` — property search ("What are you looking at?")
+- `search.html` — property search ("What are you looking at?")
 - `identify.html` — confirm the parcel on the map
 - `setup.html` — project type, optional units/investment
 - `property.html` — the Property Intelligence screen: map + findings,
@@ -45,7 +45,7 @@ App pages:
 - `projects.html` — project workspace
 - `reports.html` — generated feasibility report
 - `sources.html` — every source and the findings that cite it
-- `landing.html` — marketing landing page
+- `index.html` — marketing landing page (site root)
 
 Code:
 

@@ -6,89 +6,446 @@
   <title>Parcela — Know what you're getting into before you develop</title>
   <meta name="description" content="Parcela is a development-intelligence platform for Puerto Rico. Give it a property and a project — get a preliminary feasibility analysis with evidence, confidence, and next actions." />
   <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/intelligence.css" />
+  <link rel="stylesheet" href="css/panel.css" />
+  <link rel="stylesheet" href="css/landing.css" />
 </head>
 <body>
-  <header class="onboard-topbar">
-    <a href="landing.html" class="brand">
-      <span class="onboard-brand-mark" aria-hidden="true"></span>
+
+  <!-- 1. NAVIGATION -->
+  <header class="l-nav" id="l-nav">
+    <a href="index.html" class="l-nav-brand">
+      <span class="shell-brand-mark" aria-hidden="true"></span>
       Parcela
     </a>
-    <span id="lang-toggle-slot"></span>
+    <ul class="l-nav-center">
+      <li><a href="explore.html" data-i18n="landing_nav_explore">Explore</a></li>
+      <li><a href="#product" data-i18n="landing_nav_how">How it works</a></li>
+      <li><a href="#trust" data-i18n="landing_nav_trust">Trust</a></li>
+    </ul>
+    <div class="l-nav-right">
+      <button type="button" class="l-nav-signin" id="signin-btn" data-i18n="landing_nav_signIn">Sign in</button>
+      <span id="lang-toggle-slot"></span>
+      <a href="search.html" class="btn btn-primary btn-sm" data-i18n="landing_nav_cta">Analyze property →</a>
+    </div>
   </header>
 
-  <main class="onboard-main">
-    <div class="onboard-stage">
-      <div class="onboard-step" data-i18n="search_step">Step 1 of 3</div>
-      <h1 data-i18n="search_title">What are you looking at?</h1>
-      <p class="onboard-sub" data-i18n="search_subtitle">Enter an address, cadastral number, or location to start a preliminary feasibility analysis.</p>
+  <main>
+    <!-- 2. HERO -->
+    <section class="l-hero">
+      <div class="l-hero-inner">
+        <div class="l-eyebrow" data-i18n="landing_hero_eyebrow">DEVELOPMENT INTELLIGENCE FOR PUERTO RICO</div>
+        <h1><span class="l-h-main" data-i18n="landing_hero_title_main">Know what you're getting into</span> <span class="l-h-accent" data-i18n="landing_hero_title_accent">before you develop.</span></h1>
+        <p class="l-lede" style="margin-left:auto;margin-right:auto;" data-i18n="landing_hero_sub">Parcela brings property, zoning, regulatory, environmental, infrastructure, and development data together so you can understand a site before committing significant time and capital.</p>
 
-      <form id="search-form">
-        <div class="search-field">
-          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="M18 18l-4.3-4.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          <input type="search" id="search-input" data-i18n-placeholder="search_placeholder" placeholder="Search an address, parcel, or location" autocomplete="off" value="123 Example Avenue, San Juan" />
+        <form id="hero-search-form">
+          <div class="l-search">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="M18 18l-4.3-4.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <input type="search" id="hero-search-input" data-i18n-placeholder="landing_hero_placeholder" placeholder="Enter an address, parcel, or location" autocomplete="off" />
+            <button type="submit" class="btn btn-primary" data-i18n="landing_hero_cta">Analyze property →</button>
+            <div class="l-search-suggestions" id="hero-suggestions">
+              <button type="button" data-pick="123 Example Avenue"><span class="s-addr">123 Example Avenue</span><span class="s-meta" data-i18n="search_sugg1">San Juan, Puerto Rico · Cadastral 115-042-018-09-901</span></button>
+              <button type="button" data-pick="88 Ashford Avenue"><span class="s-addr">88 Ashford Avenue</span><span class="s-meta" data-i18n="search_sugg2">San Juan, Puerto Rico · Cadastral 115-041-006-04-902</span></button>
+              <button type="button" data-pick="410 Isla Verde Avenue"><span class="s-addr">410 Isla Verde Avenue</span><span class="s-meta" data-i18n="search_sugg3">Carolina, Puerto Rico · Cadastral 058-013-221-11-903</span></button>
+            </div>
+          </div>
+          <div class="l-hero-error">
+            <div class="field-error" id="hero-search-error">
+              <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11" r="0.75" fill="currentColor"/></svg>
+              <span data-i18n="search_notFound">We couldn't find a confident match for that address in this prototype's data. Try one of the sample addresses below.</span>
+            </div>
+          </div>
+        </form>
+        <p class="l-hero-note" data-i18n="landing_hero_noAccount">No account required to explore.</p>
+      </div>
+
+      <!-- 3. HERO PRODUCT VISUALIZATION -->
+      <div class="l-viz-wrap">
+        <div class="l-viz">
+          <div class="l-viz-chrome" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div class="l-viz-grid">
+            <div>
+              <div class="l-viz-map-controls" id="hero-viz-controls">
+                <button class="map-control" data-layer="satellite" data-i18n="property_layer_satellite">Satellite</button>
+                <button class="map-control" data-layer="zoning" data-i18n="property_layer_zoning">Zoning</button>
+                <button class="map-control" data-layer="flood" data-i18n="property_layer_flood">Flood</button>
+                <button class="map-control" data-layer="infrastructure" data-i18n="property_layer_infrastructure">Infrastructure</button>
+                <button class="map-control" data-layer="development" data-i18n="property_layer_development">Development</button>
+              </div>
+              <div class="l-viz-map" id="hero-viz-map">
+                <div class="map-svg-slot"></div>
+                <div class="map-legend"></div>
+              </div>
+            </div>
+            <div class="l-viz-panel">
+              <div class="l-eyebrow" data-i18n="landing_viz_status">PRELIMINARY FEASIBILITY</div>
+              <div class="l-viz-status" data-i18n="landing_viz_worthInvestigating">Worth investigating</div>
+              <div class="l-viz-findings">
+                <div class="l-viz-finding vf-favorable">
+                  <span class="vf-mark"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <div><div class="vf-cat" data-i18n="landing_viz_favorableLabel">Favorable</div><div class="vf-text" data-i18n="landing_viz_finding_favorable">Zoning permits multifamily use</div></div>
+                </div>
+                <div class="l-viz-finding vf-investigate">
+                  <span class="vf-mark">!</span>
+                  <div><div class="vf-cat" data-i18n="landing_viz_investigateLabel">Investigate</div><div class="vf-text" data-i18n="landing_viz_finding_investigate">Review applicable zoning requirements</div></div>
+                </div>
+                <div class="l-viz-finding vf-constraint">
+                  <span class="vf-mark">!</span>
+                  <div><div class="vf-cat" data-i18n="landing_viz_constraintLabel">Potential constraint</div><div class="vf-text" data-i18n="landing_viz_finding_constraint">Flood exposure identified</div></div>
+                </div>
+                <div class="l-viz-finding vf-unknown">
+                  <span class="vf-mark">?</span>
+                  <div><div class="vf-cat" data-i18n="landing_viz_unknownLabel">Unknown</div><div class="vf-text" data-i18n="landing_viz_finding_unknown">Utility capacity</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="search-suggestions" id="search-suggestions">
-          <button type="button" data-pick="example-ave-123">
-            <span class="s-addr">123 Example Avenue</span>
-            <span class="s-meta" data-i18n="search_sugg1">San Juan, Puerto Rico · Cadastral 115-042-018-09-901</span>
-          </button>
-          <button type="button" data-pick="ashford-ave-88">
-            <span class="s-addr">88 Ashford Avenue</span>
-            <span class="s-meta" data-i18n="search_sugg2">San Juan, Puerto Rico · Cadastral 115-041-006-04-902</span>
-          </button>
-          <button type="button" data-pick="isla-verde-ave-410">
-            <span class="s-addr">410 Isla Verde Avenue</span>
-            <span class="s-meta" data-i18n="search_sugg3">Carolina, Puerto Rico · Cadastral 058-013-221-11-903</span>
-          </button>
+      </div>
+    </section>
+
+    <!-- 4. PROBLEM + SOLUTION (merged) -->
+    <section class="l-section" id="problem-solution">
+      <div class="l-inner">
+        <h2 class="l-h1 l-center"><span class="l-h-main" data-i18n="landing_ps_h1_main">A property is more than</span> <span class="l-h-accent" data-i18n="landing_ps_h1_accent">a parcel on a map.</span></h2>
+        <div class="l-fragments" aria-hidden="true">
+          <div class="l-fragment" data-i18n="landing_problem_zoning">Zoning</div>
+          <div class="l-fragment" data-i18n="landing_problem_flood">Flood</div>
+          <div class="l-fragment" data-i18n="landing_problem_permits">Permits</div>
+          <div class="l-fragment" data-i18n="landing_problem_regulations">Regulations</div>
+          <div class="l-fragment" data-i18n="landing_problem_infrastructure">Infrastructure</div>
+          <div class="l-fragment" data-i18n="landing_problem_environmental">Environment</div>
+          <div class="l-fragment" data-i18n="landing_problem_history">Development history</div>
         </div>
-        <div class="field-error" id="search-error">
-          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11" r="0.75" fill="currentColor"/></svg>
-          <span data-i18n="search_notFound">We couldn't find a confident match for that address in this prototype's data. Try one of the sample addresses below.</span>
+        <div class="l-ps-down" aria-hidden="true"><svg viewBox="0 0 12 20" fill="none"><path d="M6 0v16M1 12l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="l-ps-brand"><span class="shell-brand-mark" aria-hidden="true"></span>Parcela</div>
+        <div class="l-ps-down" aria-hidden="true"><svg viewBox="0 0 12 20" fill="none"><path d="M6 0v16M1 12l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <p class="l-statement" data-i18n="landing_ps_oneView">One intelligence view.</p>
+        <div class="l-diff-flow" aria-hidden="true">
+          <span class="df-node" data-i18n="landing_diff_flow1">DATA</span>
+          <svg viewBox="0 0 18 12" fill="none"><path d="M0 6h14M10 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="df-node" data-i18n="landing_diff_flow2">INTELLIGENCE</span>
+          <svg viewBox="0 0 18 12" fill="none"><path d="M0 6h14M10 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="df-node" data-i18n="landing_diff_flow3">DECISION</span>
         </div>
-        <div class="onboard-actions">
-          <button type="submit" class="btn btn-primary" data-i18n="common_analyzeProperty">Analyze property</button>
-          <a href="explore.html" class="btn btn-ghost" data-i18n="search_exploreMap">Explore the map</a>
+      </div>
+    </section>
+
+    <!-- 5. PRODUCT / INTELLIGENCE (merged: four questions + showcase) -->
+    <section class="l-section l-surface l-border-top" id="product">
+      <div class="l-inner">
+        <h2 class="l-h1 l-questions-head"><span class="l-h-main" data-i18n="landing_product_h1_main">Before you pursue a property,</span> <span class="l-h-accent" data-i18n="landing_product_h1_accent">know what you're getting into.</span></h2>
+        <div class="l-question-grid">
+          <div class="l-question"><div class="lq-num">01</div><h3 data-i18n="landing_q1_title">What can I potentially do here?</h3><p data-i18n="landing_q1_body">Understand the property's regulatory context, physical characteristics, and development constraints before committing to deeper due diligence.</p></div>
+          <div class="l-question"><div class="lq-num">02</div><h3 data-i18n="landing_q2_title">What could get in the way?</h3><p data-i18n="landing_q2_body">Identify flood, environmental, or regulatory constraints before they become costly surprises later in the process.</p></div>
+          <div class="l-question"><div class="lq-num">03</div><h3 data-i18n="landing_q3_title">What don't I know yet?</h3><p data-i18n="landing_q3_body">See clearly which questions are still open, instead of assuming silence means everything checks out.</p></div>
+          <div class="l-question"><div class="lq-num">04</div><h3 data-i18n="landing_q4_title">What should I investigate next?</h3><p data-i18n="landing_q4_body">Get a concrete list of next steps, each paired with the right professional to resolve it.</p></div>
         </div>
-      </form>
-      <p class="onboard-hint" data-i18n="search_hint">Prototype data — property, zoning, and regulatory information shown throughout this demo is fictional.</p>
-    </div>
+        <h3 class="l-showcase-head" data-i18n="landing_showcase_h1">See it in action.</h3>
+        <div class="l-showcase-wrap">
+          <div class="l-viz">
+            <div class="l-viz-chrome" aria-hidden="true"><span></span><span></span><span></span></div>
+            <header class="intel-header" style="padding:var(--sp-4) var(--sp-5);">
+              <div>
+                <h1 style="font-size:1.15rem;" id="sc-address">123 Example Avenue</h1>
+                <p class="intel-locality" style="margin-bottom:2px;" id="sc-locality">San Juan, Puerto Rico</p>
+                <span class="intel-project-tag" id="sc-project-tag">Multifamily · 60–80 units</span>
+              </div>
+            </header>
+            <div class="l-viz-grid">
+              <div>
+                <div class="l-viz-map-controls" id="sc-controls">
+                  <button class="map-control" data-layer="satellite" data-i18n="property_layer_satellite">Satellite</button>
+                  <button class="map-control" data-layer="zoning" data-i18n="property_layer_zoning">Zoning</button>
+                  <button class="map-control" data-layer="flood" data-i18n="property_layer_flood">Flood</button>
+                  <button class="map-control" data-layer="environmental" data-i18n="property_layer_environmental">Environmental</button>
+                  <button class="map-control" data-layer="infrastructure" data-i18n="property_layer_infrastructure">Infrastructure</button>
+                  <button class="map-control" data-layer="development" data-i18n="property_layer_development">Development</button>
+                </div>
+                <div class="l-viz-map" id="sc-map" style="aspect-ratio:4/3.3;">
+                  <div class="map-svg-slot"></div>
+                  <div class="map-legend"></div>
+                </div>
+              </div>
+              <div class="l-viz-panel" style="max-height:560px; overflow-y:auto;">
+                <div class="card feasibility-card" style="margin-bottom:var(--sp-4); padding:var(--sp-4);">
+                  <div class="eyebrow" data-i18n="property_preliminaryFeasibility">Preliminary feasibility</div>
+                  <div class="feasibility-status" id="sc-feas-status" style="font-size:1.15rem;"></div>
+                  <p id="sc-feas-summary" style="margin-bottom:0; font-size:0.86rem;"></p>
+                </div>
+                <div class="finding-categories" id="sc-finding-categories"></div>
+                <div class="info-section is-open" id="sc-section-unknowns">
+                  <button class="info-section-toggle"><span data-i18n="property_whatDontKnow">What we don't know yet</span><svg class="chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                  <div class="info-section-body" id="sc-unknowns-list"></div>
+                </div>
+                <div class="info-section" id="sc-section-actions">
+                  <button class="info-section-toggle"><span data-i18n="property_beforeMoveForward">Before you move forward</span><svg class="chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                  <div class="info-section-body" id="sc-next-actions-list"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="l-annotations-row">
+            <div class="l-annotation"><span class="an-dot">01</span><div><h4 data-i18n="landing_showcase_ann1_title">01 — Property</h4><p data-i18n="landing_showcase_ann1_body">The site you're evaluating.</p></div></div>
+            <div class="l-annotation"><span class="an-dot">02</span><div><h4 data-i18n="landing_showcase_ann2_title">02 — Intelligence</h4><p data-i18n="landing_showcase_ann2_body">What Parcela found.</p></div></div>
+            <div class="l-annotation"><span class="an-dot">03</span><div><h4 data-i18n="landing_showcase_ann3_title">03 — Evidence</h4><p data-i18n="landing_showcase_ann3_body">Why Parcela reached the conclusion.</p></div></div>
+            <div class="l-annotation"><span class="an-dot">04</span><div><h4 data-i18n="landing_showcase_ann4_title">04 — Unknowns</h4><p data-i18n="landing_showcase_ann4_body">What still needs verification.</p></div></div>
+            <div class="l-annotation"><span class="an-dot">05</span><div><h4 data-i18n="landing_showcase_ann5_title">05 — Next actions</h4><p data-i18n="landing_showcase_ann5_body">What you should investigate next.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. TRUST / DIFFERENTIATION (merged) -->
+    <section class="l-section l-surface l-border-top" id="trust">
+      <div class="l-inner">
+        <h2 class="l-h1 l-trust-head"><span class="l-h-main" data-i18n="landing_trust_h1_main">Intelligence you can</span> <span class="l-h-accent" data-i18n="landing_trust_h1_accent">trace back to the source.</span></h2>
+        <div class="l-trust-card">
+          <div class="l-trust-top">
+            <span class="status status-constraint" style="margin-bottom:8px; display:inline-flex;" data-i18n="landing_trust_status">Potential constraint</span>
+            <h3 data-i18n="landing_trust_finding">Flood exposure</h3>
+            <p data-i18n="landing_trust_summary">The parcel intersects a mapped flood-risk area.</p>
+          </div>
+          <div class="l-trust-body">
+            <div class="l-trust-row"><span class="tk" data-i18n="landing_trust_whyLabel">Why?</span><span class="tv" data-i18n="landing_trust_whyValue">Flood Zone AE</span></div>
+            <div class="l-trust-row"><span class="tk" data-i18n="landing_trust_sourceLabel">Source</span><span class="tv" data-i18n="landing_trust_sourceValue">FEMA</span></div>
+            <div class="l-trust-row"><span class="tk" data-i18n="landing_trust_dataLabel">Relevant data</span><span class="tv" data-i18n="landing_trust_dataValue">Puerto Rico GIS</span></div>
+            <div class="l-trust-row"><span class="tk" data-i18n="landing_trust_confidenceLabel">Confidence</span><span class="tv" data-i18n="landing_trust_confidenceValue">High</span></div>
+            <div class="l-trust-source-detail" id="trust-source-detail">
+              <div class="l-trust-row"><span class="tk" data-i18n="landing_trust_docLabel">Document</span><span class="tv" data-i18n="landing_trust_docValue">FIRM Panel 72000C0245J</span></div>
+              <div class="l-trust-row"><span class="tk" data-i18n="landing_trust_sectionLabel">Section</span><span class="tv" data-i18n="landing_trust_sectionValue">Zone AE delineation</span></div>
+            </div>
+          </div>
+          <div class="l-trust-footer">
+            <button class="btn-text text-sm" id="trust-view-source" data-i18n="landing_trust_viewSource">View source →</button>
+          </div>
+        </div>
+        <p class="l-trust-demo-note" data-i18n="landing_trust_demoNote">Demonstration example — not a verified government finding.</p>
+        <p class="l-statement" data-i18n="landing_trust_statement2">Parcela doesn't replace professional due diligence. It helps you know where to look before you spend the time and money.</p>
+        <div class="l-diff-flow" aria-hidden="true">
+          <span class="df-node" data-i18n="landing_diff_flow1">DATA</span>
+          <svg viewBox="0 0 18 12" fill="none"><path d="M0 6h14M10 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="df-node" data-i18n="landing_diff_flow_evidence">EVIDENCE</span>
+          <svg viewBox="0 0 18 12" fill="none"><path d="M0 6h14M10 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="df-node" data-i18n="landing_diff_flow2">INTELLIGENCE</span>
+          <svg viewBox="0 0 18 12" fill="none"><path d="M0 6h14M10 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="df-node" data-i18n="landing_diff_flow3">DECISION</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. FINAL CTA -->
+    <section class="l-section l-final">
+      <div class="l-inner">
+        <h2><span class="l-h-main" data-i18n="landing_final_h1_main">Have</span> <span class="l-h-accent" data-i18n="landing_final_h1_accent">a property in mind?</span></h2>
+        <p class="l-lede" style="margin-left:auto;margin-right:auto;" data-i18n="landing_final_sub">See what Parcela can tell you.</p>
+        <form id="final-search-form">
+          <div class="l-search">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="M18 18l-4.3-4.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <input type="search" id="final-search-input" data-i18n-placeholder="landing_final_placeholder" placeholder="Search an address or parcel" autocomplete="off" />
+            <button type="submit" class="btn btn-primary" data-i18n="landing_hero_cta">Analyze property →</button>
+          </div>
+          <div class="l-hero-error">
+            <div class="field-error" id="final-search-error">
+              <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11" r="0.75" fill="currentColor"/></svg>
+              <span data-i18n="search_notFound">We couldn't find a confident match for that address in this prototype's data. Try one of the sample addresses below.</span>
+            </div>
+          </div>
+        </form>
+        <p class="l-hero-note" data-i18n="landing_final_note">Start exploring without creating an account.</p>
+      </div>
+    </section>
   </main>
 
+  <!-- 8. FOOTER -->
+  <footer class="l-footer l-border-top">
+    <div class="l-footer-grid">
+      <div>
+        <a href="index.html" class="l-footer-brand">
+          <span class="shell-brand-mark" aria-hidden="true"></span>
+          Parcela
+        </a>
+        <p class="l-footer-tagline" data-i18n="landing_footer_tagline">Development intelligence for Puerto Rico.</p>
+      </div>
+      <div class="l-footer-col">
+        <div class="l-eyebrow" data-i18n="landing_footer_product">Product</div>
+        <ul>
+          <li><a href="explore.html" data-i18n="landing_nav_explore">Explore</a></li>
+          <li><a href="#product" data-i18n="landing_nav_how">How it works</a></li>
+          <li><a href="#trust" data-i18n="landing_nav_trust">Trust</a></li>
+          <li><button type="button" class="inert-link" data-i18n="landing_footer_about">About</button></li>
+        </ul>
+      </div>
+      <div class="l-footer-col">
+        <div class="l-eyebrow" data-i18n="landing_footer_legal">Legal</div>
+        <ul>
+          <li><button type="button" class="inert-link" data-i18n="landing_footer_privacy">Privacy</button></li>
+          <li><button type="button" class="inert-link" data-i18n="landing_footer_terms">Terms</button></li>
+          <li><button type="button" class="inert-link" data-i18n="landing_footer_disclaimerLabel">Disclaimer</button></li>
+        </ul>
+      </div>
+    </div>
+    <p class="l-footer-disclaimer" data-i18n="landing_footer_disclaimer">Parcela provides preliminary property intelligence based on available data. Information should be independently verified and does not replace professional legal, architectural, engineering, environmental, planning, or regulatory advice.</p>
+  </footer>
+
+  <div class="scrim" id="scrim"></div>
+  <aside class="side-panel" id="why-panel" aria-hidden="true">
+    <div class="side-panel-head">
+      <div>
+        <span class="status" id="wp-status"></span>
+        <h2 id="wp-title"></h2>
+      </div>
+      <button class="side-panel-close" id="wp-close" aria-label="Close">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="side-panel-body">
+      <div class="side-panel-section">
+        <div class="sp-label" data-i18n="panel_whatFound">What Parcela found</div>
+        <div class="sp-body" id="wp-found"></div>
+      </div>
+      <div class="side-panel-section">
+        <div class="sp-label" data-i18n="common_whyItMatters">Why it matters</div>
+        <div class="sp-body" id="wp-matters"></div>
+      </div>
+      <div class="side-panel-section">
+        <div class="sp-label" data-i18n="panel_evidence">Evidence</div>
+        <div class="evidence-block">
+          <div class="evidence-row"><span class="e-k" data-i18n="panel_source">Source</span><span class="e-v" id="wp-src-name"></span></div>
+          <div class="evidence-row"><span class="e-k" data-i18n="panel_agency">Agency</span><span class="e-v" id="wp-src-agency"></span></div>
+          <div class="evidence-row"><span class="e-k" data-i18n="panel_date">Date</span><span class="e-v" id="wp-src-date"></span></div>
+          <div class="source-detail" id="wp-source-detail">
+            <div class="evidence-row"><span class="e-k" data-i18n="panel_document">Document</span><span class="e-v" id="wp-src-doc"></span></div>
+            <div class="evidence-row"><span class="e-k" data-i18n="panel_section">Section</span><span class="e-v" id="wp-src-section"></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="side-panel-section">
+        <div class="sp-label" data-i18n="panel_confidence">Confidence</div>
+        <span class="confidence" id="wp-confidence" data-level="">
+          <span class="confidence-bars"><span></span><span></span><span></span></span>
+          <span id="wp-confidence-label"></span>
+        </span>
+      </div>
+      <div class="side-panel-section">
+        <div class="sp-label" data-i18n="panel_professionalVerification">Professional verification</div>
+        <div class="verification-block">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5l5.5 2.2v4.1c0 3.6-2.3 6.4-5.5 7.7-3.2-1.3-5.5-4.1-5.5-7.7V3.7L8 1.5z" stroke="currentColor" stroke-width="1.3"/></svg>
+          <span id="wp-verification"></span>
+        </div>
+      </div>
+    </div>
+    <div class="side-panel-footer">
+      <button class="btn btn-ghost btn-block" id="wp-view-source" data-i18n="panel_viewSource">View source</button>
+    </div>
+  </aside>
+
   <script src="js/i18n.js"></script>
+  <script src="js/data/mockData.js"></script>
+  <script src="js/ui/map.js"></script>
+  <script src="js/ui/panel.js"></script>
+  <script src="js/ui/intelligence-render.js"></script>
   <script>
     (function () {
-      const input = document.getElementById("search-input");
-      const suggestions = document.getElementById("search-suggestions");
-      const form = document.getElementById("search-form");
-      const errorBox = document.getElementById("search-error");
+      const P = window.PARCELA;
+      const I = window.ParcelaI18N;
       const KNOWN = ["123 example avenue", "88 ashford avenue", "410 isla verde avenue"];
 
-      input.addEventListener("focus", () => suggestions.classList.add("is-open"));
-      input.addEventListener("input", () => errorBox.classList.remove("is-visible"));
-      document.addEventListener("click", (e) => {
-        if (!e.target.closest(".search-field") && !e.target.closest(".search-suggestions")) {
-          suggestions.classList.remove("is-open");
-        }
+      // ---------- sticky nav ----------
+      const nav = document.getElementById("l-nav");
+      window.addEventListener("scroll", () => {
+        nav.classList.toggle("is-scrolled", window.scrollY > 8);
       });
-      suggestions.querySelectorAll("button").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          input.value = btn.querySelector(".s-addr").textContent;
-          suggestions.classList.remove("is-open");
-          errorBox.classList.remove("is-visible");
+
+      // ---------- inert links (Sign in, footer legal/about) ----------
+      function flashInert(el) {
+        const original = el.textContent;
+        el.textContent = I.t("landing_notAvailable");
+        setTimeout(() => (el.textContent = original), 1400);
+      }
+      document.getElementById("signin-btn").addEventListener("click", (e) => flashInert(e.currentTarget));
+      document.querySelectorAll(".inert-link").forEach((btn) => btn.addEventListener("click", (e) => flashInert(e.currentTarget)));
+
+      // ---------- reusable search field wiring ----------
+      function wireSearch(inputId, formId, errorId, suggestionsId) {
+        const input = document.getElementById(inputId);
+        const form = document.getElementById(formId);
+        const errorBox = document.getElementById(errorId);
+        const suggestions = suggestionsId ? document.getElementById(suggestionsId) : null;
+
+        if (suggestions) {
+          input.addEventListener("focus", () => suggestions.classList.add("is-open"));
+          document.addEventListener("click", (e) => {
+            if (!e.target.closest(".l-search") ) suggestions.classList.remove("is-open");
+          });
+          suggestions.querySelectorAll("button[data-pick]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              input.value = btn.dataset.pick;
+              suggestions.classList.remove("is-open");
+              errorBox.classList.remove("is-visible");
+            });
+          });
+        }
+        input.addEventListener("input", () => errorBox.classList.remove("is-visible"));
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const val = input.value.trim().toLowerCase();
+          if (!val || !KNOWN.some((k) => val.includes(k))) {
+            errorBox.classList.add("is-visible");
+            return;
+          }
+          window.location.href = "identify.html";
         });
+      }
+      wireSearch("hero-search-input", "hero-search-form", "hero-search-error", "hero-suggestions");
+      wireSearch("final-search-input", "final-search-form", "final-search-error", null);
+
+      // ---------- hero product visualization ----------
+      window.ParcelaMap.mount(document.getElementById("hero-viz-map").parentElement, P.map);
+
+      // ---------- product showcase (real embedded mini-app) ----------
+      document.getElementById("sc-address").textContent = P.property.address;
+      document.getElementById("sc-locality").textContent = P.property.municipality;
+      document.getElementById("sc-project-tag").textContent = `${I.tv(P.project.type)} · ${I.tv(P.project.unitsLabel)}`;
+      document.getElementById("sc-feas-status").textContent = I.tv(P.feasibility.status);
+      document.getElementById("sc-feas-summary").textContent = I.tv(P.feasibility.summary);
+
+      window.ParcelaMap.mount(document.getElementById("sc-map").parentElement, P.map);
+      window.ParcelaRender.renderFindingCategories(document.getElementById("sc-finding-categories"), P.findingCategories, "constraint");
+      window.ParcelaRender.renderUnknowns(document.getElementById("sc-unknowns-list"), P.unknowns);
+      window.ParcelaRender.renderNextActions(document.getElementById("sc-next-actions-list"), P.nextActions);
+      document.querySelectorAll("#sc-section-unknowns .info-section-toggle, #sc-section-actions .info-section-toggle").forEach((btn) => {
+        btn.addEventListener("click", () => btn.closest(".info-section").classList.toggle("is-open"));
       });
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const val = input.value.trim().toLowerCase();
-        const matches = KNOWN.some((k) => val.includes(k));
-        if (!matches) {
-          errorBox.classList.add("is-visible");
-          return;
-        }
-        errorBox.classList.remove("is-visible");
-        window.location.href = "identify.html";
+
+      // annotation reveal on scroll
+      const annotations = document.querySelectorAll(".l-annotation");
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => entry.target.classList.add("is-visible"), i * 80);
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.3 }
+      );
+      annotations.forEach((el) => io.observe(el));
+
+      // ---------- four questions: click-to-toggle for touch ----------
+      document.querySelectorAll(".l-question").forEach((q) => {
+        q.addEventListener("click", () => q.classList.toggle("is-open"));
       });
+
+      // ---------- trust section: view source expand ----------
+      const trustBtn = document.getElementById("trust-view-source");
+      const trustDetail = document.getElementById("trust-source-detail");
+      trustBtn.addEventListener("click", () => {
+        const open = trustDetail.classList.toggle("is-open");
+        trustBtn.textContent = open ? I.t("panel_hideSourceDetail") : I.t("landing_trust_viewSource");
+      });
+
     })();
   </script>
 </body>
