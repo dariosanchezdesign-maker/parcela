@@ -234,7 +234,8 @@ window.ParcelaI18N = (function () {
 
     // 2. hero
     landing_hero_eyebrow: { es: "INTELIGENCIA DE DESARROLLO PARA PUERTO RICO", en: "DEVELOPMENT INTELLIGENCE FOR PUERTO RICO" },
-    landing_hero_title: { es: "Sepa en qué se está metiendo antes de desarrollar.", en: "Know what you're getting into before you develop." },
+    landing_hero_title_main: { es: "Sepa en qué se está metiendo", en: "Know what you're getting into" },
+    landing_hero_title_accent: { es: "antes de desarrollar.", en: "before you develop." },
     landing_hero_sub: { es: "Parcela reúne información de propiedad, zonificación, regulación, ambiente, infraestructura e historial de desarrollo para que usted entienda un sitio antes de comprometer tiempo y capital significativos.", en: "Parcela brings property, zoning, regulatory, environmental, infrastructure, and development data together so you can understand a site before committing significant time and capital." },
     landing_hero_placeholder: { es: "Ingrese una dirección, parcela o ubicación", en: "Enter an address, parcel, or location" },
     landing_hero_cta: { es: "Analizar propiedad →", en: "Analyze property →" },
@@ -253,7 +254,8 @@ window.ParcelaI18N = (function () {
     landing_viz_finding_unknown: { es: "Capacidad de servicios públicos", en: "Utility capacity" },
 
     // 4. problem + solution (merged)
-    landing_ps_h1: { es: "Una propiedad es más que una parcela en un mapa.", en: "A property is more than a parcel on a map." },
+    landing_ps_h1_main: { es: "Una propiedad es más que", en: "A property is more than" },
+    landing_ps_h1_accent: { es: "una parcela en un mapa.", en: "a parcel on a map." },
     landing_problem_zoning: { es: "Zonificación", en: "Zoning" },
     landing_problem_flood: { es: "Inundación", en: "Flood" },
     landing_problem_permits: { es: "Permisos", en: "Permits" },
@@ -264,7 +266,8 @@ window.ParcelaI18N = (function () {
     landing_ps_oneView: { es: "Una sola vista de inteligencia.", en: "One intelligence view." },
 
     // 5. product / intelligence (merged: four questions + showcase)
-    landing_product_h1: { es: "Antes de tramitar una propiedad, sepa en qué se está metiendo.", en: "Before you pursue a property, know what you're getting into." },
+    landing_product_h1_main: { es: "Antes de tramitar una propiedad,", en: "Before you pursue a property," },
+    landing_product_h1_accent: { es: "sepa en qué se está metiendo.", en: "know what you're getting into." },
     landing_q1_title: { es: "¿Qué puedo hacer aquí?", en: "What can I potentially do here?" },
     landing_q1_body: { es: "Entienda el contexto regulatorio de la propiedad, sus características físicas y sus limitaciones de desarrollo antes de comprometerse a una debida diligencia más profunda.", en: "Understand the property's regulatory context, physical characteristics, and development constraints before committing to deeper due diligence." },
     landing_q2_title: { es: "¿Qué podría interponerse?", en: "What could get in the way?" },
@@ -293,7 +296,8 @@ window.ParcelaI18N = (function () {
 
     // 6. trust / differentiation (merged)
     landing_diff_flow_evidence: { es: "EVIDENCIA", en: "EVIDENCE" },
-    landing_trust_h1: { es: "Inteligencia que puede rastrear hasta la fuente.", en: "Intelligence you can trace back to the source." },
+    landing_trust_h1_main: { es: "Inteligencia que puede", en: "Intelligence you can" },
+    landing_trust_h1_accent: { es: "rastrear hasta la fuente.", en: "trace back to the source." },
     landing_trust_statement2: { es: "Parcela no sustituye la debida diligencia profesional. Le ayuda a saber dónde mirar antes de invertir tiempo y dinero.", en: "Parcela doesn't replace professional due diligence. It helps you know where to look before you spend the time and money." },
     landing_trust_finding: { es: "Exposición a inundación", en: "Flood exposure" },
     landing_trust_status: { es: "Posible limitación", en: "Potential constraint" },
@@ -314,7 +318,8 @@ window.ParcelaI18N = (function () {
     landing_trust_demoNote: { es: "Ejemplo de demostración — no es un hallazgo gubernamental verificado.", en: "Demonstration example — not a verified government finding." },
 
     // 7. final cta
-    landing_final_h1: { es: "¿Tiene una propiedad en mente?", en: "Have a property in mind?" },
+    landing_final_h1_main: { es: "¿Tiene", en: "Have" },
+    landing_final_h1_accent: { es: "una propiedad en mente?", en: "a property in mind?" },
     landing_final_sub: { es: "Vea qué puede decirle Parcela.", en: "See what Parcela can tell you." },
     landing_final_placeholder: { es: "Busque una dirección o parcela", en: "Search an address or parcel" },
     landing_final_note: { es: "Empiece a explorar sin crear una cuenta.", en: "Start exploring without creating an account." },

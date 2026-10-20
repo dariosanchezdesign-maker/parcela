@@ -528,3 +528,443 @@ from scratch rather than assumed to still hold once section boundaries
 moved. The page is now ~4 screens shorter while keeping every piece of
 real, non-mocked product interaction (embedded live map, real finding
 categories, real "Why?" evidence panel) intact.
+
+---
+## Backend scaffold — real schema behind the mock data
+
+User's own framing (their words): a Finding should never be just text — it
+has to be a row that points at the sources that produced it and the
+project/parcel it applies to. This has to be decided pre-launch because
+the Report/Sources pages already implicitly assume this shape. Agreed
+schema: `Parcel`, `Project` (parcel + assumptions), `Finding` (typed,
+tied to Source(s) and, when unresolved, Question(s)), `Source` (agency,
+document, publication date, retrieval date, dataset hash/version),
+`PermitStep` (generated from active findings).
+
+**Provider decision:** Supabase over a hand-rolled Node/Express API or
+raw Neon Postgres. Reasoning: Supabase gives every table an instant
+REST + JS-client API with Row Level Security, so the existing vanilla
+HTML/JS pages can call the database directly via a CDN-loaded client
+script — no custom backend server or Netlify Functions layer to write
+and maintain, which fits [[feedback_default_web_stack]]'s minimal-infra
+preference far better than standing up my own API would. Trade-off:
+ties the data layer to Supabase specifically rather than portable raw
+SQL-over-any-Postgres, judged acceptable for how much hand-written
+backend code it avoids.
+
+**Scope discipline:** build exactly the five-entity model the user
+described, nothing more. `regulatory`/`physical`/`infrastructure`/
+`developmentHistory`/`map`/`comparisonProperties`/`dashboard`/
+`exploreProperties`/`aiInsights` stay as static mock data in
+`js/data/mockData.js` for now — arguably some of those (regulatory rows,
+physical constraints) are really Finding-shaped too, but that's a
+separate decision to make later, not bundled into this pass.
+
+- [x] `db/schema.sql` — tables `parcels`, `projects`, `sources`,
+      `findings`, `finding_sources` (join, since a finding can cite more
+      than one source), `questions` (the "unknowns" concept, with a
+      nullable `related_finding_id` so a finding can have zero or more
+      open questions), `permit_steps` (the "next actions" concept).
+      Bilingual text fields (title/summary/why/etc.) stored as `jsonb`
+      `{"es": "...", "en": "..."}` to mirror the existing JS object shape
+      exactly. UUID primary keys, `created_at`/`updated_at` timestamps.
+      `sources` gets a `retrieved_at` timestamp and a `dataset_version`
+      text field — the versioning the user specifically flagged as
+      needed for auditability when underlying government data changes.
+- [x] `db/schema.sql` also defines Row Level Security policies: public
+      read-only (`select`) access on every table, no public write access
+      — matches the product's current "no account required to explore"
+      positioning and keeps the anon key safe to embed client-side.
+- [x] `db/seed.sql` — inserts the existing 123 Example Avenue demo
+      parcel/project/sources/findings/questions/permit-steps from
+      `js/data/mockData.js` into the new schema, so the real backend
+      starts out equivalent to what the static prototype already shows.
+      (Fixed one bug while writing it: an escaped apostrophe in "the
+      parcel's land-use classification" was written as `parcel'' s`
+      with a stray space, which would have inserted "parcel' s" instead
+      of "parcel's" — caught by grepping the file for the escape pattern
+      and fixed to `parcel''s` before this was ever run against a real
+      database.)
+- [x] `js/data/supabaseClient.js` — a new, parallel data module (does
+      NOT touch or replace `js/data/mockData.js` yet) that loads the
+      Supabase JS client from a CDN and exposes async functions shaped
+      like the existing `window.PARCELA` accessors (e.g. a `findingById`
+      equivalent that also resolves its linked sources via
+      `finding_sources`), so pages can be migrated one at a time later
+      without a rewrite.
+- [x] User created a free Supabase project, ran `schema.sql` then
+      `seed.sql` against it, and shared the Project URL + `anon` public
+      key (verified it was the `anon` role, not `service_role`, by
+      decoding the JWT payload before using it).
+- [x] Wired `SUPABASE_URL`/`SUPABASE_ANON_KEY` into
+      `js/data/supabaseClient.js`. Verified end-to-end in the browser by
+      dynamically injecting the Supabase CDN script + `supabaseClient.js`
+      into the already-open persistent tab (no page file touched) and
+      calling every exported function against the live database:
+      `projectByParcelId` correctly joins back to the parcel (123 Example
+      Avenue), `findingsByProjectId` returns all 11 findings with the
+      `finding_sources` join correctly resolving each finding's linked
+      source row(s), `questionsByProjectId` returns all 4, and
+      `permitStepsByProjectId` returns all 4. Real backend confirmed
+      working before any existing page was touched.
+- [x] Migrated `property.html` to read from Supabase as the real proof of
+      concept. Scope decision: the database is authoritative only for
+      what's actually modeled (header/parcel identity, feasibility,
+      findings, unknowns, next actions) — `regulatory`/`physical`/
+      `infrastructure`/`developmentHistory`/`map` stay on
+      `js/data/mockData.js` since they aren't in the schema yet.
+      `window.PARCELA.findingById`/`sourceById` were redefined to check
+      the new DB-backed data first, then fall back to the original mock
+      lookup functions (captured by reference before being overwritten)
+      for anything the database doesn't know about — this is what keeps
+      the not-yet-migrated sections' hardcoded legacy finding/source
+      references (e.g. Regulatory analysis' "Why?" links) working
+      unchanged, and, as a bonus, also keeps `sources.html`'s existing
+      `property.html?why=<id>` deep links working even though that page
+      still generates them from the old mock IDs.
+- [x] Caught and fixed two real bugs during this migration, neither
+      visible from reading the diff alone — only from testing:
+      1. **Async timing bug of my own making**: wrapping the page's
+         script in an `async function` to `await` the Supabase fetch
+         meant `document.addEventListener("DOMContentLoaded", ...)`
+         (used by the `?why=` deep-link auto-open feature) could now be
+         registered *after* `DOMContentLoaded` had already fired,
+         silently losing the event. Fixed by capturing a `domReady`
+         promise synchronously at the very top of the script (before any
+         `await`), using the `document.readyState` check + fallback
+         listener pattern, so it resolves correctly regardless of when
+         the async fetch finishes.
+      2. **Timezone off-by-one in the seed data itself**: `last_analyzed_at`
+         was stored as UTC midnight (`2026-09-18T00:00:00Z`), and
+         formatting it with the browser's local timezone displayed
+         "Sep 17" instead of "Sep 18". Fixed by adding
+         `timeZone: "UTC"` to the `toLocaleDateString` call, since this
+         value represents a calendar date, not an exact moment.
+      3. **Missing Spanish accents in `db/seed.sql`**: written without
+         diacritics ("Exposicion" instead of "Exposición" etc.),
+         visibly wrong once live since Spanish is this product's default
+         language. Rewrote `seed.sql` with the exact accented text from
+         `js/data/mockData.js` (including en-dashes and em-dashes it
+         also used), then had the user run `TRUNCATE TABLE parcels,
+         sources CASCADE;` followed by the corrected file against the
+         live database — re-verified afterward that `window.PARCELA`'s
+         live Spanish findings now render with correct accents.
+- [x] Verified end-to-end in Chrome: header/feasibility/findings/
+      unknowns/next-actions all live from Supabase with correct
+      accented Spanish and correct dates; the flood-exposure "Why?"
+      panel and its "View source" expand show real DB evidence fields;
+      "See related finding" on a DB question correctly resolves to its
+      DB finding; the Regulatory section's legacy-ID "Why?" links still
+      resolve via the mock-data fallback; a legacy `?why=f-flood-exposure`
+      deep link (the `sources.html`-style old ID) still auto-opens the
+      panel correctly via the same fallback, proving the `domReady` fix
+      works; no console errors.
+
+## Second migration — sources.html
+User chose to spread the existing backend to another page rather than
+grow the schema further. `sources.html` was the obvious next target: it
+only depends on `P.sources` and `P.findings`, both fully covered by the
+schema already, with zero dependency on the still-unmodeled sections —
+the smallest-scope option available.
+- [x] Added the same Supabase CDN + `supabaseClient.js` script tags,
+      wrapped the inline script in an `async` IIFE, fetched the live
+      project + its findings, and rebuilt `P.sources` by deduplicating
+      the `sources` arrays nested in each finding (this page never
+      needed its own new `ParcelaDB` query — the existing
+      `findingsByProjectId` join already carries every source needed).
+      No `domReady` timing concern here unlike `property.html`, since
+      this page has no `DOMContentLoaded`-dependent deep-link logic of
+      its own to race against.
+- [x] Verified in Chrome: live data loads with correct accented Spanish
+      ("Junta de Planificación de Puerto Rico", "vía arterial
+      clasificada", etc.), "Referenced by" correctly groups multiple
+      findings under one shared source (Mapa de Calificación → both the
+      zoning and height-overlay findings), and — since both this page
+      and `property.html` now read the same live database — clicking a
+      "Referenced by" chip generates a real DB UUID and opens the
+      correct finding directly on `property.html`, no longer needing
+      the legacy-ID fallback path at all for this cross-page link.
+      Confirmed via the same clean-URL workaround as before (the local
+      `serve` CLI still strips query strings on the `.html` → clean-URL
+      redirect — unrelated to this change). Re-verified in English too;
+      no console errors either language.
+
+## Third step — add more properties (Compare + Properties list)
+User picked "add more properties" over "expand the schema for regulatory/
+physical/infrastructure/history" as the next move (chose the higher
+leverage, lower effort option: reuses the existing schema instead of
+designing new tables, and unlocks two pages — `properties.html` and
+`compare.html`, which both read the exact same `comparisonProperties`
+array — at once instead of one).
+
+Real scope, discovered by reading both pages' code before starting:
+`comparisonProperties` isn't just more Finding rows — it's a rollup/
+summary shape (regulatory complexity, flood exposure, environmental,
+infrastructure, "key difference," all as short editorial text) that
+doesn't exist as a queryable fact today. `unknownsCount`/
+`constraintsCount` genuinely are derivable from real `questions`/
+`findings` rows once those exist for a project, but the summary-text
+fields are a human/AI synthesis step, not a raw fact — closer to
+`feasibility_summary` than to a `Finding`.
+- [x] Small additive migration on `projects` (`db/migration_002_
+      comparison_fields.sql`, nullable columns, nothing breaking):
+      `compare_label`, `compare_status`, `regulatory_complexity`,
+      `flood_exposure_summary`, `environmental_summary`,
+      `infrastructure_summary`, `key_difference` — all `jsonb {es,en}`
+      except `compare_status` (reuses the existing category enum).
+      `statusLabel` and `lastAnalyzed` needed no new column — they're
+      already `feasibility_status`/`last_analyzed_at` on every project.
+- [x] Seeded two more real parcels+projects (`db/seed_more_properties.sql`):
+      88 Ashford Avenue (San Juan, multifamily under a mixed-use
+      overlay, 5 findings / 2 questions, 0 constraints) and 410 Isla
+      Verde Avenue (Carolina, hospitality with real coastal constraints,
+      7 findings / 5 questions, 3 constraints), using mockData.js's
+      existing `comparisonProperties` summary text for the new columns
+      plus newly-authored findings/sources consistent with that text and
+      the demo property's tone — reusing the same 9 source rows rather
+      than duplicating them, since the same island-wide agencies apply
+      to any Puerto Rico parcel. Caught and fixed the same apostrophe-
+      escaping bug as last time (`overlay'' s` → `overlay''s`) by
+      grepping for the pattern before ever running this against the
+      live database.
+- [x] Added `allPropertiesSummary()` to `js/data/supabaseClient.js`:
+      fetches all projects+parcels, and for each, its findings and
+      questions (reusing the existing per-project functions) to compute
+      real `constraintsCount`/`unknownsCount` client-side rather than
+      storing them (so they can never drift out of sync with the actual
+      findings/questions).
+- [x] Migrated `properties.html` and `compare.html` to fetch
+      `allPropertiesSummary()` and overwrite `P.comparisonProperties`,
+      same fallback-safe pattern as the previous two pages.
+- [x] Fixed two real integration bugs found only by testing, not by
+      reading the diff:
+      1. **Duplicated municipality text**: `allPropertiesSummary()`
+         originally passed through `parcels.municipality` as stored
+         ("San Juan, Puerto Rico"), but both pages' templates append
+         ", Puerto Rico" themselves (matching the original mock data's
+         bare-city-name convention) — rendered as "San Juan, Puerto
+         Rico, Puerto Rico". Fixed by taking only the text before the
+         first comma.
+      2. **Stale cross-page ids**: `property.html`'s "Compare with other
+         properties" button still stored the old mock-style ids
+         ("example-ave-123" etc.) in `sessionStorage`, which no longer
+         match anything in `compare.html`'s now-live, UUID-keyed
+         `comparisonProperties` — would have landed on an empty compare
+         page. Fixed by clearing the stale key instead of setting it,
+         so `compare.html`'s own existing "show every property" default
+         (for when no valid 2+ selection exists) takes over correctly —
+         which was already that button's intent.
+- [x] Verified in Chrome: `properties.html` shows all 3 real properties
+      with correct accented Spanish, correct statuses/types/dates;
+      checkbox selection → Compare works; `compare.html`'s table shows
+      real, live-computed counts (4/2/5 unresolved questions, 1/0/3
+      flagged constraints — matching the seeded data exactly, not
+      hardcoded); the `property.html` → "Compare with other properties"
+      button correctly falls through to showing all three; verified in
+      both languages; no console errors anywhere in this flow.
+
+## Fifth migration — reports.html
+Same partial-migration pattern as `property.html`: this page pulls
+property/project/feasibility/findings/unknowns/next-actions/sources
+(all modeled) plus regulatory/physical/infrastructure/development-
+history (not modeled, sections 04-07 of the 11-section report). No new
+schema or content needed — this page reuses the exact same demo-property
+data `property.html` already fetches.
+- [x] Wired the same fetch-and-overwrite block as `property.html`
+      (`P.property`/`P.project`/`P.feasibility`/`P.findings`/
+      `P.unknowns`/`P.nextActions`), falling back to mock data on error.
+      No `domReady` concern here — this page has no `DOMContentLoaded`-
+      dependent logic to race against, same as `sources.html`.
+- [x] Caught a real bug before it ever ran, by reasoning through the
+      page's own template rather than assuming "migrate everything
+      touched" was correct: initially also rebuilt `P.sources` from the
+      sources cited by findings, same as the other pages — but this
+      page's Sources section (11) is a full bibliography, and the
+      still-mock Infrastructure section separately cites LUMA, which no
+      Finding references. Overwriting `P.sources` would have silently
+      dropped LUMA from the report. Fixed by leaving `P.sources`
+      untouched — the original mock list is already the same 9 canonical
+      sources now also in the database, so it doesn't need rebuilding to
+      stay correct.
+- [x] Verified in Chrome: sections 01-03 and 08-10 (feasibility,
+      property, project, constraint findings, unknowns, next actions)
+      render live from Supabase with correct accented Spanish and
+      correct dates; sections 04-07 (regulatory/physical/infrastructure/
+      history) render unchanged from mock data with no visual
+      inconsistency; section 11's source table still lists all 9
+      sources including LUMA; verified in both languages; no console
+      errors.
+
+Five pages now run on the real database (`property.html`, `sources.html`,
+`properties.html`, `compare.html`, `reports.html`). `explore.html`,
+`overview.html`, and `projects.html` remain on mock data.
+
+## Sixth migration — explore.html
+Explore uses a genuinely different data shape than everything migrated
+so far — map x/y position, a zoning-classification string, a qualitative
+infrastructure rating (Strong/Moderate/Weak) — none of which existed in
+the schema. It also showed 8 mock properties, but only 3 (the ones
+already migrated) have any real findings behind them; the other 5
+(Loíza Street, Calle Industrial, etc.) were map dots with nothing real
+backing them.
+
+Asked the user how to handle the mismatch rather than guessing: author
+5 more full properties (same effort as Ashford/Isla Verde, times 5), or
+show only the 3 real ones. User chose showing only the 3 real ones —
+every dot on the map is now something real and clickable into actual
+findings, at the cost of a sparser demo map.
+- [x] Small additive migration (`db/migration_003_explore_fields.sql`):
+      `explore_x`/`explore_y`/`land_use_classification` on `parcels`
+      (physical-parcel attributes), `flood_zone_label`/
+      `infrastructure_rating` on `projects` (editorial rollup fields,
+      same category as migration 002's summary columns). `potentialUse`
+      needed no new column — `project_type.en` already is that value;
+      `constraints` (boolean) needed no new column either — computed
+      from real findings the same way Compare's `constraintsCount` is.
+- [x] Populated those fields for the 3 existing properties
+      (`db/seed_explore_fields.sql`), reusing the exact map
+      position/classification/flood-label/infrastructure values from
+      mockData.js's original `exploreProperties` entries for continuity
+      — except Ashford Avenue's `potentialUse`, which the original mock
+      inconsistently listed as "Mixed-use" while its own
+      `comparisonProperties` (and its real seeded findings, e.g. "Zoning
+      permits multifamily use") said "Multifamily." Since Explore now
+      reads `potentialUse` from `project_type` directly instead of a
+      separate stored value, it automatically matches the real findings
+      instead of repeating that old inconsistency.
+- [x] Added `exploreProperties()` to `js/data/supabaseClient.js` and
+      migrated `explore.html` to fetch it, same fallback-safe pattern as
+      every other page.
+- [x] Fixed the same `p.id === P.property.id` bug class as
+      `properties.html` had (this page's "View intelligence" vs.
+      "Analyze this property" CTA branch) — `P.property` isn't
+      overwritten on this page, so the comparison needs the known
+      `DEMO_PARCEL_ID` constant instead.
+- [x] Verified in Chrome: map shows exactly 3 real, correctly positioned
+      and color-coded markers ("3 of 3 properties"); each popover shows
+      correct accented Spanish fields; the demo property's popover
+      correctly says "Ver inteligencia" and navigates to `property.html`,
+      the other two correctly say "Analizar esta propiedad" and go to
+      `index.html`; the "flagged constraints only" filter correctly
+      shows 2 of 3 (dimming Ashford, which has zero constraint
+      findings) — computed live, not hardcoded; verified in both
+      languages; no console errors.
+
+Six pages now run on the real database. `overview.html` and
+`projects.html` remain on mock data.
+
+## Font swap #2 — Geist, then Inter + Cormorant Garamond pairing
+- [x] User wasn't sold on Host Grotesk — discussed free alternatives
+      (Geist, IBM Plex Sans, General Sans/Switzer) and swapped the whole
+      site to self-hosted **Geist** (SIL OFL, same self-hosting pattern
+      as Host Grotesk).
+- [x] User then sent two Metrik font zips to try instead. Checked both
+      licenses before touching anything — the first was an explicit
+      "desktop trial, testing only, not for commercial/public use"
+      license from Type Department; the second claimed to be a
+      different file but was byte-identical to the first (still
+      `MetrikTrial-*.otf`) repackaged by a third-party site (befonts.com)
+      with a "Personal Use Only" note that doesn't carry real licensing
+      weight and wouldn't cover a business product either way. Declined
+      to embed either — flagged why, offered buying the real license,
+      a throwaway non-committed preview, or a free alternative instead.
+- [x] User chose to drop Metrik and go with **Geist** for the time
+      being (already done above).
+- [x] User then proposed a two-font pairing: Inter Black + "Apple
+      Garamond Light Italic," for landing-page headings only, with
+      Inter replacing Geist as the base font everywhere else. Flagged
+      that Apple Garamond isn't legitimately licensable at all — it was
+      Apple's own customized corporate-identity font, never sold
+      publicly, so any copy online is an unauthorized rip with no real
+      purchase path (unlike Metrik). Recommended **Cormorant Garamond**
+      (SIL OFL, Google Fonts) as the closest legitimate match — it's one
+      of the only free Garamond-style faces with an actual Light weight,
+      matching "Light Italic" more precisely than EB Garamond.
+- [x] Asked a scope-clarifying question before touching anything,
+      since "the rest of the text" was ambiguous between "rest of the
+      landing page" and "replace Geist everywhere" — user confirmed
+      Inter everywhere.
+- [x] Downloaded and self-hosted Inter (variable, normal + italic) and
+      Cormorant Garamond Light Italic from their npm packages via
+      jsDelivr (same self-hosting pattern as every previous font swap;
+      verified SIL OFL licensing on both before using them). Removed
+      the now-unused Geist font files.
+- [x] Updated `tokens.css` (`--font-display`/`--font-body` → Inter, new
+      `--font-accent` → Cormorant Garamond for the landing-only pairing)
+      and `base.css`'s `@font-face` rules.
+- [x] Implemented the heading pairing itself. Real constraint found by
+      reading the code first: `i18n.js`'s `applyStatic()` sets
+      `el.textContent`, not `innerHTML`, so a single `data-i18n`
+      heading can't contain inner `<span>` markup — any such markup
+      would be wiped out the moment translations apply. Rather than
+      switching the whole i18n system to `innerHTML` (a much bigger,
+      riskier change affecting every page, for a landing-only need),
+      split each of the five main landing headings' single i18n key
+      into `_main`/`_accent` key pairs, each in its own `<span>` — one
+      styled heavy Inter (`.l-h-main`, weight 900), one styled
+      Cormorant Garamond Light Italic (`.l-h-accent`). Chose the actual
+      word-split for each heading by hand (e.g. "Know what you're
+      getting into" / "before you develop.") to read as a deliberate
+      editorial system, not an arbitrary split.
+- [x] Verified in Chrome: all five headings (Hero, Problem+Solution,
+      Product, Trust, Final CTA) render the pairing correctly in both
+      languages; 320px overflow sweep came back clean; no console
+      errors from the font change itself.
+- [x] **Separately noticed and flagged, unrelated to the font work**:
+      the Supabase backend from the earlier migrations is currently
+      unreachable (`TypeError: Failed to fetch`, DNS failure on the
+      project's own subdomain, while general internet access from the
+      same environment works fine) — almost certainly the free-tier
+      project auto-pausing after the ~2-week gap since it was last used.
+      Every page's fallback-safe design is working exactly as built:
+      pages silently revert to prototype mock data instead of breaking.
+      User will need to resume the project from the Supabase dashboard
+      to restore the live-data features; not yet done as of this entry.
+
+## Font swap #3 — Urbanist
+After the Inter + Cormorant Garamond pairing, user tried to source two
+more fonts, both declined for licensing reasons — holding the same line
+regardless of being asked twice:
+- **"Raptor V1/V2 Premium"** from OnlineWebFonts.com: the "Premium"
+  naming directly contradicts the site's own blanket "CC BY 4.0"
+  license claim — a commercial font someone else designed, redistributed
+  with a license the redistributor has no authority to grant. No
+  legitimate path found for this specific one.
+- **Svatopluk** from exfont.com, licensed "Free for Personal Use" (not
+  commercial, and Parcela is a business product either way). Looked up
+  the real foundry out of genuine interest — it's a real, distinctive
+  typeface by designer Vojtěch Říha for Superior Type, purchasable
+  directly from them or rentable monthly via Fontstand. Gave the user
+  both links; they didn't end up buying it.
+- User then supplied **Urbanist**, which checked out clean: the real,
+  official Google Fonts release (SIL OFL, Corey Hu's project), verified
+  by inspecting the zip's actual contents (OFL.txt + README matching
+  Google Fonts' standard package format) rather than assuming because
+  the name sounded familiar.
+- [x] Asked a scope-clarifying question before touching anything, since
+      Urbanist could have slotted in as just the base font (keeping
+      Cormorant Garamond for the landing accent) or replaced the whole
+      pairing. User chose the latter: Urbanist everywhere, using its own
+      Black weight + Light Italic for the landing-headline contrast
+      instead of a second serif family.
+- [x] Replaced Inter and Cormorant Garamond's font files with Urbanist's
+      variable fonts (normal + italic, self-hosted `.ttf`, same pattern
+      as Host Grotesk). Updated `tokens.css` (`--font-display`/
+      `--font-body` → Urbanist, removed the now-unneeded `--font-accent`
+      token entirely) and `base.css`'s `@font-face` rules. Simplified
+      `.l-h-accent` in `landing.css` to drop the separate font-family
+      override, since the heading pairing is now one family at two
+      weights/styles rather than two families.
+- [x] Verified in Chrome: both variable fonts (normal + italic) load
+      correctly; all five landing headlines render the Black+Light-Italic
+      pairing correctly in both languages; the dense app UI (property
+      page) renders cleanly; 320px overflow sweep came back clean on
+      both `landing.html` and `property.html`; no console errors from
+      the font change.
+- [x] Also complied with the repo's `impeccable` design-lint hook, which
+      had separately flagged Inter as an "overused font" after the
+      previous swap — acknowledged the finding rather than silently
+      ignoring it, explained why it reflected a deliberate choice at the
+      time, and gave the user the exact suppression command to run
+      themselves (the hook's CLI isn't invokable by the agent directly).
+      Moot now that Inter has been replaced by Urbanist.

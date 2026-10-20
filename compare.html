@@ -51,11 +51,22 @@
 
   <script src="js/i18n.js"></script>
   <script src="js/data/mockData.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/data/supabaseClient.js"></script>
   <script>
-    (function () {
+    (async function () {
       const P = window.PARCELA;
       const I = window.ParcelaI18N;
       const STATUS_DOT = { favorable: "var(--favorable-dot)", investigate: "var(--investigate-dot)", constraint: "var(--constraint-dot)", unknown: "var(--unknown-dot)" };
+
+      // ---------- live backend (Supabase): same pattern as the other
+      // migrated pages. Falls back to the prototype mock data on failure.
+      try {
+        P.comparisonProperties = await window.ParcelaDB.allPropertiesSummary();
+        console.info("Parcela: comparison data is now live from Supabase.");
+      } catch (err) {
+        console.error("Parcela: could not load live data from Supabase, falling back to prototype mock data.", err);
+      }
 
       let ids;
       try {

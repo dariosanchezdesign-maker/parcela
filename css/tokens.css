@@ -63,8 +63,8 @@
   --map-dev-marker: #14161a;
 
   /* ---- type ---- */
-  --font-display: "Host Grotesk", system-ui, sans-serif;
-  --font-body: "Host Grotesk", system-ui, sans-serif;
+  --font-display: "Urbanist", system-ui, sans-serif;
+  --font-body: "Urbanist", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
   /* ---- spacing scale (4px base) ---- */

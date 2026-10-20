@@ -202,14 +202,111 @@
 
   <script src="js/i18n.js"></script>
   <script src="js/data/mockData.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/data/supabaseClient.js"></script>
   <script src="js/ui/map.js"></script>
   <script src="js/ui/panel.js"></script>
   <script src="js/ui/ai-panel.js"></script>
   <script src="js/ui/intelligence-render.js"></script>
   <script>
-    (function () {
+    (async function () {
       const P = window.PARCELA;
       const I = window.ParcelaI18N;
+
+      // Registered synchronously, before any `await` below — awaiting the
+      // Supabase fetch yields control back to the parser, so plain
+      // `document.addEventListener("DOMContentLoaded", ...)` called *after*
+      // an await can lose the race and never fire. This resolves once
+      // parsing is done regardless of when we get around to checking it.
+      const domReady = new Promise((resolve) => {
+        if (document.readyState !== "loading") resolve();
+        else document.addEventListener("DOMContentLoaded", resolve);
+      });
+
+      // ---------- live backend (Supabase): header, feasibility, findings,
+      // unknowns, next actions. Regulatory/physical/infrastructure/
+      // development-history sections aren't modeled in the database yet,
+      // so they stay on the prototype's mock data below — findingById/
+      // sourceById fall back to that mock data for anything the live
+      // backend doesn't know about (e.g. the regulatory section's
+      // hardcoded finding references), so nothing already working breaks.
+      const DEMO_PARCEL_ID = "a0000000-0000-4000-8000-000000000001";
+      const mockFindingById = P.findingById;
+      const mockSourceById = P.sourceById;
+      try {
+        const project = await window.ParcelaDB.projectByParcelId(DEMO_PARCEL_ID);
+        if (!project) throw new Error("No Supabase project found for this parcel.");
+
+        const [dbFindings, dbQuestions, dbPermitSteps] = await Promise.all([
+          window.ParcelaDB.findingsByProjectId(project.id),
+          window.ParcelaDB.questionsByProjectId(project.id),
+          window.ParcelaDB.permitStepsByProjectId(project.id),
+        ]);
+
+        const findings = dbFindings.map((f) => ({
+          id: f.id,
+          category: f.category,
+          title: f.title,
+          summary: f.summary,
+          confidence: f.confidence,
+          sourceId: f.sources[0] ? f.sources[0].id : null,
+          why: { found: f.why_found, matters: f.why_matters, verification: f.verification },
+        }));
+        const findingCategories = ["favorable", "investigate", "constraint", "unknown"].map((key) => ({
+          key,
+          findings: findings.filter((f) => f.category === key),
+        }));
+        const unknowns = dbQuestions.map((q) => ({
+          title: q.title,
+          whyItMatters: q.why_it_matters,
+          nextStep: q.next_step,
+          relatedFindingId: q.related_finding_id,
+        }));
+        const nextActions = dbPermitSteps
+          .slice()
+          .sort((a, b) => a.step_order - b.step_order)
+          .map((p) => ({
+            order: p.step_order,
+            title: p.title,
+            whyItMatters: p.why_it_matters,
+            professional: p.professional,
+            evidenceRef: p.evidence_finding_id,
+            sourceId: p.source_id,
+          }));
+
+        const dbSourceById = {};
+        dbFindings.forEach((f) => f.sources.forEach((s) => {
+          if (s) dbSourceById[s.id] = { name: s.name, agency: s.agency, date: s.published_at, section: s.section, document: s.document };
+        }));
+        dbPermitSteps.forEach((p) => {
+          if (p.sources) dbSourceById[p.sources.id] = { name: p.sources.name, agency: p.sources.agency, date: p.sources.published_at, section: p.sources.section, document: p.sources.document };
+        });
+
+        P.property = {
+          id: project.parcels.id,
+          address: project.parcels.address,
+          municipality: project.parcels.municipality,
+          cadastral: project.parcels.cadastral,
+          parcelAreaSqm: project.parcels.parcel_area_sqm,
+          parcelAreaAcres: project.parcels.parcel_area_acres,
+          lastAnalyzed: project.last_analyzed_at
+            ? new Date(project.last_analyzed_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })
+            : "",
+        };
+        P.project = { name: project.name, type: project.project_type, unitsLabel: project.units_label, investmentLabel: project.investment_label };
+        P.feasibility = { status: project.feasibility_status, summary: project.feasibility_summary };
+        P.findings = findings;
+        P.findingCategories = findingCategories;
+        P.unknowns = unknowns;
+        P.nextActions = nextActions;
+        P.findingById = (id) => findings.find((f) => f.id === id) || mockFindingById(id);
+        P.sourceById = (id) => (id && dbSourceById[id]) || mockSourceById(id);
+
+        console.info("Parcela: header, feasibility, findings, unknowns, and next actions are now live from Supabase.");
+      } catch (err) {
+        console.error("Parcela: could not load live data from Supabase, falling back to prototype mock data.", err);
+      }
+
       document.getElementById("h-address").textContent = P.property.address;
       document.getElementById("h-locality").textContent = P.property.municipality;
       document.getElementById("h-project-tag").textContent = `${I.tv(P.project.type)} · ${I.tv(P.project.unitsLabel)}`;
@@ -246,14 +343,21 @@
       });
 
       document.getElementById("compare-btn").addEventListener("click", () => {
-        const ids = P.comparisonProperties.map((p) => p.id);
-        sessionStorage.setItem("parcela-compare-ids", JSON.stringify(ids));
+        // P.comparisonProperties here is still the prototype's static mock
+        // list (this page's own migration only covers the property detail
+        // data, not this cross-page list) and its ids no longer match the
+        // real database ids compare.html now fetches live. Rather than pass
+        // stale ids that would match nothing, clear any leftover selection
+        // so compare.html falls through to its own "show every property"
+        // default — which is exactly this button's intent anyway.
+        sessionStorage.removeItem("parcela-compare-ids");
         window.location.href = "compare.html";
       });
 
       const deepLinkFindingId = new URLSearchParams(location.search).get("why");
       if (deepLinkFindingId && P.findingById(deepLinkFindingId)) {
-        document.addEventListener("DOMContentLoaded", () => window.ParcelaPanel.open(deepLinkFindingId));
+        await domReady;
+        window.ParcelaPanel.open(deepLinkFindingId);
       }
     })();
   </script>

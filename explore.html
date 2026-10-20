@@ -110,10 +110,27 @@
 
   <script src="js/i18n.js"></script>
   <script src="js/data/mockData.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/data/supabaseClient.js"></script>
   <script>
-    (function () {
+    (async function () {
       const P = window.PARCELA;
       const I = window.ParcelaI18N;
+      // The only property with its own detail page today — see
+      // properties.html for the same reasoning.
+      const DEMO_PARCEL_ID = "a0000000-0000-4000-8000-000000000001";
+
+      // ---------- live backend (Supabase): replaces the 8-property mock
+      // map with the 3 real properties that actually exist in the
+      // database (the other 5 mock entries had no findings behind them
+      // at all). Falls back to the full mock set on failure.
+      try {
+        P.exploreProperties = await window.ParcelaDB.exploreProperties();
+        console.info("Parcela: Explore map is now live from Supabase (3 real properties).");
+      } catch (err) {
+        console.error("Parcela: could not load live data from Supabase, falling back to prototype mock data.", err);
+      }
+
       const props = P.exploreProperties;
       const STATUS_DOT = { favorable: "var(--favorable-dot)", investigate: "var(--investigate-dot)", constraint: "var(--constraint-dot)", unknown: "var(--unknown-dot)" };
       const viewBox = { w: 860, h: 500 };
@@ -206,7 +223,7 @@
         document.getElementById("ep-flood").textContent = I.tv(FLOOD_LABEL[p.flood]) || p.flood;
         document.getElementById("ep-infra").textContent = I.t(INFRA_LABEL[p.infrastructure]);
         const cta = document.getElementById("ep-cta");
-        if (p.id === P.property.id) {
+        if (p.id === DEMO_PARCEL_ID) {
           cta.textContent = I.t("explore_viewIntelligence");
           cta.href = "property.html";
         } else {

@@ -49,11 +49,29 @@
 
   <script src="js/i18n.js"></script>
   <script src="js/data/mockData.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/data/supabaseClient.js"></script>
   <script>
-    (function () {
+    (async function () {
       const P = window.PARCELA;
       const I = window.ParcelaI18N;
       const list = document.getElementById("property-list");
+      // The only property with its own dedicated detail page today —
+      // property.html always shows this one parcel, regardless of which
+      // property card was clicked. Ashford/Isla Verde have real database
+      // rows now too, but no detail page of their own yet, so their cards
+      // stay non-navigable (href="#"), same as before this migration.
+      const DEMO_PARCEL_ID = "a0000000-0000-4000-8000-000000000001";
+
+      // ---------- live backend (Supabase): same pattern as the other
+      // migrated pages. Falls back to the prototype mock data on failure.
+      try {
+        P.comparisonProperties = await window.ParcelaDB.allPropertiesSummary();
+        console.info("Parcela: property list is now live from Supabase.");
+      } catch (err) {
+        console.error("Parcela: could not load live data from Supabase, falling back to prototype mock data.", err);
+      }
+
       const selected = new Set(P.comparisonProperties.map((p) => p.id));
 
       function render() {
@@ -64,7 +82,7 @@
             <button class="pcard-checkbox" data-toggle="${p.id}" aria-label="Select ${p.address} for comparison">
               <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-            <a href="${p.id === P.property.id ? "property.html" : "#"}" style="text-decoration:none; color:inherit;">
+            <a href="${p.id === DEMO_PARCEL_ID ? "property.html" : "#"}" style="text-decoration:none; color:inherit;">
               <div class="pcard-top" style="padding-right:26px;">
                 <div>
                   <h3>${p.address}</h3>

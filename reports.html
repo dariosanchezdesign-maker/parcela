@@ -45,10 +45,82 @@
 
   <script src="js/i18n.js"></script>
   <script src="js/data/mockData.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/data/supabaseClient.js"></script>
   <script>
-    (function () {
+    (async function () {
       const P = window.PARCELA;
       const I = window.ParcelaI18N;
+
+      // ---------- live backend (Supabase): same pattern as property.html —
+      // everything modeled so far (property/project/feasibility/findings/
+      // unknowns/next-actions/sources) becomes live; regulatory/physical/
+      // infrastructure/development-history sections (11 total in this
+      // report) aren't modeled yet, so sections 04-07 below stay on the
+      // prototype's mock data.
+      try {
+        const DEMO_PARCEL_ID = "a0000000-0000-4000-8000-000000000001";
+        const project = await window.ParcelaDB.projectByParcelId(DEMO_PARCEL_ID);
+        if (!project) throw new Error("No Supabase project found for this parcel.");
+
+        const [dbFindings, dbQuestions, dbPermitSteps] = await Promise.all([
+          window.ParcelaDB.findingsByProjectId(project.id),
+          window.ParcelaDB.questionsByProjectId(project.id),
+          window.ParcelaDB.permitStepsByProjectId(project.id),
+        ]);
+
+        const findings = dbFindings.map((f) => ({
+          id: f.id,
+          category: f.category,
+          title: f.title,
+          summary: f.summary,
+          confidence: f.confidence,
+          sourceId: f.sources[0] ? f.sources[0].id : null,
+          why: { found: f.why_found, matters: f.why_matters, verification: f.verification },
+        }));
+
+        P.property = {
+          id: project.parcels.id,
+          address: project.parcels.address,
+          municipality: project.parcels.municipality,
+          cadastral: project.parcels.cadastral,
+          parcelAreaSqm: project.parcels.parcel_area_sqm,
+          parcelAreaAcres: project.parcels.parcel_area_acres,
+          lastAnalyzed: project.last_analyzed_at
+            ? new Date(project.last_analyzed_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })
+            : "",
+        };
+        P.project = { name: project.name, type: project.project_type, unitsLabel: project.units_label, investmentLabel: project.investment_label };
+        P.feasibility = { status: project.feasibility_status, summary: project.feasibility_summary };
+        P.findings = findings;
+        P.unknowns = dbQuestions.map((q) => ({
+          title: q.title,
+          whyItMatters: q.why_it_matters,
+          nextStep: q.next_step,
+          relatedFindingId: q.related_finding_id,
+        }));
+        P.nextActions = dbPermitSteps
+          .slice()
+          .sort((a, b) => a.step_order - b.step_order)
+          .map((p) => ({
+            order: p.step_order,
+            title: p.title,
+            whyItMatters: p.why_it_matters,
+            professional: p.professional,
+            evidenceRef: p.evidence_finding_id,
+            sourceId: p.source_id,
+          }));
+        // P.sources deliberately untouched: it's the report's full source
+        // bibliography, including sources (like LUMA) cited only by the
+        // still-mock Infrastructure section — the original mock list is
+        // already the same 9 canonical sources now also in the database,
+        // so it stays accurate without needing to be rebuilt here.
+
+        console.info("Parcela: report data (all but regulatory/physical/infrastructure/history) is now live from Supabase.");
+      } catch (err) {
+        console.error("Parcela: could not load live data from Supabase, falling back to prototype mock data.", err);
+      }
+
       document.getElementById("report-sub").textContent = `${P.property.address} · ${I.tv(P.project.type)} · ${I.tv(P.project.unitsLabel)}`;
 
       const constraintFindings = P.findings.filter((f) => f.category === "constraint");

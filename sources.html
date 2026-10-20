@@ -51,11 +51,43 @@
 
   <script src="js/i18n.js"></script>
   <script src="js/data/mockData.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/data/supabaseClient.js"></script>
   <script>
-    (function () {
+    (async function () {
       const P = window.PARCELA;
       const I = window.ParcelaI18N;
       const STATUS_DOT = { favorable: "var(--favorable-dot)", investigate: "var(--investigate-dot)", constraint: "var(--constraint-dot)", unknown: "var(--unknown-dot)" };
+
+      // ---------- live backend (Supabase): same pattern as property.html —
+      // fetch the real findings (each with its linked source rows), reshape
+      // to the shape this page already expects, and overwrite P.sources/
+      // P.findings. Falls back to the prototype mock data on any failure.
+      try {
+        const DEMO_PARCEL_ID = "a0000000-0000-4000-8000-000000000001";
+        const project = await window.ParcelaDB.projectByParcelId(DEMO_PARCEL_ID);
+        if (!project) throw new Error("No Supabase project found for this parcel.");
+        const dbFindings = await window.ParcelaDB.findingsByProjectId(project.id);
+
+        const sourceById = {};
+        dbFindings.forEach((f) => f.sources.forEach((s) => {
+          if (s && !sourceById[s.id]) {
+            sourceById[s.id] = { id: s.id, name: s.name, agency: s.agency, document: s.document, date: s.published_at, section: s.section };
+          }
+        }));
+
+        P.sources = Object.values(sourceById);
+        P.findings = dbFindings.map((f) => ({
+          id: f.id,
+          category: f.category,
+          title: f.title,
+          sourceId: f.sources[0] ? f.sources[0].id : null,
+        }));
+
+        console.info("Parcela: sources & findings are now live from Supabase.");
+      } catch (err) {
+        console.error("Parcela: could not load live data from Supabase, falling back to prototype mock data.", err);
+      }
 
       function referencingFindings(sourceId) {
         return P.findings.filter((f) => f.sourceId === sourceId);
