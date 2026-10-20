@@ -185,34 +185,63 @@ window.ParcelaLive = (function () {
       lastAnalyzed: new Date(data.generatedAt).toLocaleDateString(I.lang === "es" ? "es-PR" : "en-US", { month: "short", day: "numeric", year: "numeric" }),
     };
     P.project = { name: displayAddress(data), type: projectTypeLabel(project.type), unitsLabel: project.units || "—", investmentLabel: project.investment || "—" };
-    P.feasibility = data.feasibility;
-    P.findings = data.findings;
+    // District rules (Reglamento Conjunto 2023) depend on the project type,
+    // which setup collects after the lookup, so they're assessed here rather
+    // than in lookup.js.
+    const rules = window.ParcelaZoning.assess(data.zoning, project.type, p.areaSqm);
+    const findings = [...data.findings, ...rules.findings];
+    const sources = { ...data.sources, "src-rc2023": rules.source };
+    const unknowns = data.unknowns.slice();
+    if (rules.regulatory) {
+      // The rules answer uses/density; what's left open is narrower.
+      unknowns[0] = {
+        title: { es: "Patios, estacionamiento y altura final", en: "Yards, parking, and final height" },
+        whyItMatters: { es: "Reducen lo que cabe de verdad frente al estimado del distrito.", en: "They cut what actually fits compared with the district estimate." },
+        nextStep: { es: "Anteproyecto con arquitecto y consulta con la Junta de Planificación u OGPe.", en: "Schematic design with an architect and a consultation with the Planning Board or OGPe." },
+        relatedFindingId: "capacity",
+      };
+      if (rules.resolved.district.variantNote) {
+        unknowns.unshift({
+          title: { es: "Qué intensidad de C-T aplica", en: "Which C-T intensity applies" },
+          whyItMatters: rules.resolved.district.variantNote,
+          nextStep: { es: "Confirmar con la Junta de Planificación u OGPe.", en: "Confirm with the Planning Board or OGPe." },
+          relatedFindingId: "capacity",
+        });
+      }
+    }
+
+    const hasConstraint = findings.some((f) => f.category === "constraint");
+    P.feasibility = {
+      status: hasConstraint
+        ? { es: "Preliminar — con restricciones", en: "Preliminary — constraints found" }
+        : data.feasibility.status,
+      summary: data.feasibility.summary,
+    };
+    P.findings = findings;
     P.findingCategories = ["favorable", "investigate", "constraint", "unknown"].map((key) => ({
       key,
-      findings: data.findings.filter((f) => f.category === key),
+      findings: findings.filter((f) => f.category === key),
     }));
-    P.unknowns = data.unknowns;
+    P.unknowns = unknowns;
     P.nextActions = data.nextActions;
-    P.findingById = (id) => data.findings.find((f) => f.id === id) || null;
-    P.sourceById = (id) => (id && data.sources[id]) || null;
+    P.findingById = (id) => findings.find((f) => f.id === id) || null;
+    P.sourceById = (id) => (id && sources[id]) || null;
 
     const z = data.zoning;
+    const reg = rules.regulatory;
     const notCovered = { es: "Por confirmar — Parcela aún no cubre este dato", en: "To confirm — not covered by Parcela yet" };
+    const rulesWhy = reg ? (findings.some((f) => f.id === "capacity") ? "capacity" : "project-fit") : "district-rules";
     P.regulatory = {
-      landUse: { value: z ? `${z.code}${z.description ? ` · ${z.description}` : ""}` : notCovered, status: z ? "investigate" : "unknown", sourceId: z ? "src-zoning" : null },
-      proposedUse: { value: projectTypeLabel(project.type), status: "neutral" },
-      applicableRegulation: {
-        value: z && z.resolution ? `Resolución ${z.resolution}${z.effective ? ` (${z.effective})` : ""}` : notCovered,
-        status: "neutral",
-        sourceId: z ? "src-zoning" : null,
-      },
-      density: { value: notCovered, status: "unknown" },
-      height: { value: notCovered, status: "unknown" },
-      parking: { value: notCovered, status: "unknown" },
-      // Every regulatory "Why?" points at the zoning finding — the only
-      // evidence these rows have today.
-      whyIds: { landUse: "zoning", density: "zoning", height: "zoning", parking: "zoning" },
-      noSummarize: true,
+      rows: [
+        { label: { es: "Calificación (mapa)", en: "Zoning (map)" }, value: z ? `${z.code}${z.description ? ` · ${z.description}` : ""}` : notCovered, whyId: "zoning" },
+        { label: { es: "Distrito actual (RC 2023)", en: "Current district (RC 2023)" }, value: reg ? reg.district : notCovered, whyId: findings.some((f) => f.id === "project-fit") ? "project-fit" : rulesWhy },
+        { label: { es: "Uso propuesto", en: "Proposed use" }, value: projectTypeLabel(project.type) },
+        { label: { es: "Cabida mínima", en: "Minimum lot" }, value: reg ? reg.minLot : notCovered, whyId: rulesWhy },
+        { label: { es: "Área de ocupación", en: "Lot coverage" }, value: reg ? reg.occupancy : notCovered, whyId: rulesWhy },
+        { label: { es: "Densidad", en: "Density" }, value: reg ? reg.density : notCovered, whyId: rulesWhy },
+        { label: { es: "Altura", en: "Height" }, value: reg ? reg.height : notCovered, whyId: rulesWhy },
+        { label: { es: "Estacionamiento", en: "Parking" }, value: reg ? reg.parking : notCovered, whyId: rulesWhy },
+      ],
     };
     P.map = buildMap(data);
     return P;

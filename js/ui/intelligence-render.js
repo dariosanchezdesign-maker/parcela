@@ -121,6 +121,25 @@ window.ParcelaRender = (function () {
   }
 
   function renderRegulatory(container, reg) {
+    // Live data passes a plain list of rows; the demo keeps its fixed set.
+    if (reg.rows) {
+      container.innerHTML = reg.rows
+        .map(
+          (r, i) => `
+      <div class="field-row">
+        <span class="f-label">${I.tv(r.label)}</span>
+        <span class="f-value-group">
+          <span class="f-value">${I.tv(r.value)}</span>
+          ${r.whyId && window.PARCELA.findingById(r.whyId) ? `<button class="why-link" data-reg-row="${i}">${I.t("common_why")}</button>` : ""}
+        </span>
+      </div>`
+        )
+        .join("");
+      container.querySelectorAll("[data-reg-row]").forEach((btn) => {
+        btn.addEventListener("click", () => window.ParcelaPanel.open(reg.rows[btn.dataset.regRow].whyId));
+      });
+      return;
+    }
     const rows = [
       { key: "landUse", labelKey: "common_landUse", f: reg.landUse },
       { key: "proposedUse", labelKey: "property_proposedUse", f: reg.proposedUse },

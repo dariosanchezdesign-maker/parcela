@@ -58,6 +58,9 @@ Code:
 - `js/ui/` — map, findings renderer, "Why?" panel, AI panel
 - `js/data/lookup.js` — address or cadastral number → real parcel, zoning,
   and flood findings with sources
+- `js/data/zoning-rules.js` — what each San Juan district allows (uses,
+  lot size, coverage, floor area, density, height, parking) per the
+  Reglamento Conjunto 2023, with page citations
 - `js/data/live.js` — runs the lookup and maps the result onto the
   pages; a page is in live mode when its URL has `?parcel=<cadastral>`
 - `js/data/mockData.js` — prototype data for the demo property and project
@@ -86,9 +89,19 @@ Coverage: **San Juan only** for now (`COVERED_MUNICIPALITIES` in
 | Flood zone, FIRM panel, effective date | FEMA National Flood Hazard Layer |
 | Address → map point | Esri World Geocoder (only the point is used; results aren't stored) |
 
-Allowed uses, density, height, parking, utility capacity, title, and
-environmental history are **not** covered yet; the app lists them as
-unknowns with a next step instead of guessing.
+**District rules.** For lots under San Juan's Plan Territorial (about 80% of
+the city's zoning rows, `regla` 133), the district is translated to the
+current Reglamento Conjunto 2023 district through its Table 6.14, and the
+app checks the project type against that district's uses table and
+estimates lot capacity. Every value was read from the page images of the
+Planning Board's PDF and cites its page. The regulation was adopted by
+emergency in 2023 and a 2025 court order requires the Board to finish
+ordinary rulemaking, so the app labels it accordingly. Lots under other
+plans, districts with no official equivalent (R-5, R-6), and public or
+conservation districts come back as unknown.
+
+Utility capacity, title, and environmental history are **not** covered yet;
+the app lists them as unknowns with a next step instead of guessing.
 
 ## Data & AI disclaimer
 

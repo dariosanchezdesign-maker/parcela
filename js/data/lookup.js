@@ -255,6 +255,7 @@ window.ParcelaLookup = (function () {
         code, description: desc,
         classification: clean(zoningRow.clasi), classificationDescription: clean(zoningRow.descrip1),
         resolution, effective, barrio: clean(zoningRow.barrio),
+        regla: zoningRow.regla,
       };
       sources["src-zoning"] = {
         name: "Mapa de Calificación vigente",
@@ -270,8 +271,8 @@ window.ParcelaLookup = (function () {
         category: "investigate",
         title: bi(`Calificación ${code}${desc ? ` — ${desc}` : ""}`, `Zoned ${code}${desc ? ` — ${desc}` : ""}`),
         summary: bi(
-          "Distrito de calificación vigente según la Junta de Planificación. Parcela aún no verifica los usos permitidos, la densidad ni la altura para tu proyecto.",
-          "Current zoning district per the Planning Board. Parcela doesn't yet check allowed uses, density, or height for your project."
+          "Distrito de calificación vigente según la Junta de Planificación.",
+          "Current zoning district per the Planning Board."
         ),
         confidence: conf,
         sourceId: "src-zoning",
