@@ -250,7 +250,7 @@
           return;
         }
         ["section-physical", "section-infra", "section-history"].forEach((id) => { document.getElementById(id).style.display = "none"; });
-        ["ai-explain", "ai-next", "compare-btn", "report-btn"].forEach((id) => { document.getElementById(id).style.display = "none"; });
+        ["compare-btn", "report-btn"].forEach((id) => { document.getElementById(id).style.display = "none"; });
         // Drop data-i18n so the static translation pass can't put the
         // prototype labels back over the live ones.
         const mapNote = document.getElementById("map-note");
@@ -397,13 +397,63 @@
       document.getElementById("section-unknowns").classList.add("is-open");
       document.getElementById("section-actions").classList.add("is-open");
 
-      document.getElementById("ai-explain").addEventListener("click", () => {
-        window.ParcelaAI.open(I.t("property_aiExplain"), [I.tv(P.aiInsights.explainThis)]);
-      });
-      document.getElementById("ai-next").addEventListener("click", () => {
-        const top2 = P.nextActions.slice(0, 2).map((a) => `<strong>${I.tv(a.title)}</strong> — ${I.tv(a.whyItMatters)}`);
-        window.ParcelaAI.open(I.t("property_aiNext"), [I.tv(P.aiInsights.investigateNext), ...top2]);
-      });
+      if (P.live) {
+        document.getElementById("ai-explain").addEventListener("click", () => askAI("explain", I.t("property_aiExplain")));
+        document.getElementById("ai-next").addEventListener("click", () => askAI("next", I.t("property_aiNext")));
+      } else {
+        document.getElementById("ai-explain").addEventListener("click", () => {
+          window.ParcelaAI.open(I.t("property_aiExplain"), [I.tv(P.aiInsights.explainThis)]);
+        });
+        document.getElementById("ai-next").addEventListener("click", () => {
+          const top2 = P.nextActions.slice(0, 2).map((a) => `<strong>${I.tv(a.title)}</strong> — ${I.tv(a.whyItMatters)}`);
+          window.ParcelaAI.open(I.t("property_aiNext"), [I.tv(P.aiInsights.investigateNext), ...top2]);
+        });
+      }
+
+      // ---------- AI explanations (/api/explain, signed in, 20/day) ----------
+      // Answers are kept for the browser session so re-opening one doesn't
+      // spend another credit.
+      async function askAI(kind, title) {
+        const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+        const toHtml = (text) => text.split(/\n{2,}/).map((para) => esc(para.trim()).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br>"));
+        const cacheKey = `parcela-ai:${P.property.cadastral}:${kind}:${I.lang}:${(window.ParcelaLive.loadProject() || {}).type || ""}`;
+        try {
+          const cached = sessionStorage.getItem(cacheKey);
+          if (cached) return window.ParcelaAI.open(title, toHtml(cached));
+        } catch (e) {}
+
+        const token = await window.ParcelaAccount.accessToken();
+        if (!token) {
+          window.location.href = `signin.html?next=${encodeURIComponent(`property.html${location.search}`)}`;
+          return;
+        }
+        window.ParcelaAI.open(title, [esc(I.t("ai_thinking"))]);
+        let res, data;
+        try {
+          res = await fetch("/api/explain", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ question: kind, lang: I.lang, context: window.ParcelaLive.aiContext(P) }),
+          });
+          data = await res.json();
+        } catch (e) {
+          data = { error: "unavailable" };
+        }
+        if (data.error === "signed_out") {
+          window.location.href = `signin.html?next=${encodeURIComponent(`property.html${location.search}`)}`;
+          return;
+        }
+        if (data.error) {
+          const key = { daily_limit: "ai_errLimit", declined: "ai_errDeclined", busy: "ai_errBusy" }[data.error] || "ai_errUnavailable";
+          window.ParcelaAI.open(title, [esc(I.t(key))]);
+          return;
+        }
+        try { sessionStorage.setItem(cacheKey, data.text); } catch (e) {}
+        window.ParcelaAI.open(title, [
+          ...toHtml(data.text),
+          `<span class="text-sm">${esc(I.t("ai_remaining").replace("{n}", data.remaining).replace("{limit}", data.limit))}</span>`,
+        ]);
+      }
 
       document.getElementById("compare-btn").addEventListener("click", () => {
         // P.comparisonProperties here is still the prototype's static mock

@@ -994,3 +994,22 @@ Prelan's data separate.
   official record, reported as "investigate", not a constraint.
 - Next: allowed uses/density per district (Reglamento use tables), more
   municipalities, saving projects, then AI explanations on top.
+
+## Milestone 2 — district rules, accounts, AI (2026-10-20)
+- [x] District rules: read the Reglamento Conjunto 2023 PDF (Planning Board,
+      967 pp., scanned — values read from page images, OCR text is unreliable).
+      Table 6.14 maps San Juan POT districts (regla 133, ~80% of San Juan
+      rows) to current districts; 14 development districts encoded in
+      `js/data/zoning-rules.js` with uses, min lot, coverage, floor area,
+      density, height rule (Sec. 6.1.1.11), parking (Rule 8.5.3), page cites.
+      Gaps kept honest: R-5/R-6 blank in the table, IL-1 ambiguous, DV/CR-H map
+      to two districts, C-T has two intensities the table doesn't pick, other
+      regla codes (special-area plans) not covered. Legal status: emergency
+      adoption 2023, 2025 court order to finish ordinary rulemaking.
+- [x] Accounts: Supabase email links, `saved_projects` with RLS, Save button,
+      Projects page. Migration tested on local Postgres 16 with auth stubs.
+- [x] AI: `/api/explain` Netlify Function, Claude grounded only on the
+      page's findings; 20/day per user via `claim_ai_credit()`; tested with
+      mocked Supabase and Claude responses (no real key in this session).
+- Needs the owner: run `db/migration_004_accounts.sql`, set Supabase Auth
+  Site URL + redirect URLs, add `ANTHROPIC_API_KEY` in Netlify.

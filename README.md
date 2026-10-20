@@ -28,7 +28,9 @@ Then open the printed local URL. `index.html` is the marketing landing page;
 
 Real property lookups run in the browser (the Planning Board's map server
 doesn't answer cloud data centers, but allows browser requests), so a plain
-static server is enough for everything.
+static server is enough for everything except the AI explanations, which
+are a Netlify Function (`npx netlify dev` runs both; needs
+`ANTHROPIC_API_KEY`).
 
 ## Structure
 
@@ -61,12 +63,17 @@ Code:
 - `js/data/zoning-rules.js` — what each San Juan district allows (uses,
   lot size, coverage, floor area, density, height, parking) per the
   Reglamento Conjunto 2023, with page citations
+- `js/data/account.js` + `signin.html` — email-link sign-in (Supabase Auth)
+  and saved projects; `projects.html` lists them
+- `netlify/functions/explain.mjs` — `/api/explain`: Claude explains the
+  page's findings (signed-in users, 20 a day)
 - `js/data/live.js` — runs the lookup and maps the result onto the
   pages; a page is in live mode when its URL has `?parcel=<cadastral>`
 - `js/data/mockData.js` — prototype data for the demo property and project
 - `js/data/supabaseClient.js` — Supabase client; pages that read live data
   fall back to `mockData.js` if the database is unreachable
 - `db/` — Postgres schema, migrations, and seed data for Supabase
+  (`migration_004_accounts.sql`: saved projects, AI daily limit)
 - `tasks/todo.md` — build log: what was built, why, and what was decided
 
 ## Backend
@@ -109,5 +116,7 @@ Lookups use real public records, but this is a preliminary analysis, not a
 legal or professional determination — records can lag reality, and every
 finding links to its source for verification. The demo property (no
 `?parcel=` in the URL) and the Overview/Explore/Properties/Compare/Reports
-pages still use seeded demo data. The AI panel shows pre-written analyst
-text; no model is called yet.
+pages still use seeded demo data. On real parcels, the AI panel calls
+Claude (`/api/explain`), which only receives the findings already on the
+page and is instructed not to add facts; the demo property's AI panel still
+shows pre-written text.

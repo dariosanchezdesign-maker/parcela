@@ -1,0 +1,9 @@
+{
+  "name": "parcela",
+  "private": true,
+  "type": "module",
+  "description": "Static site; the only dependency is for the /api/explain Netlify Function.",
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.135.0"
+  }
+}

@@ -247,5 +247,40 @@ window.ParcelaLive = (function () {
     return P;
   }
 
-  return { parcelParam, lookup, apply, saveProject, loadProject, displayAddress };
+  // The facts /api/explain may use: everything the page shows, in the
+  // page's language, and nothing else.
+  function aiContext(P) {
+    const I = window.ParcelaI18N;
+    const t = (v) => (v == null ? null : I.tv(v));
+    const source = (id) => {
+      const src = P.sourceById(id);
+      return src ? [src.name, src.section, src.date].filter(Boolean).join(" · ") : null;
+    };
+    const project = loadProject() || {};
+    return {
+      property: {
+        address: P.property.address,
+        cadastral: P.property.cadastral,
+        municipality: P.property.municipality,
+        areaSqm: P.property.parcelAreaSqm,
+        areaCuerdas: P.property.parcelAreaCuerdas,
+      },
+      project: { type: project.type || null, units: project.units || null, investment: project.investment || null },
+      feasibility: { status: t(P.feasibility.status), summary: t(P.feasibility.summary) },
+      findings: P.findings.map((f) => ({
+        category: f.category,
+        confidence: f.confidence,
+        title: t(f.title),
+        summary: t(f.summary),
+        evidence: t(f.why.found),
+        whyItMatters: t(f.why.matters),
+        source: source(f.sourceId),
+      })),
+      regulatory: P.regulatory.rows.map((r) => ({ [t(r.label)]: t(r.value) })),
+      unknowns: P.unknowns.map((u) => ({ title: t(u.title), whyItMatters: t(u.whyItMatters), nextStep: t(u.nextStep) })),
+      nextActions: P.nextActions.map((a) => ({ order: a.order, title: t(a.title), whyItMatters: t(a.whyItMatters), professional: t(a.professional) })),
+    };
+  }
+
+  return { parcelParam, lookup, apply, saveProject, loadProject, displayAddress, aiContext };
 })();
