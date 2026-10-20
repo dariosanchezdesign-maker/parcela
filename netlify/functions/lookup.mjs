@@ -25,18 +25,30 @@ const SQM_PER_CUERDA = 3930.395;
 
 // ---------- http ----------
 
-async function getJson(url, params, { retries = 2, timeoutMs = 15000 } = {}) {
+// Netlify cuts a synchronous function off at ~30 s, so every upstream call
+// shares one per-request budget; a slow server fails fast with its hostname
+// instead of the whole request timing out silently.
+const BUDGET_MS = 24000;
+let deadline = 0;
+
+async function getJson(url, params, { retries = 2, timeoutMs = 8000 } = {}) {
   const qs = new URLSearchParams({ f: "json", ...params });
   let lastErr;
   for (let attempt = 0; attempt <= retries; attempt++) {
+    const remaining = deadline - Date.now();
+    if (remaining < 500) {
+      lastErr = lastErr || new Error("time budget exhausted");
+      break;
+    }
     try {
-      const res = await fetch(`${url}?${qs}`, { signal: AbortSignal.timeout(timeoutMs) });
+      const res = await fetch(`${url}?${qs}`, { signal: AbortSignal.timeout(Math.min(timeoutMs, remaining)) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (data.error) throw new Error(data.error.message || "ArcGIS error");
       return data;
     } catch (err) {
       lastErr = err;
+      console.warn(`upstream ${new URL(url).hostname} attempt ${attempt + 1}: ${err.message}`);
       if (attempt < retries) await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
     }
   }
@@ -154,6 +166,7 @@ function floodLabel(zone, subtype) {
 // ---------- handler ----------
 
 export default async (req) => {
+  deadline = Date.now() + BUDGET_MS;
   const q = (new URL(req.url).searchParams.get("q") || "").trim();
   if (!q) return json({ error: "missing_query" }, 400);
   if (q.length > 200) return json({ error: "query_too_long" }, 400);
