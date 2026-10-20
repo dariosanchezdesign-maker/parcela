@@ -33,7 +33,7 @@
             <li><span class="k" data-i18n="common_municipality">Municipality</span><span class="v" id="prop-municipality"></span></li>
           </ul>
           <div class="onboard-actions" style="margin-top:var(--sp-5);">
-            <a href="setup.html" class="btn btn-primary" data-i18n="identify_cta">Analyze this property</a>
+            <a href="setup.html" id="identify-cta" class="btn btn-primary" data-i18n="identify_cta">Analyze this property</a>
             <a href="search.html" class="btn btn-ghost" data-i18n="identify_change">Change property</a>
           </div>
         </div>
@@ -43,29 +43,50 @@
 
   <script src="js/i18n.js"></script>
   <script src="js/data/mockData.js"></script>
+  <script src="js/data/live.js"></script>
+  <script src="js/ui/map.js"></script>
   <script>
-    (function () {
-      const p = window.PARCELA.property;
+    (async function () {
+      const I = window.ParcelaI18N;
+      const P = window.PARCELA;
+      const cadastral = window.ParcelaLive.parcelParam();
+      if (cadastral) {
+        document.getElementById("prop-address").textContent = I.t("live_loading");
+        document.getElementById("prop-locality").textContent = "";
+        try {
+          window.ParcelaLive.apply(P, await window.ParcelaLive.lookup(cadastral));
+        } catch (err) {
+          document.getElementById("prop-address").textContent = I.t("live_loadError");
+          document.getElementById("identify-cta").href = "search.html";
+          document.getElementById("identify-cta").textContent = I.t("live_retry");
+          return;
+        }
+        document.getElementById("identify-cta").href = `setup.html?parcel=${encodeURIComponent(cadastral)}`;
+      }
+
+      const p = P.property;
       document.getElementById("prop-address").textContent = p.address;
       document.getElementById("prop-locality").textContent = p.municipality;
       document.getElementById("prop-cadastral").textContent = p.cadastral;
-      document.getElementById("prop-area").textContent = `${p.parcelAreaSqm.toLocaleString()} m² (${p.parcelAreaAcres} ac)`;
-      document.getElementById("prop-municipality").textContent = p.municipality.split(",")[0];
+      document.getElementById("prop-area").textContent = p.parcelAreaCuerdas != null
+        ? `${p.parcelAreaSqm.toLocaleString()} m² (${p.parcelAreaCuerdas} cuerdas)`
+        : `${p.parcelAreaSqm.toLocaleString()} m² (${p.parcelAreaAcres} ac)`;
+      document.getElementById("prop-municipality").textContent = P.live ? P.liveData.property.municipality : p.municipality.split(",")[0];
 
       const ns = "http://www.w3.org/2000/svg";
-      const map = window.PARCELA.map;
+      const shape = window.ParcelaMap.shape;
+      const map = P.map;
       const svg = document.createElementNS(ns, "svg");
       svg.setAttribute("viewBox", map.viewBox);
       const bg = document.createElementNS(ns, "rect");
       bg.setAttribute("width", "640"); bg.setAttribute("height", "520"); bg.setAttribute("fill", "var(--map-base-land)");
       svg.appendChild(bg);
       map.context.forEach((c, i) => {
-        const poly = document.createElementNS(ns, "polygon");
-        poly.setAttribute("points", c.points);
-        poly.setAttribute("fill", i % 2 === 0 ? "var(--map-base-block)" : "var(--map-parcel)");
-        poly.setAttribute("opacity", "0.55");
-        svg.appendChild(poly);
+        svg.appendChild(shape(c, map.live
+          ? { fill: "var(--map-parcel)", stroke: "var(--map-base-block)", "stroke-width": "1", opacity: "0.7" }
+          : { fill: i % 2 === 0 ? "var(--map-base-block)" : "var(--map-parcel)", opacity: "0.55" }));
       });
+      (map.streets || []).forEach((st) => svg.appendChild(shape(st, { fill: "var(--map-road)", opacity: "0.9" })));
       map.roads.forEach((r) => {
         const pts = r.points.split(" ").map((pt) => pt.split(",").map(Number));
         const line = document.createElementNS(ns, "line");
@@ -74,12 +95,7 @@
         line.setAttribute("stroke", "var(--map-road)"); line.setAttribute("stroke-width", r.width);
         svg.appendChild(line);
       });
-      const parcel = document.createElementNS(ns, "polygon");
-      parcel.setAttribute("points", map.parcel.points);
-      parcel.setAttribute("fill", "rgba(20,22,26,0.08)");
-      parcel.setAttribute("stroke", "var(--map-selected)");
-      parcel.setAttribute("stroke-width", "2.4");
-      svg.appendChild(parcel);
+      svg.appendChild(shape(map.parcel, { fill: "rgba(20,22,26,0.08)", stroke: "var(--map-selected)", "stroke-width": "2.4" }));
       document.getElementById("identify-map-slot").appendChild(svg);
     })();
   </script>

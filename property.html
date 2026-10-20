@@ -32,7 +32,7 @@
           <p class="intel-locality" id="h-locality">San Juan, Puerto Rico</p>
           <span class="intel-project-tag" id="h-project-tag">Multifamily · 60–80 units</span>
           <div class="intel-header-actions">
-            <a href="reports.html" class="btn btn-ghost btn-sm" data-i18n="property_generateReport">Generate feasibility report</a>
+            <a href="reports.html" class="btn btn-ghost btn-sm" id="report-btn" data-i18n="property_generateReport">Generate feasibility report</a>
             <button class="btn btn-ghost btn-sm" id="compare-btn" data-i18n="property_compareOther">Compare with other properties</button>
           </div>
         </div>
@@ -65,7 +65,7 @@
           <div class="map-stage" id="map-stage">
             <div class="map-svg-slot"></div>
             <div class="map-legend"></div>
-            <div class="map-note" data-i18n="property_mapNote">Prototype map data</div>
+            <div class="map-note" id="map-note" data-i18n="property_mapNote">Prototype map data</div>
           </div>
         </div>
 
@@ -204,6 +204,7 @@
   <script src="js/data/mockData.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/data/supabaseClient.js"></script>
+  <script src="js/data/live.js"></script>
   <script src="js/ui/map.js"></script>
   <script src="js/ui/panel.js"></script>
   <script src="js/ui/ai-panel.js"></script>
@@ -230,10 +231,36 @@
       // sourceById fall back to that mock data for anything the live
       // backend doesn't know about (e.g. the regulatory section's
       // hardcoded finding references), so nothing already working breaks.
+      // ---------- real parcel (?parcel=<cadastral>) ----------
+      // CRIM / Planning Board / FEMA via /api/lookup. Sections Parcela has no
+      // real data for yet are hidden rather than shown with demo content.
+      const liveCadastral = window.ParcelaLive.parcelParam();
+      if (liveCadastral) {
+        document.getElementById("h-address").textContent = I.t("live_loading");
+        try {
+          window.ParcelaLive.apply(P, await window.ParcelaLive.lookup(liveCadastral));
+        } catch (err) {
+          document.getElementById("h-address").textContent = I.t("live_loadError");
+          document.getElementById("feas-summary").innerHTML = `<a href="search.html">${I.t("live_retry")}</a>`;
+          document.getElementById("feas-status").textContent = "";
+          return;
+        }
+        ["section-physical", "section-infra", "section-history"].forEach((id) => { document.getElementById(id).style.display = "none"; });
+        ["ai-explain", "ai-next", "compare-btn", "report-btn"].forEach((id) => { document.getElementById(id).style.display = "none"; });
+        // Drop data-i18n so the static translation pass can't put the
+        // prototype labels back over the live ones.
+        const mapNote = document.getElementById("map-note");
+        mapNote.removeAttribute("data-i18n");
+        mapNote.textContent = I.t("live_mapNote");
+        const navFooter = document.querySelector('[data-i18n="nav_footer"]');
+        navFooter.removeAttribute("data-i18n");
+        navFooter.textContent = I.t("live_navFooter");
+      }
+
       const DEMO_PARCEL_ID = "a0000000-0000-4000-8000-000000000001";
       const mockFindingById = P.findingById;
       const mockSourceById = P.sourceById;
-      try {
+      if (!P.live) try {
         const project = await window.ParcelaDB.projectByParcelId(DEMO_PARCEL_ID);
         if (!project) throw new Error("No Supabase project found for this parcel.");
 
@@ -309,7 +336,7 @@
 
       document.getElementById("h-address").textContent = P.property.address;
       document.getElementById("h-locality").textContent = P.property.municipality;
-      document.getElementById("h-project-tag").textContent = `${I.tv(P.project.type)} · ${I.tv(P.project.unitsLabel)}`;
+      document.getElementById("h-project-tag").textContent = [I.tv(P.project.type), P.project.unitsLabel !== "—" ? I.tv(P.project.unitsLabel) : null].filter(Boolean).join(" · ");
       document.getElementById("h-area").textContent = `${P.property.parcelAreaSqm.toLocaleString()} m²`;
       document.getElementById("h-cadastral").textContent = P.property.cadastral;
       document.getElementById("h-analyzed").textContent = P.property.lastAnalyzed;
@@ -324,9 +351,11 @@
       window.ParcelaRender.renderUnknowns(document.getElementById("unknowns-list"), P.unknowns);
       window.ParcelaRender.renderNextActions(document.getElementById("next-actions-list"), P.nextActions);
       window.ParcelaRender.renderRegulatory(document.getElementById("regulatory-fields"), P.regulatory);
-      window.ParcelaRender.renderPhysical(document.getElementById("physical-grid"), P.physical);
-      window.ParcelaRender.renderInfrastructure(document.getElementById("infra-list"), P.infrastructure);
-      window.ParcelaRender.renderTimeline(document.getElementById("history-timeline"), P.developmentHistory);
+      if (!P.live) {
+        window.ParcelaRender.renderPhysical(document.getElementById("physical-grid"), P.physical);
+        window.ParcelaRender.renderInfrastructure(document.getElementById("infra-list"), P.infrastructure);
+        window.ParcelaRender.renderTimeline(document.getElementById("history-timeline"), P.developmentHistory);
+      }
 
       document.querySelectorAll(".info-section-toggle").forEach((btn) => {
         btn.addEventListener("click", () => btn.closest(".info-section").classList.toggle("is-open"));

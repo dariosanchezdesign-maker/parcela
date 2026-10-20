@@ -12,6 +12,18 @@ window.ParcelaMap = (function () {
     return el;
   }
 
+  // A map shape is either the prototype's `{ points }` polygon or a live
+  // `{ d }` path (real parcels can have holes, which <polygon> can't draw).
+  function shape(s, attrs) {
+    return s.d
+      ? svgEl("path", { d: s.d, "fill-rule": "evenodd", ...attrs })
+      : svgEl("polygon", { points: s.points, ...attrs });
+  }
+
+  function asList(v) {
+    return v == null ? [] : Array.isArray(v) ? v : [v];
+  }
+
   function buildSvg(map) {
     const svg = svgEl("svg", { viewBox: map.viewBox, "aria-hidden": "true" });
 
@@ -19,13 +31,12 @@ window.ParcelaMap = (function () {
     const base = svgEl("g", { class: "layer-base" });
     map.context.forEach((c, i) => {
       base.appendChild(
-        svgEl("polygon", {
-          points: c.points,
-          fill: i % 2 === 0 ? "var(--map-base-block)" : "var(--map-parcel)",
-          opacity: "0.55",
-        })
+        shape(c, map.live
+          ? { fill: "var(--map-parcel)", stroke: "var(--map-base-block)", "stroke-width": "1", opacity: "0.7" }
+          : { fill: i % 2 === 0 ? "var(--map-base-block)" : "var(--map-parcel)", opacity: "0.55" })
       );
     });
+    asList(map.streets).forEach((st) => base.appendChild(shape(st, { fill: "var(--map-road)", opacity: "0.9" })));
     svg.appendChild(base);
 
     // roads
@@ -43,17 +54,25 @@ window.ParcelaMap = (function () {
 
     // zoning overlay
     const zoning = svgEl("g", { class: "layer-overlay layer-zoning", "data-layer": "zoning" });
-    zoning.appendChild(svgEl("polygon", { points: map.zoning.points, fill: "var(--map-zoning-r)", stroke: "#3f8557", "stroke-width": "1", "stroke-dasharray": "3 3" }));
+    asList(map.zoning).forEach((z) => {
+      zoning.appendChild(shape(z, z.color
+        ? { fill: z.color, "fill-opacity": "0.22", stroke: z.color, "stroke-width": "1", "stroke-dasharray": "3 3" }
+        : { fill: "var(--map-zoning-r)", stroke: "#3f8557", "stroke-width": "1", "stroke-dasharray": "3 3" }));
+    });
     svg.appendChild(zoning);
 
     // flood overlay
     const flood = svgEl("g", { class: "layer-overlay layer-flood", "data-layer": "flood" });
-    flood.appendChild(svgEl("polygon", { points: map.flood.points, fill: "var(--map-flood-ae)", stroke: "#3b5caa", "stroke-width": "1.4" }));
+    asList(map.flood).forEach((f) => {
+      flood.appendChild(shape(f, { fill: f.color || "var(--map-flood-ae)", stroke: "#3b5caa", "stroke-width": f.color ? "0.8" : "1.4" }));
+    });
     svg.appendChild(flood);
 
     // environmental overlay
     const envt = svgEl("g", { class: "layer-overlay layer-environmental", "data-layer": "environmental" });
-    envt.appendChild(svgEl("polygon", { points: map.environmental.points, fill: "rgba(122,92,170,0.18)", stroke: "#7a5caa", "stroke-width": "1", "stroke-dasharray": "1 4", "stroke-linecap": "round" }));
+    asList(map.environmental).forEach((e) => {
+      envt.appendChild(shape(e, { fill: "rgba(122,92,170,0.18)", stroke: "#7a5caa", "stroke-width": "1", "stroke-dasharray": "1 4", "stroke-linecap": "round" }));
+    });
     svg.appendChild(envt);
 
     // infrastructure overlay
@@ -86,8 +105,7 @@ window.ParcelaMap = (function () {
     // subject parcel — always on top, always visible
     const parcelGroup = svgEl("g", { class: "layer-parcel" });
     parcelGroup.appendChild(
-      svgEl("polygon", {
-        points: map.parcel.points,
+      shape(map.parcel, {
         fill: "rgba(20,22,26,0.06)",
         stroke: "var(--map-selected)",
         "stroke-width": "2.2",
@@ -99,7 +117,13 @@ window.ParcelaMap = (function () {
     return svg;
   }
 
-  function legends(I, zoningCode) {
+  function legends(I, map) {
+    if (map.legends) {
+      const out = { satellite: { titleKey: "map_legendTitle_satellite", rows: [{ labelKey: "map_subjectParcel", color: "var(--map-selected)" }] } };
+      Object.entries(map.legends).forEach(([layer, rows]) => { out[layer] = { titleKey: "map_legendTitle_" + layer, rows }; });
+      return out;
+    }
+    const zoningCode = map.zoning.code;
     return {
       satellite: { titleKey: "map_legendTitle_satellite", rows: [{ labelKey: "map_subjectParcel", color: "var(--map-selected)" }] },
       zoning: { titleKey: "map_legendTitle_zoning", rows: [{ label: `${zoningCode} · Residencial General`, color: "#3f8557" }, { labelKey: "map_subjectParcel", color: "var(--map-selected)" }] },
@@ -116,7 +140,7 @@ window.ParcelaMap = (function () {
     container.querySelector(".map-svg-slot").appendChild(svg);
     const legendEl = container.querySelector(".map-legend");
     const controls = container.querySelectorAll(".map-control");
-    const LEGENDS = legends(I, map.zoning.code);
+    const LEGENDS = legends(I, map);
 
     function setLayer(layer) {
       LAYERS.forEach((l) => {
@@ -135,5 +159,5 @@ window.ParcelaMap = (function () {
     setLayer("satellite");
   }
 
-  return { mount };
+  return { mount, shape };
 })();

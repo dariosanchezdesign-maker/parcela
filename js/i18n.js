@@ -55,9 +55,9 @@ window.ParcelaI18N = (function () {
     search_placeholder: { es: "Busca una dirección, parcela o ubicación", en: "Search an address, parcel, or location" },
     search_exploreMap: { es: "Explorar el mapa", en: "Explore the map" },
     search_hint: { es: "Datos de prototipo: la información de propiedad, zonificación y regulación mostrada en esta demostración es ficticia.", en: "Prototype data — property, zoning, and regulatory information shown throughout this demo is fictional." },
-    search_sugg1: { es: "San Juan, Puerto Rico · Catastro 115-042-018-09-901", en: "San Juan, Puerto Rico · Cadastral 115-042-018-09-901" },
-    search_sugg2: { es: "San Juan, Puerto Rico · Catastro 115-041-006-04-902", en: "San Juan, Puerto Rico · Cadastral 115-041-006-04-902" },
-    search_sugg3: { es: "Carolina, Puerto Rico · Catastro 058-013-221-11-903", en: "Carolina, Puerto Rico · Cadastral 058-013-221-11-903" },
+    search_sugg1: { es: "Condado, San Juan · Catastro 040-028-001-25", en: "Condado, San Juan · Cadastral 040-028-001-25" },
+    search_sugg2: { es: "Santurce, San Juan · Catastro 041-041-134-02", en: "Santurce, San Juan · Cadastral 041-041-134-02" },
+    search_sugg3: { es: "Viejo San Juan · búsqueda por número de catastro", en: "Old San Juan · search by cadastral number" },
     search_notFound: { es: "No encontramos una coincidencia segura para esa dirección en los datos de este prototipo. Prueba con una de las direcciones de muestra a continuación.", en: "We couldn't find a confident match for that address in this prototype's data. Try one of the sample addresses below." },
 
     // ---- identify.html ----
@@ -169,6 +169,22 @@ window.ParcelaI18N = (function () {
     map_waterMain: { es: "Tubería principal de agua", en: "Water main" },
     map_electricDistribution: { es: "Distribución eléctrica", en: "Electric distribution" },
     map_permitActivity: { es: "Actividad de permisos / consulta", en: "Permit / consultation activity" },
+
+    // ---- live data (CRIM / Planning Board / FEMA via /api/lookup) ----
+    live_navFooter: { es: "Datos reales · CRIM, JP, FEMA", en: "Real data · CRIM, JP, FEMA" },
+    live_parcel: { es: "Parcela", en: "Parcel" },
+    live_mapNoData: { es: "Parcela aún no tiene datos para esta capa", en: "No data for this layer in Parcela yet" },
+    live_mapNote: { es: "Fuentes: CRIM, Junta de Planificación, FEMA", en: "Sources: CRIM, Planning Board, FEMA" },
+    live_loading: { es: "Consultando CRIM, la Junta de Planificación y FEMA…", en: "Checking CRIM, the Planning Board, and FEMA…" },
+    live_loadError: { es: "No pudimos cargar esta parcela.", en: "We couldn't load this parcel." },
+    live_retry: { es: "Buscar otra propiedad", en: "Search another property" },
+    search_err_not_found: { es: "No encontramos esa dirección en Puerto Rico. Revisa la dirección o usa el número de catastro (p. ej. 040-028-001-25).", en: "We couldn't find that address in Puerto Rico. Check the address or use the cadastral number (e.g. 040-028-001-25)." },
+    search_err_no_parcel: { es: "Encontramos la dirección, pero no hay una parcela del CRIM en ese punto. Prueba con el número de catastro.", en: "We found the address, but there's no CRIM parcel at that point. Try the cadastral number." },
+    search_err_outside: { es: "Por ahora Parcela solo cubre San Juan. Esta propiedad está en {m}.", en: "For now Parcela only covers San Juan. This property is in {m}." },
+    search_err_unavailable: { es: "Una de las fuentes del gobierno no respondió. Inténtalo de nuevo en un momento.", en: "One of the government sources didn't respond. Try again in a moment." },
+    search_hint_live: { es: "Datos reales de CRIM (feb. 2025), la Junta de Planificación y FEMA. Cobertura actual: San Juan. Es un análisis preliminar, no una determinación legal ni profesional.", en: "Real data from CRIM (Feb 2025), the Planning Board, and FEMA. Current coverage: San Juan. This is a preliminary analysis, not a legal or professional determination." },
+    search_err_empty: { es: "Ingresa una dirección o número de catastro.", en: "Enter an address or cadastral number." },
+    search_demoLink: { es: "Ver la propiedad de demostración", en: "See the demo property" },
 
     // ---- overview.html ----
     overview_goodMorning: { es: "Buenos días.", en: "Good morning." },

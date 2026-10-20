@@ -58,7 +58,17 @@ window.ParcelaPanel = (function () {
       els.srcAgency.textContent = source.agency;
       els.srcDate.textContent = source.date;
       els.srcSection.textContent = source.section;
-      els.srcDoc.textContent = source.document;
+      if (/^https:\/\//.test(source.document || "")) {
+        els.srcDoc.innerHTML = "";
+        const a = document.createElement("a");
+        a.href = source.document;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = new URL(source.document).hostname;
+        els.srcDoc.appendChild(a);
+      } else {
+        els.srcDoc.textContent = source.document;
+      }
     } else {
       els.srcName.textContent = I.t("panel_notAvailable");
       els.srcAgency.textContent = "—";

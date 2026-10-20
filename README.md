@@ -26,6 +26,10 @@ python -m http.server 5173
 Then open the printed local URL. `index.html` is the marketing landing page;
 `search.html` is the start of the app flow.
 
+Real property lookups go through a Netlify Function (`/api/lookup`), which a
+plain static server doesn't run. Use `npx netlify dev` to run the site and
+the function together.
+
 ## Structure
 
 Core flow:
@@ -52,6 +56,10 @@ Code:
 - `css/` — design tokens (`tokens.css`) + page styles
 - `js/i18n.js` — Spanish/English strings and language toggle
 - `js/ui/` — map, findings renderer, "Why?" panel, AI panel
+- `netlify/functions/lookup.mjs` — `/api/lookup`: address or cadastral
+  number → real parcel, zoning, and flood findings with sources
+- `js/data/live.js` — calls `/api/lookup` and maps the result onto the
+  pages; a page is in live mode when its URL has `?parcel=<cadastral>`
 - `js/data/mockData.js` — prototype data for the demo property and project
 - `js/data/supabaseClient.js` — Supabase client; pages that read live data
   fall back to `mockData.js` if the database is unreachable
@@ -66,9 +74,27 @@ key; Row Level Security limits that key to read-only. Free-tier Supabase
 projects pause after inactivity — resume from the Supabase dashboard if
 pages are showing mock data instead of live data.
 
+## Real data
+
+Coverage: **San Juan only** for now (`COVERED_MUNICIPALITIES` in
+`lookup.mjs`). A lookup combines:
+
+| What | Source |
+| --- | --- |
+| Parcel boundary, cadastral number, area | CRIM parcels, Feb 2025 (`crim/crim_feb_2025` on the Planning Board's SIGE server) |
+| Zoning district, overlays, resolution, effective date | Planning Board current zoning (`calificacion/cali_vige`) |
+| Flood zone, FIRM panel, effective date | FEMA National Flood Hazard Layer |
+| Address → map point | Esri World Geocoder (only the point is used; results aren't stored) |
+
+Allowed uses, density, height, parking, utility capacity, title, and
+environmental history are **not** covered yet; the app lists them as
+unknowns with a next step instead of guessing.
+
 ## Data & AI disclaimer
 
-This is a prototype. Property, zoning, and environmental data is seeded
-demo data (one example property plus comparison properties), not live
-Puerto Rico records. The AI panel shows pre-written analyst text; no model
-is called yet. Nothing here is a legal or professional determination.
+Lookups use real public records, but this is a preliminary analysis, not a
+legal or professional determination — records can lag reality, and every
+finding links to its source for verification. The demo property (no
+`?parcel=` in the URL) and the Overview/Explore/Properties/Compare/Reports
+pages still use seeded demo data. The AI panel shows pre-written analyst
+text; no model is called yet.

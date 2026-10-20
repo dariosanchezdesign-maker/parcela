@@ -44,15 +44,15 @@
             <input type="search" id="hero-search-input" data-i18n-placeholder="landing_hero_placeholder" placeholder="Enter an address, parcel, or location" autocomplete="off" />
             <button type="submit" class="btn btn-primary" data-i18n="landing_hero_cta">Analyze property →</button>
             <div class="l-search-suggestions" id="hero-suggestions">
-              <button type="button" data-pick="123 Example Avenue"><span class="s-addr">123 Example Avenue</span><span class="s-meta" data-i18n="search_sugg1">San Juan, Puerto Rico · Cadastral 115-042-018-09-901</span></button>
-              <button type="button" data-pick="88 Ashford Avenue"><span class="s-addr">88 Ashford Avenue</span><span class="s-meta" data-i18n="search_sugg2">San Juan, Puerto Rico · Cadastral 115-041-006-04-902</span></button>
-              <button type="button" data-pick="410 Isla Verde Avenue"><span class="s-addr">410 Isla Verde Avenue</span><span class="s-meta" data-i18n="search_sugg3">Carolina, Puerto Rico · Cadastral 058-013-221-11-903</span></button>
+              <button type="button" data-pick="1055 Ave Ashford, San Juan"><span class="s-addr">1055 Ave Ashford</span><span class="s-meta" data-i18n="search_sugg1">Condado, San Juan · Cadastral 040-028-001-25</span></button>
+              <button type="button" data-pick="2 Calle Santa Ana, San Juan"><span class="s-addr">2 Calle Santa Ana</span><span class="s-meta" data-i18n="search_sugg2">Santurce, San Juan · Cadastral 041-041-134-02</span></button>
+              <button type="button" data-pick="040-002-042-20"><span class="s-addr">040-002-042-20</span><span class="s-meta" data-i18n="search_sugg3">Old San Juan · search by cadastral number</span></button>
             </div>
           </div>
           <div class="l-hero-error">
             <div class="field-error" id="hero-search-error">
               <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11" r="0.75" fill="currentColor"/></svg>
-              <span data-i18n="search_notFound">We couldn't find a confident match for that address in this prototype's data. Try one of the sample addresses below.</span>
+              <span data-i18n="search_err_empty">Enter an address or cadastral number.</span>
             </div>
           </div>
         </form>
@@ -248,7 +248,7 @@
           <div class="l-hero-error">
             <div class="field-error" id="final-search-error">
               <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11" r="0.75" fill="currentColor"/></svg>
-              <span data-i18n="search_notFound">We couldn't find a confident match for that address in this prototype's data. Try one of the sample addresses below.</span>
+              <span data-i18n="search_err_empty">Enter an address or cadastral number.</span>
             </div>
           </div>
         </form>
@@ -349,7 +349,6 @@
     (function () {
       const P = window.PARCELA;
       const I = window.ParcelaI18N;
-      const KNOWN = ["123 example avenue", "88 ashford avenue", "410 isla verde avenue"];
 
       // ---------- sticky nav ----------
       const nav = document.getElementById("l-nav");
@@ -389,12 +388,12 @@
         input.addEventListener("input", () => errorBox.classList.remove("is-visible"));
         form.addEventListener("submit", (e) => {
           e.preventDefault();
-          const val = input.value.trim().toLowerCase();
-          if (!val || !KNOWN.some((k) => val.includes(k))) {
+          const val = input.value.trim();
+          if (!val) {
             errorBox.classList.add("is-visible");
             return;
           }
-          window.location.href = "identify.html";
+          window.location.href = `search.html?q=${encodeURIComponent(val)}`;
         });
       }
       wireSearch("hero-search-input", "hero-search-form", "hero-search-error", "hero-suggestions");

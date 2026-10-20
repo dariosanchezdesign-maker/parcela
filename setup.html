@@ -38,14 +38,14 @@
             <label for="units" data-i18n="setup_targetUnits">Target units</label>
             <span class="optional-tag" data-i18n="common_optional">Optional</span>
           </div>
-          <input type="text" id="units" placeholder="e.g. 60–80" value="60–80" />
+          <input type="text" id="units" placeholder="e.g. 60–80" />
         </div>
         <div class="assumption-field">
           <div class="field-label-row">
             <label for="investment" data-i18n="setup_approxInvestment">Approximate investment</label>
             <span class="optional-tag" data-i18n="common_optional">Optional</span>
           </div>
-          <input type="text" id="investment" placeholder="e.g. $10M–$15M" value="$10M–$15M" />
+          <input type="text" id="investment" placeholder="e.g. $10M–$15M" />
         </div>
       </div>
 
@@ -83,6 +83,7 @@
   </div>
 
   <script src="js/i18n.js"></script>
+  <script src="js/data/live.js"></script>
   <script>
     (function () {
       const grid = document.getElementById("type-grid");
@@ -95,7 +96,21 @@
 
       const overlay = document.getElementById("analyzing-overlay");
       const steps = [...document.querySelectorAll(".analyzing-step")];
+      const cadastral = window.ParcelaLive.parcelParam();
+      const saved = window.ParcelaLive.loadProject();
+      if (saved) {
+        grid.querySelectorAll(".type-option").forEach((b) => b.classList.toggle("is-selected", b.dataset.type === saved.type));
+        document.getElementById("units").value = saved.units || "";
+        document.getElementById("investment").value = saved.investment || "";
+      }
+
       document.getElementById("analyze-cta").addEventListener("click", () => {
+        const selected = grid.querySelector(".type-option.is-selected");
+        window.ParcelaLive.saveProject({
+          type: selected ? selected.dataset.type : "Other",
+          units: document.getElementById("units").value.trim(),
+          investment: document.getElementById("investment").value.trim(),
+        });
         overlay.classList.add("is-visible");
         let i = 0;
         function advance() {
@@ -106,7 +121,7 @@
             i++;
             setTimeout(advance, 480);
           } else {
-            setTimeout(() => { window.location.href = "property.html"; }, 350);
+            setTimeout(() => { window.location.href = cadastral ? `property.html?parcel=${encodeURIComponent(cadastral)}` : "property.html"; }, 350);
           }
         }
         advance();

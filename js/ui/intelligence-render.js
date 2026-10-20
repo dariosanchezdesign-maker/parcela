@@ -99,7 +99,7 @@ window.ParcelaRender = (function () {
           <div class="a-label">${I.t("common_whyItMatters")}</div>
           <p class="text-sm" style="margin-bottom:0;">${I.tv(a.whyItMatters)}</p>
           <div class="a-label">${I.t("common_suggestedProfessional")}</div>
-          <span class="professional-tag">${I.t("professional_" + a.professional)}</span>
+          <span class="professional-tag">${typeof a.professional === "object" ? I.tv(a.professional) : I.t("professional_" + a.professional)}</span>
           <div class="a-label">${I.t("common_relevantEvidence")}</div>
           <div class="evidence-mini">
             <span>${a.sourceId ? window.PARCELA.sourceById(a.sourceId).name : "—"}</span>
@@ -129,7 +129,7 @@ window.ParcelaRender = (function () {
       { key: "height", labelKey: "property_height", f: reg.height },
       { key: "parking", labelKey: "property_parking", f: reg.parking },
     ];
-    const findingMap = {
+    const findingMap = reg.whyIds || {
       density: "f-density-tbd",
       height: "f-height-overlay",
       parking: "f-parking-standard",
@@ -143,7 +143,7 @@ window.ParcelaRender = (function () {
         <span class="f-value-group">
           <span class="f-value">${I.tv(r.f.value)}</span>
           ${findingMap[r.key] ? `<button class="why-link" data-reg-why="${r.key}">${I.t("common_why")}</button>` : ""}
-          ${r.key === "applicableRegulation" ? `<button class="why-link" data-summarize="1">${I.t("property_summarize")}</button>` : ""}
+          ${r.key === "applicableRegulation" && !reg.noSummarize ? `<button class="why-link" data-summarize="1">${I.t("property_summarize")}</button>` : ""}
         </span>
       </div>`
       )
