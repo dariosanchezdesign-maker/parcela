@@ -968,3 +968,29 @@ regardless of being asked twice:
       time, and gave the user the exact suppression command to run
       themselves (the hook's CLI isn't invokable by the agent directly).
       Moot now that Inter has been replaced by Urbanist.
+
+## Real data, milestone 1 — San Juan parcel lookup (2026-10-20)
+Goal set by user: real lookup first (no AI yet), one municipality, keep
+Prelan's data separate.
+- [x] Verified sources against real addresses before writing code:
+      CRIM parcels Feb 2025 (`sigejp.pr.gov/.../crim/crim_feb_2025`, much
+      newer than the 2018 layer found first), Planning Board current zoning
+      (`calificacion/cali_vige`, joins to CRIM on cadastral number), FEMA
+      NFHL layer 28 + FIRM panels (layer 3). Census geocoder rejected — it
+      matched "1 Calle Fortaleza" to "1 Calle E"; Esri World Geocoder used
+      for the point only, nothing stored.
+- [x] `js/data/lookup.js`: address or cadastral → parcel, zoning, overlays,
+      flood zones touching the parcel polygon (not just a point — 1055
+      Ashford is Zone X at the street but touches VE on the beach side),
+      map context. Shared 24 s time budget with retries; FEMA intermittently
+      refuses connections and recovers on retry.
+- [x] First built as a Netlify Function; it never worked in production —
+      `sigejp.pr.gov` doesn't answer Netlify's data centers. All three
+      servers allow CORS, so the lookup moved into the browser.
+- [x] Pages: search/identify/setup/property run on real data with
+      `?parcel=<cadastral>`; sections without real data are hidden, unknowns
+      list what isn't covered with a next step. Demo property still works.
+- Karst overlay (APE-ZC) shows on ~66% of San Juan zoning rows; it's the
+  official record, reported as "investigate", not a constraint.
+- Next: allowed uses/density per district (Reglamento use tables), more
+  municipalities, saving projects, then AI explanations on top.
