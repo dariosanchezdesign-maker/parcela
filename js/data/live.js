@@ -1,5 +1,5 @@
-/* Real property data. Calls the /api/lookup Netlify Function (CRIM parcels,
-   Planning Board zoning, FEMA flood zones) and reshapes its response into
+/* Real property data. Runs ParcelaLookup (CRIM parcels, Planning Board
+   zoning, FEMA flood zones — see lookup.js) and reshapes its result into
    the same window.PARCELA shape the prototype pages already render, so the
    UI modules don't need to know whether data is live or demo.
 
@@ -30,18 +30,18 @@ window.ParcelaLive = (function () {
   }
 
   // Resolves to the lookup payload, or rejects with an Error whose `code` is
-  // the function's error code (not_found, outside_coverage, ...).
+  // the lookup's error code (not_found, outside_coverage, ...).
   async function lookup(q) {
     const cached = cacheGet(q);
     if (cached) return cached;
     let res;
     try {
-      res = await fetch(`/api/lookup?q=${encodeURIComponent(q)}`);
+      res = await window.ParcelaLookup.run(q);
     } catch (e) {
-      throw Object.assign(new Error("network"), { code: "source_unavailable" });
+      throw Object.assign(new Error("lookup failed"), { code: "source_unavailable" });
     }
-    const data = await res.json().catch(() => ({ error: "source_unavailable" }));
-    if (!res.ok) throw Object.assign(new Error(data.error), { code: data.error, detail: data });
+    const data = res.body;
+    if (res.status !== 200) throw Object.assign(new Error(data.error), { code: data.error, detail: data });
     // A cadastral-number lookup has no address; keep one from an earlier
     // address search of the same parcel.
     const prior = cacheGet(data.property.cadastral);
