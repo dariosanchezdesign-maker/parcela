@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Condado Multifamily — Parcela</title>
+  <title>My projects — Parcela</title>
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/dashboard.css" />
 </head>
@@ -21,61 +21,119 @@
         <li><a href="projects.html" class="active"><svg class="shell-nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3 8h14" stroke="currentColor" stroke-width="1.4"/></svg><span data-i18n="nav_projects">Projects</span><span class="nav-dot"></span></a></li>
         <li><a href="reports.html"><svg class="shell-nav-icon" viewBox="0 0 20 20" fill="none"><path d="M5 2h7l3 3v13H5V2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 10h4M8 13h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span data-i18n="nav_reports">Reports</span><span class="nav-dot"></span></a></li>
       </ul>
-      <div class="shell-nav-footer"><span data-i18n="nav_footer">Prototype data · Puerto Rico</span><span id="lang-toggle-slot"></span></div>
+      <div class="shell-nav-footer"><span id="lang-toggle-slot"></span></div>
     </aside>
 
     <div class="shell-main">
       <div class="shell-content">
         <div class="page-head">
           <div>
-            <span class="eyebrow" id="proj-eyebrow"></span>
-            <h1 id="proj-name"></h1>
-            <p id="proj-meta"></p>
+            <h1 data-i18n="myprojects_title">My projects</h1>
+            <p id="account-line"></p>
           </div>
-          <a href="compare.html" class="btn btn-ghost" data-i18n="common_compareProperties">Compare properties</a>
+          <a href="search.html" class="btn btn-primary" data-i18n="myprojects_new">Analyze a property</a>
         </div>
 
-        <div class="section-head">
-          <h2 data-i18n="projects_evaluated">Properties being evaluated</h2>
-          <button class="btn-text text-sm" id="add-property" data-i18n="projects_addAnother">+ Add another property</button>
-        </div>
-        <div class="property-grid" id="project-properties"></div>
+        <p class="text-sm" id="projects-message" hidden></p>
+        <div class="property-grid" id="project-list"></div>
       </div>
     </div>
   </div>
 
   <script src="js/i18n.js"></script>
-  <script src="js/data/mockData.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/data/supabaseClient.js"></script>
+  <script src="js/data/live.js"></script>
+  <script src="js/data/account.js"></script>
   <script>
-    (function () {
-      const P = window.PARCELA;
+    (async function () {
       const I = window.ParcelaI18N;
+      const A = window.ParcelaAccount;
+      const list = document.getElementById("project-list");
+      const message = document.getElementById("projects-message");
+      const accountLine = document.getElementById("account-line");
+      const esc = (v) => String(v == null ? "" : v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+      const TYPE_KEYS = { Multifamily: "setup_multifamily", Commercial: "setup_commercial", Hospitality: "setup_hospitality", Industrial: "setup_industrial", "Mixed-use": "setup_mixedUse", Residential: "setup_residential", Other: "setup_other" };
 
-      document.getElementById("proj-eyebrow").textContent = I.t("projects_project");
-      document.getElementById("proj-name").textContent = P.project.name;
-      document.getElementById("proj-meta").textContent = `${I.tv(P.project.unitsLabel)} · ${P.project.investmentLabel}`;
+      function say(text, html) {
+        message.hidden = false;
+        if (html) message.innerHTML = html; else message.textContent = text;
+      }
 
-      document.getElementById("project-properties").innerHTML = P.comparisonProperties
-        .map(
-          (p) => `
-        <a class="property-card" href="${p.id === P.property.id ? "property.html" : "#"}">
-          <div class="pcard-top">
-            <div>
-              <h3>${I.tv(p.label)}</h3>
-              <div class="pcard-muni">${p.address}</div>
+      const user = await A.user();
+      if (!user) {
+        say(null, `${esc(I.t("myprojects_signedOut"))} <a href="signin.html?next=projects.html">${esc(I.t("signin_send"))}</a>`);
+        return;
+      }
+      accountLine.innerHTML = `${esc(I.t("signin_doneBody"))} <strong>${esc(user.email)}</strong> · <button class="btn-text text-sm" id="signout">${esc(I.t("signin_signOut"))}</button>`;
+      document.getElementById("signout").addEventListener("click", async () => {
+        await A.signOut();
+        location.reload();
+      });
+
+      let projects;
+      try {
+        projects = await A.listProjects();
+      } catch (err) {
+        console.error("Parcela: could not load projects", err);
+        say(I.t("myprojects_loadError"));
+        return;
+      }
+      if (!projects.length) {
+        say(I.t("myprojects_empty"));
+        return;
+      }
+
+      list.innerHTML = projects
+        .map((p) => {
+          const sm = p.summary || {};
+          const counts = sm.counts || {};
+          const fit = sm.fit;
+          const status = fit ? fit.category : (counts.constraint ? "constraint" : "investigate");
+          const type = TYPE_KEYS[p.project_type] ? I.t(TYPE_KEYS[p.project_type]) : (p.project_type || "—");
+          const title = p.address ? p.address.split(",")[0] : `${I.t("live_parcel")} ${p.cadastral}`;
+          const saved = new Date(p.updated_at).toLocaleDateString(I.lang === "es" ? "es-PR" : "en-US", { month: "short", day: "numeric", year: "numeric" });
+          return `
+        <div class="property-card" data-id="${esc(p.id)}">
+          <a href="property.html?parcel=${encodeURIComponent(p.cadastral)}" data-open="${esc(p.id)}" style="color:inherit;text-decoration:none;display:block;">
+            <div class="pcard-top">
+              <div>
+                <h3>${esc(title)}</h3>
+                <div class="pcard-muni">${esc(p.cadastral)} · ${esc(type)}${p.units ? ` · ${esc(p.units)}` : ""}</div>
+              </div>
+              <span class="status status-${esc(status)}">${esc(fit ? I.tv(fit.title) : I.tv(sm.feasibility) || "")}</span>
             </div>
-            <span class="status status-${p.status}">${I.tv(p.statusLabel)}</span>
-          </div>
-          <div class="pcard-meta">
-            <div class="field"><div class="m">${I.t("compare_unknowns")}</div><div class="v">${p.unknownsCount}</div></div>
-            <div class="field"><div class="m">${I.t("projects_constraints")}</div><div class="v">${p.constraintsCount}</div></div>
-          </div>
-        </a>`
-        )
+            <div class="pcard-meta">
+              <div class="field"><div class="m">${esc(I.t("projects_constraints"))}</div><div class="v">${counts.constraint || 0}</div></div>
+              <div class="field"><div class="m">${esc(I.t("compare_unknowns"))}</div><div class="v">${counts.unknown || 0}</div></div>
+              <div class="field"><div class="m">${esc(I.t("myprojects_saved"))}</div><div class="v">${esc(saved)}</div></div>
+            </div>
+          </a>
+          <button class="btn-text text-sm" data-delete="${esc(p.id)}" style="margin-top:8px;">${esc(I.t("myprojects_delete"))}</button>
+        </div>`;
+        })
         .join("");
 
-      document.getElementById("add-property").addEventListener("click", () => {
-        window.location.href = "search.html";
+      // Opening a project restores its setup answers before the property page loads.
+      list.querySelectorAll("[data-open]").forEach((a) => {
+        a.addEventListener("click", () => {
+          const p = projects.find((x) => x.id === a.dataset.open);
+          window.ParcelaLive.saveProject({ type: p.project_type || "Other", units: p.units || "", investment: p.investment || "" });
+        });
+      });
+      list.querySelectorAll("[data-delete]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          if (!confirm(I.t("myprojects_confirmDelete"))) return;
+          btn.disabled = true;
+          try {
+            await A.deleteProject(btn.dataset.delete);
+            btn.closest(".property-card").remove();
+            if (!list.children.length) say(I.t("myprojects_empty"));
+          } catch (err) {
+            console.error("Parcela: delete failed", err);
+            btn.disabled = false;
+          }
+        });
       });
     })();
   </script>

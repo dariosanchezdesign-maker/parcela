@@ -28,7 +28,11 @@ window.ParcelaDB = (function () {
     if (!window.supabase) {
       throw new Error("ParcelaDB: Supabase JS client not loaded — add the CDN <script> tag before this file.");
     }
-    client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Implicit flow so a sign-in link still works when opened in a different
+    // browser than the one that requested it (PKCE would need the original).
+    client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { flowType: "implicit", persistSession: true, detectSessionInUrl: true },
+    });
     return client;
   }
 
@@ -173,6 +177,9 @@ window.ParcelaDB = (function () {
   }
 
   return {
+    client: getClient,
+    url: SUPABASE_URL,
+    anonKey: SUPABASE_ANON_KEY,
     projectByParcelId,
     findingsByProjectId,
     findingById,

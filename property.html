@@ -32,6 +32,7 @@
           <p class="intel-locality" id="h-locality">San Juan, Puerto Rico</p>
           <span class="intel-project-tag" id="h-project-tag">Multifamily · 60–80 units</span>
           <div class="intel-header-actions">
+            <button class="btn btn-primary btn-sm" id="save-btn" style="display:none">Save project</button>
             <a href="reports.html" class="btn btn-ghost btn-sm" id="report-btn" data-i18n="property_generateReport">Generate feasibility report</a>
             <button class="btn btn-ghost btn-sm" id="compare-btn" data-i18n="property_compareOther">Compare with other properties</button>
           </div>
@@ -204,6 +205,7 @@
   <script src="js/data/mockData.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/data/supabaseClient.js"></script>
+  <script src="js/data/account.js"></script>
   <script src="js/data/lookup.js"></script>
   <script src="js/data/zoning-rules.js"></script>
   <script src="js/data/live.js"></script>
@@ -257,6 +259,36 @@
         const navFooter = document.querySelector('[data-i18n="nav_footer"]');
         navFooter.removeAttribute("data-i18n");
         navFooter.textContent = I.t("live_navFooter");
+        wireSave();
+      }
+
+      // ---------- save project (signed in) ----------
+      function wireSave() {
+        const btn = document.getElementById("save-btn");
+        btn.style.display = "";
+        btn.textContent = I.t("save_project");
+        const A = window.ParcelaAccount;
+        A.isSaved(P.property.cadastral)
+          .then((saved) => { if (saved) btn.textContent = I.t("save_update"); })
+          .catch(() => {});
+        btn.addEventListener("click", async () => {
+          if (!(await A.user())) {
+            const here = `property.html${location.search}`;
+            window.location.href = `signin.html?next=${encodeURIComponent(here)}`;
+            return;
+          }
+          btn.disabled = true;
+          btn.textContent = I.t("save_saving");
+          try {
+            await A.saveProject(P);
+            btn.textContent = I.t("save_saved");
+          } catch (err) {
+            console.error("Parcela: save failed", err);
+            btn.textContent = I.t("save_error");
+          } finally {
+            btn.disabled = false;
+          }
+        });
       }
 
       const DEMO_PARCEL_ID = "a0000000-0000-4000-8000-000000000001";
