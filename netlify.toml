@@ -1,2 +1,5 @@
+# Publish only the website files. The repo root also holds internal notes
+# (tasks/), database SQL (db/), and the README, which shouldn't be public.
 [build]
-  publish = "."
+  command = "rm -rf dist && mkdir dist && cp -r *.html assets css js dist/"
+  publish = "dist"
