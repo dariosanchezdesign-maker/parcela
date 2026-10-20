@@ -70,3 +70,38 @@
   font-size: 0.78rem;
   color: var(--ink-faint);
 }
+
+/* ---------- live report additions ---------- */
+.rd-field-list-wrap li { gap: var(--sp-4); }
+.rd-field-list-wrap .k { flex: 0 0 34%; }
+.rd-field-list-wrap .v { flex: 1; font-weight: 500; }
+
+.rd-maps { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+.rd-maps > * { min-width: 0; }
+@media (max-width: 640px) { .rd-maps { grid-template-columns: 1fr; } }
+.rd-map { margin: 0; }
+.rd-map figcaption { font-size: 0.78rem; font-weight: 600; margin-bottom: 6px; }
+.rd-map-svg { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: var(--r-md, 8px); }
+.rd-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 6px; font-size: 0.72rem; color: var(--ink-soft); }
+.rd-legend-item { display: inline-flex; align-items: center; gap: 5px; }
+.rd-legend .swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+.rd-item-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
+.rd-item-top h4 { min-width: 0; }
+.rd-faint { color: var(--ink-faint); }
+.rd-ai-note { font-style: italic; color: var(--ink-faint); }
+
+/* ---------- print / "Download PDF" ---------- */
+@page { size: letter; margin: 16mm 14mm; }
+@media print {
+  body { background: #fff !important; }
+  .shell-nav, .page-head, #scrim { display: none !important; }
+  .shell, .shell-main, .shell-content { display: block !important; margin: 0 !important; padding: 0 !important; max-width: none !important; }
+  .report-doc { max-width: none; border: none; border-radius: 0; padding: 0; }
+  .report-section .rs-num, .report-section h2 { break-after: avoid; }
+  .rd-item, .rd-map, .rd-field-list li, .rd-sources-table tr { break-inside: avoid; }
+  .rd-maps { grid-template-columns: 1fr 1fr; }
+  .status { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .rd-map-svg, .rd-legend .swatch { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  a { color: inherit; text-decoration: none; }
+}

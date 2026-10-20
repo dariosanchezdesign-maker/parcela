@@ -49,7 +49,9 @@ App pages:
 - `explore.html` — map-first property browsing with filters
 - `properties.html` / `compare.html` — property list and side-by-side compare
 - `projects.html` — project workspace
-- `reports.html` — generated feasibility report
+- `reports.html` — feasibility report; with `?parcel=<cadastral>&type=<project type>`
+  it's built from the real lookup (maps, district rules, findings, sources)
+  and "Download PDF" prints it
 - `sources.html` — every source and the findings that cite it
 - `index.html` — marketing landing page (site root)
 

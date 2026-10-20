@@ -109,7 +109,10 @@
               <div class="field"><div class="m">${esc(I.t("myprojects_saved"))}</div><div class="v">${esc(saved)}</div></div>
             </div>
           </a>
-          <button class="btn-text text-sm" data-delete="${esc(p.id)}" style="margin-top:8px;">${esc(I.t("myprojects_delete"))}</button>
+          <div style="display:flex;gap:16px;margin-top:8px;">
+            <a class="btn-text text-sm" href="reports.html?parcel=${encodeURIComponent(p.cadastral)}${p.project_type ? `&type=${encodeURIComponent(p.project_type)}` : ""}">${esc(I.t("reports_title"))}</a>
+            <button class="btn-text text-sm" data-delete="${esc(p.id)}">${esc(I.t("myprojects_delete"))}</button>
+          </div>
         </div>`;
         })
         .join("");

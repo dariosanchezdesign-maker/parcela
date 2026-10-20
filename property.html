@@ -250,7 +250,12 @@
           return;
         }
         ["section-physical", "section-infra", "section-history"].forEach((id) => { document.getElementById(id).style.display = "none"; });
-        ["compare-btn", "report-btn"].forEach((id) => { document.getElementById(id).style.display = "none"; });
+        const reportUrl = new URL("reports.html", location.href);
+        reportUrl.searchParams.set("parcel", liveCadastral);
+        const projectType = (window.ParcelaLive.loadProject() || {}).type;
+        if (projectType) reportUrl.searchParams.set("type", projectType);
+        document.getElementById("report-btn").href = `${reportUrl.pathname.split("/").pop()}${reportUrl.search}`;
+        ["compare-btn"].forEach((id) => { document.getElementById(id).style.display = "none"; });
         // Drop data-i18n so the static translation pass can't put the
         // prototype labels back over the live ones.
         const mapNote = document.getElementById("map-note");

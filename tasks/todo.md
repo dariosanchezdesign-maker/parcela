@@ -1013,3 +1013,17 @@ Prelan's data separate.
       mocked Supabase and Claude responses (no real key in this session).
 - Needs the owner: run `db/migration_004_accounts.sql`, set Supabase Auth
   Site URL + redirect URLs, add `ANTHROPIC_API_KEY` in Netlify.
+
+## Milestone 3 — risk layers + real report (2026-10-20)
+- [x] Liquefaction, tsunami zone, FEMA ABFE 0.2% advisory flood, historic
+      zones and sites within 100 m (SIGE layers), with findings, sources, a
+      geotechnical next step on high liquefaction, and the map's
+      Environmental tab. Landslide layer unusable (4 island-wide polygons,
+      every query times out) → listed as unknown. Risk-layer author isn't
+      documented in the service; cited as Planning Board SIGE.
+- [x] `reports.html?parcel=&type=`: live report (summary, property, zoning
+      + flood maps, district rules, findings worst-first with evidence and
+      source, unknowns, next steps, AI summary if already generated, cited
+      sources). Download PDF = browser print with print CSS; Share copies a
+      link that carries the project type. Linked from property page and
+      saved projects. Verified via headless print to Letter PDF (7 pages).

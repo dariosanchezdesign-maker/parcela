@@ -54,8 +54,15 @@ window.ParcelaLive = (function () {
     try { sessionStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch (e) {}
   }
 
+  // A ?type= in the URL (shared report links) wins over this tab's setup.
   function loadProject() {
-    try { return JSON.parse(sessionStorage.getItem(PROJECT_KEY)) || null; } catch (e) { return null; }
+    const urlType = new URLSearchParams(location.search).get("type");
+    let saved = null;
+    try { saved = JSON.parse(sessionStorage.getItem(PROJECT_KEY)) || null; } catch (e) {}
+    if (urlType && PROJECT_TYPE_KEYS[urlType]) {
+      return saved && saved.type === urlType ? saved : { type: urlType, units: "", investment: "" };
+    }
+    return saved;
   }
 
   // ---------- map projection ----------
