@@ -86,6 +86,22 @@ window.ParcelaLive = (function () {
   const ZONING_COLORS = ["#3f8557", "#b07a2a", "#7a5caa", "#2f7f8f", "#a5493f", "#6b7a2f"];
   const STREET_CODES = ["VIAL"];
 
+  const LIQ_COLORS = {
+    "Licuación Muy Bajo": "rgba(170,170,160,0.10)",
+    "Licuación Bajo": "rgba(214,184,96,0.22)",
+    "Licuación Moderado": "rgba(214,150,64,0.30)",
+    "Licuación Alto": "rgba(196,98,52,0.34)",
+    "Licuación Muy Alto": "rgba(160,52,40,0.40)",
+  };
+  const LIQ_LABELS = {
+    "Licuación Muy Bajo": { es: "Licuación muy baja", en: "Liquefaction very low" },
+    "Licuación Bajo": { es: "Licuación baja", en: "Liquefaction low" },
+    "Licuación Moderado": { es: "Licuación moderada", en: "Liquefaction moderate" },
+    "Licuación Alto": { es: "Licuación alta", en: "Liquefaction high" },
+    "Licuación Muy Alto": { es: "Licuación muy alta", en: "Liquefaction very high" },
+  };
+  const HISTORIC_OUTLINE = "#7a5caa";
+
   function floodColor(zone, subtype) {
     const z = (zone || "").toUpperCase();
     if (z.startsWith("V")) return "rgba(47,75,143,0.42)";
@@ -115,6 +131,14 @@ window.ParcelaLive = (function () {
     const parcelRow = { labelKey: "map_subjectParcel", color: "var(--map-selected)" };
     const noData = [{ labelKey: "live_mapNoData", color: "var(--line-strong)" }];
 
+    const liqLevels = [...new Set((data.map.liquefaction || []).map((l) => l.level))]
+      .filter((lvl) => LIQ_COLORS[lvl])
+      .sort((a, b) => Object.keys(LIQ_COLORS).indexOf(b) - Object.keys(LIQ_COLORS).indexOf(a));
+    const envLegend = [
+      ...liqLevels.map((lvl) => ({ label: I.tv(LIQ_LABELS[lvl]), color: LIQ_COLORS[lvl].replace(/[\d.]+\)$/, "0.9)") })),
+      ...[...new Set((data.map.historicZones || []).map((h) => h.name))].map((name) => ({ label: name, color: HISTORIC_OUTLINE })),
+    ];
+
     return {
       live: true,
       viewBox: `0 0 ${VIEW_W} ${VIEW_H}`,
@@ -126,7 +150,11 @@ window.ParcelaLive = (function () {
         .filter((z) => !STREET_CODES.includes(z.code))
         .map((z) => ({ d: pathD(z.rings, project), color: colorOf(z.code) })),
       flood: data.map.flood.map((f) => ({ d: pathD(f.rings, project), color: floodColor(f.zone, f.subtype) })),
-      environmental: null,
+      // Liquefaction fills, historic-zone boundaries drawn on top.
+      environmental: [
+        ...(data.map.liquefaction || []).map((l) => ({ d: pathD(l.rings, project), color: LIQ_COLORS[l.level] || "rgba(0,0,0,0.05)" })),
+        ...(data.map.historicZones || []).map((h) => ({ d: pathD(h.rings, project), outline: HISTORIC_OUTLINE })),
+      ],
       infrastructure: [],
       development: [],
       legends: {
@@ -134,7 +162,7 @@ window.ParcelaLive = (function () {
         flood: floodZones.length
           ? [...floodZones.map((z) => ({ label: I.tv(floodLegendLabel(z.zone, z.subtype)), color: floodColor(z.zone, z.subtype).replace(/[\d.]+\)$/, "0.9)") })), parcelRow]
           : noData,
-        environmental: noData,
+        environmental: envLegend.length ? [...envLegend, parcelRow] : noData,
         infrastructure: noData,
         development: noData,
       },

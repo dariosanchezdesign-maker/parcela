@@ -94,6 +94,9 @@ Coverage: **San Juan only** for now (`COVERED_MUNICIPALITIES` in
 | Parcel boundary, cadastral number, area | CRIM parcels, Feb 2025 (`crim/crim_feb_2025` on the Planning Board's SIGE server) |
 | Zoning district, overlays, resolution, effective date | Planning Board current zoning (`calificacion/cali_vige`) |
 | Flood zone, FIRM panel, effective date | FEMA National Flood Hazard Layer |
+| Liquefaction susceptibility, tsunami flood zone | Planning Board SIGE risk layers (`Licuación`, `Tsunami_flood_zones`; original author not documented in the service) |
+| Advisory flood zones (0.2% annual chance, incl. surge and waves) | FEMA ABFE, via the Planning Board's SIGE server (`ABFE_02pct`) |
+| Historic zones and sites within 100 m | Planning Board, Reglamento de Planificación Núm. 5 (`JP_Reglamentario/Sitios_Historicos_JP`) |
 | Address → map point | Esri World Geocoder (only the point is used; results aren't stored) |
 
 **District rules.** For lots under San Juan's Plan Territorial (about 80% of
@@ -107,6 +110,8 @@ ordinary rulemaking, so the app labels it accordingly. Lots under other
 plans, districts with no official equivalent (R-5, R-6), and public or
 conservation districts come back as unknown.
 
+Landslide susceptibility isn't covered: the SIGE landslide layer is four
+island-wide polygons and every spatial query against it times out.
 Utility capacity, title, and environmental history are **not** covered yet;
 the app lists them as unknowns with a next step instead of guessing.
 

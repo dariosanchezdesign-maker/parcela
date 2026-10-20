@@ -71,7 +71,11 @@ window.ParcelaMap = (function () {
     // environmental overlay
     const envt = svgEl("g", { class: "layer-overlay layer-environmental", "data-layer": "environmental" });
     asList(map.environmental).forEach((e) => {
-      envt.appendChild(shape(e, { fill: "rgba(122,92,170,0.18)", stroke: "#7a5caa", "stroke-width": "1", "stroke-dasharray": "1 4", "stroke-linecap": "round" }));
+      envt.appendChild(shape(e, e.outline
+        ? { fill: "none", stroke: e.outline, "stroke-width": "2", "stroke-dasharray": "6 3" }
+        : e.color
+          ? { fill: e.color, stroke: "rgba(0,0,0,0.12)", "stroke-width": "0.6" }
+          : { fill: "rgba(122,92,170,0.18)", stroke: "#7a5caa", "stroke-width": "1", "stroke-dasharray": "1 4", "stroke-linecap": "round" }));
     });
     svg.appendChild(envt);
 
