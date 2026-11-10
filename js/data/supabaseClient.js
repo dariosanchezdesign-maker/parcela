@@ -1,5 +1,5 @@
-/* Parcela — Supabase-backed data access, parallel to js/data/mockData.js.
-   Does not replace window.PARCELA or touch any existing page yet — this
+/* ATERRA — Supabase-backed data access, parallel to js/data/mockData.js.
+   Does not replace window.ATERRA or touch any existing page yet — this
    is the proof-of-concept layer described in tasks/todo.md's "Backend
    scaffold" section. A page opts in by loading this script (after the
    Supabase JS client, loaded from a CDN) instead of / alongside
@@ -15,7 +15,7 @@
    The anon key is safe to embed client-side: schema.sql's Row Level
    Security policies only grant it SELECT, never INSERT/UPDATE/DELETE. */
 
-window.ParcelaDB = (function () {
+window.AterraDB = (function () {
   const SUPABASE_URL = "https://wwmunjpojzfjkketbpvl.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3bXVuanBvanpmamtrZXRicHZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5MjgyNDcsImV4cCI6MjEwNTUwNDI0N30.qwfIZT64_FAmq0n9tHGTbI-BPlf-uV8RtVuZnZFgVxk"; // public "anon" key — safe client-side, RLS grants it SELECT only
 
@@ -23,10 +23,10 @@ window.ParcelaDB = (function () {
   function getClient() {
     if (client) return client;
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      throw new Error("ParcelaDB: set SUPABASE_URL and SUPABASE_ANON_KEY in js/data/supabaseClient.js before use.");
+      throw new Error("AterraDB: set SUPABASE_URL and SUPABASE_ANON_KEY in js/data/supabaseClient.js before use.");
     }
     if (!window.supabase) {
-      throw new Error("ParcelaDB: Supabase JS client not loaded — add the CDN <script> tag before this file.");
+      throw new Error("AterraDB: Supabase JS client not loaded — add the CDN <script> tag before this file.");
     }
     // Implicit flow so a sign-in link still works when opened in a different
     // browser than the one that requested it (PKCE would need the original).

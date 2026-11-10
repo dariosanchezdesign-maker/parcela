@@ -1,71 +1,107 @@
-/* Parcela design tokens — V3, development-intelligence platform.
-   Restrained neutral foundation (off-white/near-black), accent color used
-   only for meaning (favorable/investigate/constraint/unknown), never as
-   decoration. Built to read as premium enterprise GIS + financial software,
-   not a consumer app. */
+/* ATERRA design tokens.
+   Navy anchors the interface, cyan is reserved for primary emphasis and
+   data highlights, and neutral surfaces carry the content. Status colors
+   carry meaning only (favorable / investigate / constraint / unknown).
+
+   Contrast notes (WCAG 2.2 AA):
+   - Cyan (#38C6CF) never carries text on light surfaces. Use --accent-ink
+     for accent-colored text on white, and cyan itself only on navy.
+   - --ink-faint is the lightest text color allowed on --paper. */
 
 :root {
   color-scheme: light;
 
-  /* ---- ink & paper ---- */
-  --ink: #14161a;
-  --ink-soft: #52565e;
-  --ink-faint: #8a8e96;
-  --paper: #f6f5f2;
-  --surface: #ffffff;
-  --surface-sunken: #eeece6;
-  --surface-raised: #ffffff;
-  --line: #e0ded7;
-  --line-strong: #c7c4ba;
-  --line-on-dark: rgba(255, 255, 255, 0.14);
+  /* ---- brand ---- */
+  --navy-900: #101d32;   /* Midnight Navy */
+  --navy-800: #172840;   /* Deep Navy */
+  --navy-700: #223a5c;
+  --cyan-500: #38c6cf;   /* Primary Cyan */
+  --teal-400: #78b9b7;   /* Muted Teal */
+  --accent: var(--cyan-500);
+  --accent-ink: #0b6f78; /* cyan darkened for text on light surfaces */
+  --accent-soft: #e6f7f8;
+  --accent-line: #b5e6ea;
 
-  /* ---- brand ink (near-black, used for primary CTAs / selected state) ---- */
-  --brand: #14161a;
-  --brand-hover: #2a2d33;
+  /* ---- ink & paper ---- */
+  --ink: #101d32;
+  --ink-soft: #475569;
+  --ink-faint: #64748b;  /* Slate */
+  --paper: #f8fafc;      /* Warm White */
+  --surface: #ffffff;
+  --surface-sunken: #f1f5f9;
+  --surface-raised: #ffffff;
+  --line: #e2e8f0;       /* Border */
+  --line-strong: #cbd5e1;
+  --line-on-dark: rgba(255, 255, 255, 0.14);
+  --ink-on-dark: #f8fafc;
+  --ink-on-dark-soft: #b6c2d4;
+
+  /* ---- primary action ---- */
+  --brand: var(--navy-900);
+  --brand-hover: var(--navy-700);
 
   /* ---- semantic: finding status ---- */
-  --favorable-fg: #235c3f;
-  --favorable-fg-strong: #1a4630;
-  --favorable-bg: #e9f1ea;
-  --favorable-line: #c3d9c6;
-  --favorable-dot: #3d8557;
+  --favorable-fg: #17603f;
+  --favorable-fg-strong: #124a31;
+  --favorable-bg: #e8f5ee;
+  --favorable-line: #bfe0cd;
+  --favorable-dot: #2f8f5f;
 
-  --investigate-fg: #8a5f10;
-  --investigate-fg-strong: #6b4a0c;
-  --investigate-bg: #faf3e2;
-  --investigate-line: #e6d3a4;
-  --investigate-dot: #b9821c;
+  --investigate-fg: #85590a;
+  --investigate-fg-strong: #6b4708;
+  --investigate-bg: #fdf5e3;
+  --investigate-line: #ecd7a2;
+  --investigate-dot: #c0861a;
 
-  --constraint-fg: #8f3527;
-  --constraint-fg-strong: #6e281d;
-  --constraint-bg: #f8ece9;
-  --constraint-line: #e3c3bb;
-  --constraint-dot: #b64a37;
+  --constraint-fg: #9a2f24;
+  --constraint-fg-strong: #7a241b;
+  --constraint-bg: #fcedea;
+  --constraint-line: #f0c6bf;
+  --constraint-dot: #c8493a;
 
-  --unknown-fg: #55585f;
-  --unknown-fg-strong: #3c3f45;
-  --unknown-bg: #eeede9;
-  --unknown-line: #d6d3c9;
-  --unknown-dot: #8a8d94;
+  --unknown-fg: #475569;
+  --unknown-fg-strong: #334155;
+  --unknown-bg: #f1f5f9;
+  --unknown-line: #cbd5e1;
+  --unknown-dot: #94a3b8;
 
-  /* ---- map layers (muted, distinct at a glance) ---- */
-  --map-base-land: #dcd8cc;
-  --map-base-block: #c9c4b3;
-  --map-parcel: #b7b19c;
-  --map-road: #f2f0ea;
-  --map-selected: #14161a;
+  /* ---- evidence basis (where a statement comes from) ---- */
+  --basis-record: #17603f;
+  --basis-derived: #0b6f78;
+  --basis-estimate: #85590a;
+  --basis-missing: #64748b;
+  --basis-ai: #5b4bb3;
+  --basis-ai-bg: #f1effb;
+  --basis-ai-line: #d6d0f2;
+
+  /* ---- map layers ---- */
+  --map-base-land: #e8edf3;
+  --map-base-block: #cfd8e3;
+  --map-parcel: #dbe2eb;
+  --map-road: #f8fafc;
+  --map-selected: #101d32;
+  --map-selected-fill: rgba(56, 198, 207, 0.26);
   --map-flood-ae: rgba(59, 92, 170, 0.32);
   --map-flood-x: rgba(59, 92, 170, 0.12);
-  --map-zoning-r: rgba(63, 133, 87, 0.28);
-  --map-zoning-c: rgba(185, 130, 28, 0.28);
-  --map-zoning-mu: rgba(122, 92, 170, 0.28);
+  --map-zoning-r: rgba(47, 143, 95, 0.24);
+  --map-zoning-c: rgba(192, 134, 26, 0.26);
+  --map-zoning-mu: rgba(122, 92, 170, 0.26);
   --map-infra-line: #3b5caa;
-  --map-dev-marker: #14161a;
+  --map-dev-marker: #101d32;
 
   /* ---- type ---- */
-  --font-display: "Urbanist", system-ui, sans-serif;
-  --font-body: "Urbanist", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-display: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: var(--font-display);
+  /* Codes and figures: same family, tabular figures (see .mono). */
+  --font-mono: var(--font-display);
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.625rem;
+  --text-2xl: 2.125rem;
 
   /* ---- spacing scale (4px base) ---- */
   --sp-1: 4px;
@@ -78,19 +114,28 @@
   --sp-8: 56px;
   --sp-9: 80px;
 
-  /* ---- radius (small, precise — not consumer-rounded) ---- */
+  /* ---- radius (small and precise) ---- */
   --r-xs: 4px;
   --r-sm: 6px;
-  --r-md: 8px;
-  --r-lg: 12px;
+  --r-md: 10px;
+  --r-lg: 14px;
 
-  /* ---- shadow: hairline first, shadow only for floating layers ---- */
-  --shadow-sm: 0 1px 2px rgba(20, 22, 26, 0.05);
-  --shadow-md: 0 6px 20px rgba(20, 22, 26, 0.10);
-  --shadow-lg: 0 16px 40px rgba(20, 22, 26, 0.14);
+  /* ---- elevation: hairlines first, shadows only for floating layers ---- */
+  --shadow-sm: 0 1px 2px rgba(16, 29, 50, 0.06);
+  --shadow-md: 0 8px 24px rgba(16, 29, 50, 0.1);
+  --shadow-lg: 0 20px 48px rgba(16, 29, 50, 0.18);
+
+  /* ---- focus ---- */
+  --focus-ring: 0 0 0 2px var(--surface), 0 0 0 4px var(--cyan-500);
+
+  /* ---- motion ---- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 120ms;
+  --dur: 200ms;
 
   /* ---- layout ---- */
-  --shell-nav-w: 224px;
+  --shell-nav-w: 240px;
   --header-h: 60px;
+  --mobile-bar-h: 60px;
   --max-w: 1360px;
 }

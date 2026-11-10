@@ -2,7 +2,7 @@
    controls (Satellite / Zoning / Flood / Environmental / Infrastructure /
    Development). The subject parcel outline stays visible on every layer. */
 
-window.ParcelaMap = (function () {
+window.AterraMap = (function () {
   const LAYERS = ["satellite", "zoning", "flood", "environmental", "infrastructure", "development"];
 
   function svgEl(tag, attrs) {
@@ -25,7 +25,7 @@ window.ParcelaMap = (function () {
   }
 
   function buildSvg(map) {
-    const svg = svgEl("svg", { viewBox: map.viewBox, "aria-hidden": "true" });
+    const svg = svgEl("svg", { viewBox: map.viewBox, "aria-hidden": "true", focusable: "false" });
 
     // base texture (mock satellite/aerial read)
     const base = svgEl("g", { class: "layer-base" });
@@ -110,9 +110,10 @@ window.ParcelaMap = (function () {
     const parcelGroup = svgEl("g", { class: "layer-parcel" });
     parcelGroup.appendChild(
       shape(map.parcel, {
-        fill: "rgba(20,22,26,0.06)",
+        fill: "var(--map-selected-fill)",
         stroke: "var(--map-selected)",
-        "stroke-width": "2.2",
+        "stroke-width": "2.4",
+        "stroke-linejoin": "round",
         "stroke-dasharray": "0",
       })
     );
@@ -139,7 +140,7 @@ window.ParcelaMap = (function () {
   }
 
   function mount(container, map) {
-    const I = window.ParcelaI18N;
+    const I = window.AterraI18N;
     const svg = buildSvg(map);
     container.querySelector(".map-svg-slot").appendChild(svg);
     const legendEl = container.querySelector(".map-legend");
@@ -151,15 +152,22 @@ window.ParcelaMap = (function () {
         const g = svg.querySelector(`[data-layer="${l}"]`);
         if (g) g.style.display = l === layer ? "block" : "none";
       });
-      controls.forEach((btn) => btn.classList.toggle("is-active", btn.dataset.layer === layer));
+      controls.forEach((btn) => btn.setAttribute("aria-pressed", btn.dataset.layer === layer ? "true" : "false"));
       const legend = LEGENDS[layer];
       legendEl.innerHTML =
         `<div class="legend-title">${I.t(legend.titleKey)}</div>` +
         legend.rows.map((r) => `<div class="legend-row"><span class="swatch" style="background:${r.color}"></span>${r.label || I.t(r.labelKey)}</div>`).join("");
-      container.dispatchEvent(new CustomEvent("parcela:layer-change", { detail: { layer } }));
+      container.dispatchEvent(new CustomEvent("aterra:layer-change", { detail: { layer } }));
     }
 
-    controls.forEach((btn) => btn.addEventListener("click", () => setLayer(btn.dataset.layer)));
+    // A live lookup has no infrastructure or permit layers yet; don't offer
+    // a control that would only show "no data".
+    controls.forEach((btn) => {
+      const layer = btn.dataset.layer;
+      const empty = map.live && layer !== "satellite" && svg.querySelector(`[data-layer="${layer}"]`).childElementCount === 0;
+      btn.hidden = empty;
+      btn.addEventListener("click", () => setLayer(layer));
+    });
     setLayer("satellite");
   }
 

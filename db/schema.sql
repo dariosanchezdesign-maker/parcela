@@ -1,4 +1,4 @@
--- Parcela — core entity schema (Supabase / Postgres)
+-- ATERRA — core entity schema (Supabase / Postgres)
 --
 -- Models the ontology decided for the product: a Finding is never just
 -- text — it is a row that points at the Source(s) that produced it and
@@ -58,7 +58,7 @@ create table if not exists sources (
   document text,                        -- e.g. "FIRM Panel 72000C0245J"
   section text,                         -- e.g. "Zone AE delineation"
   published_at text,                    -- source's own stated date (often just a year/quarter)
-  retrieved_at timestamptz not null default now(), -- when Parcela actually pulled this data
+  retrieved_at timestamptz not null default now(), -- when ATERRA actually pulled this data
   dataset_version text,                 -- hash or version string for the underlying dataset, when known
   created_at timestamptz not null default now()
 );

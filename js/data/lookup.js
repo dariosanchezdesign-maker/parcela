@@ -13,7 +13,7 @@
    Anything these sources don't cover is returned as an explicit unknown —
    never filled in. */
 
-window.ParcelaLookup = (function () {
+window.AterraLookup = (function () {
   const SIGE = "https://sigejp.pr.gov/server/rest/services";
   const PARCELS = `${SIGE}/crim/crim_feb_2025/MapServer/0`;
   const ZONING = `${SIGE}/calificacion/cali_vige/MapServer/0`;
@@ -657,7 +657,7 @@ window.ParcelaLookup = (function () {
       {
         title: bi("Condiciones ambientales e historial de permisos", "Environmental conditions and permit history"),
         whyItMatters: bi("Contaminación previa, suelos o permisos existentes cambian el riesgo y el calendario.", "Prior contamination, soils, or existing permits change risk and timeline."),
-        nextStep: bi("Parcela aún no cubre estos datos; evaluación ambiental Fase I y búsqueda de permisos en OGPe.", "Parcela doesn't cover this data yet; Phase I environmental assessment and permit search at OGPe."),
+        nextStep: bi("ATERRA aún no cubre estos datos; evaluación ambiental Fase I y búsqueda de permisos en OGPe.", "ATERRA doesn't cover this data yet; Phase I environmental assessment and permit search at OGPe."),
         relatedFindingId: null,
       },
       {
