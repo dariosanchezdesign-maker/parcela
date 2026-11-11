@@ -1,98 +1,134 @@
 /* ATERRA design tokens.
-   Navy anchors the interface, cyan is reserved for primary emphasis and
-   data highlights, and neutral surfaces carry the content. Status colors
-   carry meaning only (favorable / investigate / constraint / unknown).
+   Palette: electric violet into magenta, orange and amber, on true black
+   and clean white. Gradients carry the brand (auras, the logo tile, key
+   surfaces); flat color carries the interface. Status colors carry meaning
+   only (favorable / investigate / constraint / unknown).
 
-   Contrast notes (WCAG 2.2 AA):
-   - Cyan (#38C6CF) never carries text on light surfaces. Use --accent-ink
-     for accent-colored text on white, and cyan itself only on navy.
-   - --ink-faint is the lightest text color allowed on --paper. */
+   Contrast rules (WCAG 2.2 AA):
+   - Violet #7831FD and magenta #D33C70 may carry text on white, and white
+     text may sit on them.
+   - Orange #FE6F33, red-orange #FD5C30 and amber #FCB255 never carry text
+     on light surfaces; behind text they take black, not white.
+   - On black, small accent text uses --violet-light. */
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  /* ---- brand ---- */
-  --navy-900: #101d32;   /* Midnight Navy */
-  --navy-800: #172840;   /* Deep Navy */
-  --navy-700: #223a5c;
-  --cyan-500: #38c6cf;   /* Primary Cyan */
-  --teal-400: #78b9b7;   /* Muted Teal */
-  --accent: var(--cyan-500);
-  --accent-ink: #0b6f78; /* cyan darkened for text on light surfaces */
-  --accent-soft: #e6f7f8;
-  --accent-line: #b5e6ea;
+  /* ---- brand palette ---- */
+  --black: #000000;
+  --night: #0c061d;        /* violet-tinted black: sidebar, dark panels */
+  --night-2: #170d2e;
+  --night-3: #241544;
+  --indigo: #4818b8;       /* deep indigo */
+  --violet: #7831fd;       /* electric violet: primary */
+  --violet-hover: #6522e8;
+  --violet-light: #a57bfe; /* violet for text on black */
+  --violet-soft: #f2ecff;
+  --violet-line: #ddcdff;
+  --magenta: #d33c70;
+  --red-orange: #fd5c30;
+  --orange: #fe6f33;
+  --amber: #fcb255;
+
+  --gradient-brand: linear-gradient(120deg, var(--indigo) 0%, var(--violet) 32%, var(--magenta) 62%, var(--orange) 84%, var(--amber) 100%);
+  --gradient-warm: linear-gradient(120deg, var(--violet) 0%, var(--magenta) 45%, var(--orange) 80%, var(--amber) 100%);
+  /* Blurred light behind dark surfaces: violet top-right, orange low. */
+  --aura-dark:
+    radial-gradient(60% 70% at 85% 10%, rgba(120, 49, 253, 0.85) 0%, rgba(120, 49, 253, 0) 70%),
+    radial-gradient(55% 60% at 70% 95%, rgba(254, 111, 51, 0.75) 0%, rgba(211, 60, 112, 0.35) 45%, rgba(211, 60, 112, 0) 75%),
+    radial-gradient(40% 50% at 30% 100%, rgba(72, 24, 184, 0.5) 0%, rgba(72, 24, 184, 0) 70%),
+    var(--black);
+  /* Soft warm glow behind light surfaces. */
+  --aura-light:
+    radial-gradient(55% 80% at 100% 0%, rgba(120, 49, 253, 0.16) 0%, rgba(120, 49, 253, 0) 70%),
+    radial-gradient(60% 90% at 10% 110%, rgba(254, 111, 51, 0.18) 0%, rgba(252, 178, 85, 0.1) 40%, rgba(252, 178, 85, 0) 75%),
+    var(--white);
+
+  --accent: var(--violet);
+  --accent-ink: var(--violet-light);
+  --accent-soft: rgba(120, 49, 253, 0.16);
+  --accent-line: rgba(165, 123, 254, 0.4);
 
   /* ---- ink & paper ---- */
-  --ink: #101d32;
-  --ink-soft: #475569;
-  --ink-faint: #64748b;  /* Slate */
-  --paper: #f8fafc;      /* Warm White */
-  --surface: #ffffff;
-  --surface-sunken: #f1f5f9;
-  --surface-raised: #ffffff;
-  --line: #e2e8f0;       /* Border */
-  --line-strong: #cbd5e1;
+  --white: #ffffff;
+  --ink: #f5f3fa;
+  --ink-soft: #c4bfd3;
+  --ink-faint: #9a93ad;
+  --ink-inverse: #111111;  /* text on white pills */
+  --paper: #07040f;
+  /* Glass: translucent fills that blur whatever glows behind them. */
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-sunken: rgba(255, 255, 255, 0.06);
+  --surface-raised: rgba(255, 255, 255, 0.08);
+  --surface-solid: #120b22;   /* inputs, menus, anything that must be opaque */
+  --surface-overlay: rgba(14, 8, 28, 0.94); /* panels and pop-ups over content */
+  --glass-blur: 22px;
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(196, 167, 255, 0.55);
+  --glass-highlight: rgba(255, 255, 255, 0.07);
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.2);
   --line-on-dark: rgba(255, 255, 255, 0.14);
-  --ink-on-dark: #f8fafc;
-  --ink-on-dark-soft: #b6c2d4;
+  --ink-on-dark: #ffffff;
+  --ink-on-dark-soft: #c4bfd3;
+  --ink-on-dark-faint: #9a93ad;
 
   /* ---- primary action ---- */
-  --brand: var(--navy-900);
-  --brand-hover: var(--navy-700);
+  --brand: #ffffff;
+  --brand-hover: #e9e4f5;
 
-  /* ---- semantic: finding status ---- */
-  --favorable-fg: #17603f;
-  --favorable-fg-strong: #124a31;
-  --favorable-bg: #e8f5ee;
-  --favorable-line: #bfe0cd;
-  --favorable-dot: #2f8f5f;
+  /* ---- semantic: finding status (tuned for dark glass) ---- */
+  --favorable-fg: #7ee2ad;
+  --favorable-fg-strong: #a6f0c8;
+  --favorable-bg: rgba(47, 143, 95, 0.16);
+  --favorable-line: rgba(126, 226, 173, 0.35);
+  --favorable-dot: #4fcf8b;
 
-  --investigate-fg: #85590a;
-  --investigate-fg-strong: #6b4708;
-  --investigate-bg: #fdf5e3;
-  --investigate-line: #ecd7a2;
-  --investigate-dot: #c0861a;
+  --investigate-fg: #fcc873;
+  --investigate-fg-strong: #ffdca3;
+  --investigate-bg: rgba(252, 178, 85, 0.14);
+  --investigate-line: rgba(252, 200, 115, 0.38);
+  --investigate-dot: #fcb255;
 
-  --constraint-fg: #9a2f24;
-  --constraint-fg-strong: #7a241b;
-  --constraint-bg: #fcedea;
-  --constraint-line: #f0c6bf;
-  --constraint-dot: #c8493a;
+  --constraint-fg: #ff9e80;
+  --constraint-fg-strong: #ffc1ad;
+  --constraint-bg: rgba(253, 92, 48, 0.16);
+  --constraint-line: rgba(255, 158, 128, 0.4);
+  --constraint-dot: #fd5c30;
 
-  --unknown-fg: #475569;
-  --unknown-fg-strong: #334155;
-  --unknown-bg: #f1f5f9;
-  --unknown-line: #cbd5e1;
-  --unknown-dot: #94a3b8;
+  --unknown-fg: #c4bfd3;
+  --unknown-fg-strong: #e2deec;
+  --unknown-bg: rgba(255, 255, 255, 0.07);
+  --unknown-line: rgba(255, 255, 255, 0.2);
+  --unknown-dot: #9a93ad;
 
   /* ---- evidence basis (where a statement comes from) ---- */
-  --basis-record: #17603f;
-  --basis-derived: #0b6f78;
-  --basis-estimate: #85590a;
-  --basis-missing: #64748b;
-  --basis-ai: #5b4bb3;
-  --basis-ai-bg: #f1effb;
-  --basis-ai-line: #d6d0f2;
+  --basis-record: #7ee2ad;
+  --basis-derived: #b9a0ff;
+  --basis-estimate: #fcc873;
+  --basis-missing: #9a93ad;
+  --basis-ai: #ff8fb8;
+  --basis-ai-bg: rgba(211, 60, 112, 0.16);
+  --basis-ai-line: rgba(255, 143, 184, 0.38);
 
   /* ---- map layers ---- */
-  --map-base-land: #e8edf3;
-  --map-base-block: #cfd8e3;
-  --map-parcel: #dbe2eb;
-  --map-road: #f8fafc;
-  --map-selected: #101d32;
-  --map-selected-fill: rgba(56, 198, 207, 0.26);
-  --map-flood-ae: rgba(59, 92, 170, 0.32);
-  --map-flood-x: rgba(59, 92, 170, 0.12);
-  --map-zoning-r: rgba(47, 143, 95, 0.24);
-  --map-zoning-c: rgba(192, 134, 26, 0.26);
-  --map-zoning-mu: rgba(122, 92, 170, 0.26);
-  --map-infra-line: #3b5caa;
-  --map-dev-marker: #101d32;
+  --map-base-land: #140c26;
+  --map-base-block: #2a2046;
+  --map-parcel: #211838;
+  --map-road: #3b3058;
+  --map-selected: #ffffff;
+  --map-selected-fill: rgba(120, 49, 253, 0.42);
+  --map-flood-ae: rgba(96, 140, 255, 0.4);
+  --map-flood-x: rgba(96, 140, 255, 0.16);
+  --map-zoning-r: rgba(79, 207, 139, 0.3);
+  --map-zoning-c: rgba(252, 178, 85, 0.3);
+  --map-zoning-mu: rgba(255, 143, 184, 0.3);
+  --map-infra-line: #8fb0ff;
+  --map-dev-marker: #ffffff;
 
   /* ---- type ---- */
   --font-display: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-body: var(--font-display);
-  /* Codes and figures: same family, tabular figures (see .mono). */
   --font-mono: var(--font-display);
 
   --text-xs: 0.75rem;
@@ -100,8 +136,8 @@
   --text-base: 0.9375rem;
   --text-md: 1.0625rem;
   --text-lg: 1.25rem;
-  --text-xl: 1.625rem;
-  --text-2xl: 2.125rem;
+  --text-xl: 1.75rem;
+  --text-2xl: 2.25rem;
 
   /* ---- spacing scale (4px base) ---- */
   --sp-1: 4px;
@@ -114,28 +150,42 @@
   --sp-8: 56px;
   --sp-9: 80px;
 
-  /* ---- radius (small and precise) ---- */
-  --r-xs: 4px;
-  --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 14px;
+  /* ---- radius: soft, generous corners ---- */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-pill: 999px;
 
-  /* ---- elevation: hairlines first, shadows only for floating layers ---- */
-  --shadow-sm: 0 1px 2px rgba(16, 29, 50, 0.06);
-  --shadow-md: 0 8px 24px rgba(16, 29, 50, 0.1);
-  --shadow-lg: 0 20px 48px rgba(16, 29, 50, 0.18);
-
-  /* ---- focus ---- */
-  --focus-ring: 0 0 0 2px var(--surface), 0 0 0 4px var(--cyan-500);
+  /* ---- elevation ---- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.6);
+  --glow-violet: 0 12px 40px rgba(120, 49, 253, 0.35);
 
   /* ---- motion ---- */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --dur-fast: 120ms;
-  --dur: 200ms;
+  --dur: 220ms;
 
   /* ---- layout ---- */
-  --shell-nav-w: 240px;
-  --header-h: 60px;
-  --mobile-bar-h: 60px;
+  --shell-nav-w: 248px;
+  --header-h: 64px;
+  --mobile-bar-h: 62px;
   --max-w: 1360px;
+}
+
+/* Printing (Download PDF on reports): back to ink on white paper. */
+@media print {
+  :root {
+    color-scheme: light;
+    --ink: #111111; --ink-soft: #46434f; --ink-faint: #67646f; --paper: #ffffff;
+    --surface: #ffffff; --surface-sunken: #f1f0f4; --surface-solid: #ffffff;
+    --line: #e6e4eb; --line-strong: #cfccd8; --glass-border: #e6e4eb;
+    --accent-ink: #7831fd;
+    --favorable-fg: #17603f; --favorable-bg: #e8f5ee; --favorable-line: #bfe0cd;
+    --investigate-fg: #85590a; --investigate-bg: #fdf3e1; --investigate-line: #f1d6a0;
+    --constraint-fg: #a8321c; --constraint-bg: #feede7; --constraint-line: #f8c7b6;
+    --unknown-fg: #4f4c58; --unknown-bg: #f1f0f4; --unknown-line: #d6d3de;
+  }
 }

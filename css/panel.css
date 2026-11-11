@@ -8,7 +8,9 @@
   height: 100dvh;
   width: 440px;
   max-width: 100vw;
-  background: var(--surface);
+  background: var(--surface-overlay);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
+  backdrop-filter: blur(28px) saturate(150%);
   border-left: 1px solid var(--line);
   box-shadow: var(--shadow-lg);
   z-index: 70;

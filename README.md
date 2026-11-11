@@ -86,7 +86,8 @@ App pages:
 
 Code:
 
-- `css/tokens.css` — ATERRA design tokens: navy/cyan palette, status and
+- `css/tokens.css` — ATERRA design tokens: violet → magenta → orange → amber
+  palette on black and white, brand gradients and auras, status and
   evidence-basis colors, type scale (Inter), spacing, radii, motion
 - `css/base.css` — shared components: app shell, buttons, cards, status
   badges, evidence-basis tags, notices, forms, tabs, data tables, empty and

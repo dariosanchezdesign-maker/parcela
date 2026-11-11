@@ -16,10 +16,15 @@ window.AterraShell = (function () {
   // ---------- logo ----------
   // Mark: a peak standing on a ground line — the "A" of ATERRA on terra.
   // Wordmark: drawn letterforms; the A's carry no crossbar, echoing the mark.
-  const MARK = `<svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-    <rect class="logo-tile" x="0.75" y="0.75" width="30.5" height="30.5" rx="7"/>
+  // Each logo gets its own gradient id so several can share a page.
+  let logoCount = 0;
+  const mark = (id) => `<svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+    <defs><linearGradient id="${id}" x1="2" y1="2" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4818B8"/><stop offset="0.38" stop-color="#7831FD"/><stop offset="0.7" stop-color="#D33C70"/><stop offset="1" stop-color="#FE6F33"/>
+    </linearGradient></defs>
+    <rect class="logo-tile" x="0" y="0" width="32" height="32" rx="9" fill="url(#${id})"/>
     <path class="logo-peak" d="M7 20 14.3 7h3.4L25 20h-3.4L16 10l-5.6 10z"/>
-    <rect class="logo-ground" x="7" y="22.4" width="18" height="2.6"/>
+    <rect class="logo-ground" x="7" y="22.4" width="18" height="2.6" rx="1.3"/>
   </svg>`;
   const WORD = `<svg class="logo-word" viewBox="0 0 100 16" fill="currentColor" aria-hidden="true" focusable="false">
     <path d="M0 16 6 0h3l6 16h-3L7.5 4 3 16z"/>
@@ -36,7 +41,7 @@ window.AterraShell = (function () {
       this.dataset.ready = "1";
       this.setAttribute("role", "img");
       this.setAttribute("aria-label", "ATERRA");
-      this.innerHTML = MARK + (this.hasAttribute("mark-only") ? "" : WORD);
+      this.innerHTML = mark(`aterra-logo-g${++logoCount}`) + (this.hasAttribute("mark-only") ? "" : WORD);
     }
   }
 
@@ -124,6 +129,29 @@ window.AterraShell = (function () {
   customElements.define("aterra-logo", AterraLogo);
   customElements.define("aterra-sidebar", AterraSidebar);
   customElements.define("aterra-flowbar", AterraFlowbar);
+
+  // ---------- glass hover light ----------
+  // One listener for the page: as the pointer moves over a glass card, set
+  // --mx/--my so its ::after highlight follows the cursor (see base.css).
+  const GLASS = ".card, .property-card, .row-list, .empty-state, .category-group, .info-section, .pc-card, .diff-card, .source-card, .chain-node, .intel-detail, .intel-map-wrap, .l-cap, .tally-item, .type-option, .explore-filters, .brief, .quick-analyze";
+  if (window.matchMedia("(hover: hover)").matches) {
+    let last = null;
+    let scheduled = false;
+    document.addEventListener("pointermove", (e) => {
+      last = e;
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        if (!(last.target instanceof Element)) return;
+        const card = last.target.closest(GLASS);
+        if (!card) return;
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${last.clientX - r.left}px`);
+        card.style.setProperty("--my", `${last.clientY - r.top}px`);
+      });
+    }, { passive: true });
+  }
 
   // ---------- toast (polite status messages) ----------
   let toastRegion;

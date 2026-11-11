@@ -25,7 +25,7 @@ aterra-flowbar { display: block; }
   border: 1.5px solid var(--line-strong); color: var(--ink-faint); background: var(--surface);
 }
 .flow-step.is-current { color: var(--ink); }
-.flow-step.is-current .flow-step-n { background: var(--navy-900); border-color: var(--navy-900); color: #fff; }
+.flow-step.is-current .flow-step-n { background: var(--violet); border-color: var(--violet); color: #fff; }
 .flow-step.is-done { color: var(--ink-soft); }
 .flow-step.is-done .flow-step-n { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent-ink); }
 @media (max-width: 760px) {
@@ -68,13 +68,14 @@ aterra-flowbar { display: block; }
   position: relative;
 }
 .search-field input {
-  padding: 14px 18px 14px 44px;
+  border-radius: var(--r-pill);
+  padding: 14px 20px 14px 48px;
   font-size: 1rem;
   min-height: 52px;
 }
 .search-field svg {
   position: absolute;
-  left: 15px;
+  left: 19px;
   top: 50%;
   transform: translateY(-50%);
   width: 17px;
@@ -86,7 +87,7 @@ aterra-flowbar { display: block; }
   border: 1px solid var(--line);
   border-radius: var(--r-sm);
   overflow: hidden;
-  background: var(--surface);
+  background: var(--surface-overlay);
   display: none;
 }
 .search-suggestions.is-open { display: block; }
@@ -159,7 +160,7 @@ aterra-flowbar { display: block; }
 @media (max-width: 640px) { .type-grid { grid-template-columns: repeat(2, 1fr); } }
 .type-option {
   border: 1px solid var(--line-strong);
-  border-radius: var(--r-sm);
+  border-radius: var(--r-pill);
   padding: 14px 12px;
   background: var(--surface);
   cursor: pointer;
@@ -171,9 +172,9 @@ aterra-flowbar { display: block; }
 }
 .type-option:hover { border-color: var(--ink-soft); }
 .type-option[aria-pressed="true"] {
-  border-color: var(--navy-900);
+  border-color: var(--violet);
   background: var(--accent-soft);
-  box-shadow: inset 0 0 0 1px var(--navy-900);
+  box-shadow: inset 0 0 0 1px var(--violet);
 }
 .assumption-row {
   display: grid;
@@ -198,7 +199,7 @@ aterra-flowbar { display: block; }
 .analyzing-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(248, 250, 252, 0.98);
+  background: rgba(7, 4, 15, 0.94);
   display: none;
   align-items: center;
   justify-content: center;
@@ -231,15 +232,19 @@ aterra-flowbar { display: block; }
 }
 .analyzing-step .step-icon svg { width: 11px; height: 11px; opacity: 0; transition: opacity 0.15s ease; color: #fff; }
 .analyzing-step.is-active { color: var(--ink); }
-.analyzing-step.is-active .step-icon { border-color: var(--ink); }
+.analyzing-step.is-active .step-icon { border-color: var(--violet-light); }
 .analyzing-step.is-active .step-icon::after {
   content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ink);
   animation: analyzing-pulse 0.9s ease-in-out infinite;
 }
 .analyzing-step.is-done { color: var(--ink); }
-.analyzing-step.is-done .step-icon { border-color: var(--ink); background: var(--ink); }
+.analyzing-step.is-done .step-icon { border-color: var(--violet); background: var(--violet); }
 .analyzing-step.is-done .step-icon svg { opacity: 1; }
 @keyframes analyzing-pulse {
   0%, 100% { transform: scale(0.85); opacity: 0.6; }
   50% { transform: scale(1); opacity: 1; }
+}
+@media (max-width: 420px) {
+  .flow-step .flow-step-label { display: none; }
+  .onboard-topbar { gap: var(--sp-2); }
 }

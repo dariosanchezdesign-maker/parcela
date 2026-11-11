@@ -61,17 +61,17 @@
   justify-content: center;
   background: var(--surface);
   cursor: pointer;
-  z-index: 2;
+  z-index: 3;
 }
 .property-card .pcard-checkbox::before { content: ""; position: absolute; inset: -11px; }
 .property-card .pcard-checkbox svg { width: 12px; height: 12px; color: #fff; opacity: 0; }
-.property-card .pcard-checkbox[aria-pressed="true"] { background: var(--navy-900); border-color: var(--navy-900); }
+.property-card .pcard-checkbox[aria-pressed="true"] { background: var(--violet); border-color: var(--violet); }
 .property-card .pcard-checkbox[aria-pressed="true"] svg { opacity: 1; }
-.property-card.is-selected { border-color: var(--navy-700); }
+.property-card.is-selected { border-color: var(--violet); box-shadow: 0 0 0 1px var(--violet); }
 
 /* ---------- overview: quick analyze ---------- */
 .quick-analyze {
-  background: var(--navy-900);
+  background: var(--aura-dark);
   color: var(--ink-on-dark);
   border-radius: var(--r-lg);
   padding: var(--sp-6);
@@ -81,12 +81,12 @@
   gap: var(--sp-5) var(--sp-7);
   align-items: center;
 }
-.quick-analyze h2 { color: #fff; font-size: var(--text-lg); margin-bottom: 6px; }
+.quick-analyze h2 { color: #fff; font-size: var(--text-xl); letter-spacing: -0.03em; margin-bottom: 6px; }
 .quick-analyze p { color: var(--ink-on-dark-soft); margin: 0; font-size: 0.875rem; }
 .quick-analyze form { display: flex; gap: var(--sp-2); }
-.quick-analyze input { border-color: transparent; min-height: 48px; }
+.quick-analyze input { border-color: transparent; min-height: 50px; border-radius: var(--r-pill); padding-left: 20px; }
 .quick-analyze .field-error { background: rgba(200, 73, 58, 0.18); border-color: rgba(240, 198, 191, 0.4); color: #ffd9d3; }
-.quick-analyze .qa-hint { margin-top: var(--sp-3); font-size: var(--text-xs); color: #93a3bb; }
+.quick-analyze .qa-hint { margin-top: var(--sp-3); font-size: var(--text-xs); color: var(--ink-on-dark-soft); }
 @media (max-width: 1080px) { .quick-analyze { grid-template-columns: 1fr; } }
 @media (max-width: 520px) { .quick-analyze { padding: var(--sp-5); } .quick-analyze form { flex-direction: column; } }
 
@@ -135,7 +135,7 @@ a.row-link:hover { background: var(--surface-sunken); }
 .compare-bar {
   position: sticky;
   bottom: var(--sp-4);
-  background: var(--surface);
+  background: var(--surface-overlay);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   box-shadow: var(--shadow-md);

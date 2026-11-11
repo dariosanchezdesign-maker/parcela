@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Confirm property — ATERRA</title>
-  <meta name="theme-color" content="#101D32" />
+  <meta name="theme-color" content="#000000" />
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="assets/brand/app-icon.png" />
   <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
@@ -97,7 +97,7 @@
         line.setAttribute("stroke", "var(--map-road)"); line.setAttribute("stroke-width", r.width);
         svg.appendChild(line);
       });
-      svg.appendChild(shape(map.parcel, { fill: "rgba(20,22,26,0.08)", stroke: "var(--map-selected)", "stroke-width": "2.4" }));
+      svg.appendChild(shape(map.parcel, { fill: "rgba(120,49,253,0.22)", stroke: "var(--map-selected)", "stroke-width": "2.4" }));
       document.getElementById("identify-map-slot").appendChild(svg);
     })();
   </script>

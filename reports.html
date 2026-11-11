@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Feasibility report — ATERRA</title>
-  <meta name="theme-color" content="#101D32" />
+  <meta name="theme-color" content="#000000" />
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="assets/brand/app-icon.png" />
   <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
@@ -361,7 +361,7 @@
           (P.map.streets || []).forEach((st) => svg.appendChild(shape(st, { fill: "#ffffff" })));
           if (layer === "zoning") P.map.zoning.forEach((z) => svg.appendChild(shape(z, { fill: z.color, "fill-opacity": "0.28", stroke: z.color, "stroke-width": "1" })));
           if (layer === "flood") P.map.flood.forEach((f) => svg.appendChild(shape(f, { fill: f.color, stroke: "#3b5caa", "stroke-width": "0.8" })));
-          svg.appendChild(shape(P.map.parcel, { fill: "rgba(20,22,26,0.08)", stroke: "#14161a", "stroke-width": "2.4" }));
+          svg.appendChild(shape(P.map.parcel, { fill: "rgba(120,49,253,0.22)", stroke: "#111111", "stroke-width": "2.4" }));
           return svg.outerHTML;
         }
         const legend = (rows) => (rows || [])
