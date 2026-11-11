@@ -44,8 +44,22 @@ Then open the printed local URL. `index.html` is the marketing site; `overview.h
 Real property lookups run in the browser (the Planning Board's map server
 doesn't answer cloud data centers, but allows browser requests), so a plain
 static server is enough for everything except the AI explanations, which
-are a Netlify Function (`npx netlify dev` runs both; needs
+are a serverless function (`npx vercel dev` or `npx netlify dev` runs both; needs
 `ANTHROPIC_API_KEY`).
+
+## Hosting
+
+The site runs on **Vercel** or **Netlify** from the same code. Both copy only
+the public files (`*.html`, `assets`, `css`, `js`) into `dist/`, so `db/`,
+`tasks/` and this README are never published.
+
+- Vercel: `vercel.json`; the AI endpoint is `api/explain.js`.
+- Netlify: `netlify.toml`; the AI endpoint is `netlify/functions/explain.mjs`.
+
+Both entries call the same handler in `lib/explain.mjs`. Each host needs
+`ANTHROPIC_API_KEY` set in its environment settings, and Supabase Auth must
+list the site's address under Authentication → URL Configuration so sign-in
+links return to it.
 
 ## Structure
 
@@ -90,7 +104,7 @@ Code:
   Reglamento Conjunto 2023, with page citations
 - `js/data/account.js` + `signin.html` — email-link sign-in (Supabase Auth)
   and saved projects; `projects.html` lists them
-- `netlify/functions/explain.mjs` — `/api/explain`: Claude explains the
+- `lib/explain.mjs` — `/api/explain`: Claude explains the
   page's findings (signed-in users, 20 a day)
 - `js/data/live.js` — runs the lookup and maps the result onto the
   pages; a page is in live mode when its URL has `?parcel=<cadastral>`
