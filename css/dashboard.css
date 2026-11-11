@@ -61,7 +61,7 @@
   justify-content: center;
   background: var(--surface);
   cursor: pointer;
-  z-index: 2;
+  z-index: 3;
 }
 .property-card .pcard-checkbox::before { content: ""; position: absolute; inset: -11px; }
 .property-card .pcard-checkbox svg { width: 12px; height: 12px; color: #fff; opacity: 0; }
@@ -135,7 +135,7 @@ a.row-link:hover { background: var(--surface-sunken); }
 .compare-bar {
   position: sticky;
   bottom: var(--sp-4);
-  background: var(--surface);
+  background: var(--surface-overlay);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   box-shadow: var(--shadow-md);

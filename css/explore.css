@@ -44,7 +44,7 @@
   color: var(--ink);
   cursor: pointer;
 }
-.filter-check input { width: 15px; height: 15px; accent-color: var(--ink); cursor: pointer; }
+.filter-check input { width: 15px; height: 15px; accent-color: var(--violet); cursor: pointer; }
 .filter-reset { margin-top: var(--sp-2); }
 
 .explore-map-wrap {
@@ -59,7 +59,7 @@
   position: absolute;
   top: var(--sp-3);
   left: var(--sp-3);
-  background: rgba(255,255,255,0.92);
+  background: rgba(18, 11, 34, 0.78);
   border: 1px solid var(--line);
   border-radius: var(--r-sm);
   padding: 7px 12px;
@@ -76,7 +76,7 @@
   justify-content: center;
   text-align: center;
   padding: var(--sp-6);
-  background: rgba(246, 245, 242, 0.88);
+  background: rgba(7, 4, 15, 0.82);
   z-index: 4;
 }
 .explore-empty.is-visible { display: flex; }
@@ -92,7 +92,7 @@
 .explore-popover {
   position: absolute;
   width: 260px;
-  background: var(--surface);
+  background: var(--surface-overlay);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   box-shadow: var(--shadow-md);

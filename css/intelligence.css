@@ -47,7 +47,7 @@
 .brief {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-  background: var(--aura-light);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   margin-bottom: var(--sp-6);
@@ -176,7 +176,7 @@
   transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
 }
 .map-control:hover { color: var(--ink); }
-.map-control[aria-pressed="true"] { background: var(--ink); color: #fff; box-shadow: none; }
+.map-control[aria-pressed="true"] { background: #fff; color: var(--ink-inverse); box-shadow: none; }
 .map-stage {
   position: relative;
   aspect-ratio: 640 / 520;
@@ -188,7 +188,7 @@
   position: absolute;
   left: var(--sp-3);
   bottom: var(--sp-3);
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(18, 11, 34, 0.78);
   border: 1px solid var(--line);
   border-radius: var(--r-sm);
   padding: 8px 12px;
@@ -201,12 +201,12 @@
 }
 .map-legend .legend-title { font-weight: 650; text-transform: uppercase; letter-spacing: 0.07em; font-size: 0.6875rem; color: var(--ink-faint); margin-bottom: 2px; }
 .map-legend .legend-row { display: flex; align-items: center; gap: 6px; color: var(--ink-soft); }
-.map-legend .swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; border: 1px solid rgba(17, 17, 17, 0.18); }
+.map-legend .swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; border: 1px solid rgba(255, 255, 255, 0.25); }
 .map-note {
   position: absolute;
   right: var(--sp-3);
   top: var(--sp-3);
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(18, 11, 34, 0.78);
   border: 1px solid var(--line);
   border-radius: var(--r-sm);
   padding: 5px 10px;

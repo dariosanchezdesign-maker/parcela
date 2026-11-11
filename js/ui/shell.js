@@ -130,6 +130,29 @@ window.AterraShell = (function () {
   customElements.define("aterra-sidebar", AterraSidebar);
   customElements.define("aterra-flowbar", AterraFlowbar);
 
+  // ---------- glass hover light ----------
+  // One listener for the page: as the pointer moves over a glass card, set
+  // --mx/--my so its ::after highlight follows the cursor (see base.css).
+  const GLASS = ".card, .property-card, .row-list, .empty-state, .category-group, .info-section, .pc-card, .diff-card, .source-card, .chain-node, .intel-detail, .intel-map-wrap, .l-cap, .tally-item, .type-option, .explore-filters, .brief, .quick-analyze";
+  if (window.matchMedia("(hover: hover)").matches) {
+    let last = null;
+    let scheduled = false;
+    document.addEventListener("pointermove", (e) => {
+      last = e;
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        if (!(last.target instanceof Element)) return;
+        const card = last.target.closest(GLASS);
+        if (!card) return;
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${last.clientX - r.left}px`);
+        card.style.setProperty("--my", `${last.clientY - r.top}px`);
+      });
+    }, { passive: true });
+  }
+
   // ---------- toast (polite status messages) ----------
   let toastRegion;
   function toast(message) {

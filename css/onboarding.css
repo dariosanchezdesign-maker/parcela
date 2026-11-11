@@ -36,7 +36,6 @@ aterra-flowbar { display: block; }
 }
 
 .onboard-main {
-  background: var(--aura-light);
   min-height: calc(100vh - var(--header-h));
   display: flex;
   align-items: center;
@@ -88,7 +87,7 @@ aterra-flowbar { display: block; }
   border: 1px solid var(--line);
   border-radius: var(--r-sm);
   overflow: hidden;
-  background: var(--surface);
+  background: var(--surface-overlay);
   display: none;
 }
 .search-suggestions.is-open { display: block; }
@@ -200,7 +199,7 @@ aterra-flowbar { display: block; }
 .analyzing-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(248, 250, 252, 0.98);
+  background: rgba(7, 4, 15, 0.94);
   display: none;
   align-items: center;
   justify-content: center;
@@ -233,13 +232,13 @@ aterra-flowbar { display: block; }
 }
 .analyzing-step .step-icon svg { width: 11px; height: 11px; opacity: 0; transition: opacity 0.15s ease; color: #fff; }
 .analyzing-step.is-active { color: var(--ink); }
-.analyzing-step.is-active .step-icon { border-color: var(--ink); }
+.analyzing-step.is-active .step-icon { border-color: var(--violet-light); }
 .analyzing-step.is-active .step-icon::after {
   content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ink);
   animation: analyzing-pulse 0.9s ease-in-out infinite;
 }
 .analyzing-step.is-done { color: var(--ink); }
-.analyzing-step.is-done .step-icon { border-color: var(--ink); background: var(--ink); }
+.analyzing-step.is-done .step-icon { border-color: var(--violet); background: var(--violet); }
 .analyzing-step.is-done .step-icon svg { opacity: 1; }
 @keyframes analyzing-pulse {
   0%, 100% { transform: scale(0.85); opacity: 0.6; }

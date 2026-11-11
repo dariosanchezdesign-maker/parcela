@@ -12,7 +12,7 @@
    - On black, small accent text uses --violet-light. */
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
   /* ---- brand palette ---- */
   --black: #000000;
@@ -45,78 +45,86 @@
     var(--white);
 
   --accent: var(--violet);
-  --accent-ink: var(--violet);
-  --accent-soft: var(--violet-soft);
-  --accent-line: var(--violet-line);
+  --accent-ink: var(--violet-light);
+  --accent-soft: rgba(120, 49, 253, 0.16);
+  --accent-line: rgba(165, 123, 254, 0.4);
 
   /* ---- ink & paper ---- */
   --white: #ffffff;
-  --ink: #111111;
-  --ink-soft: #46434f;
-  --ink-faint: #67646f;
-  --paper: #f6f6f6;
-  --surface: #ffffff;
-  --surface-sunken: #f1f0f4;
-  --surface-raised: #ffffff;
-  --line: #e6e4eb;
-  --line-strong: #cfccd8;
+  --ink: #f5f3fa;
+  --ink-soft: #c4bfd3;
+  --ink-faint: #9a93ad;
+  --ink-inverse: #111111;  /* text on white pills */
+  --paper: #07040f;
+  /* Glass: translucent fills that blur whatever glows behind them. */
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-sunken: rgba(255, 255, 255, 0.06);
+  --surface-raised: rgba(255, 255, 255, 0.08);
+  --surface-solid: #120b22;   /* inputs, menus, anything that must be opaque */
+  --surface-overlay: rgba(14, 8, 28, 0.94); /* panels and pop-ups over content */
+  --glass-blur: 22px;
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(196, 167, 255, 0.55);
+  --glass-highlight: rgba(255, 255, 255, 0.07);
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.2);
   --line-on-dark: rgba(255, 255, 255, 0.14);
   --ink-on-dark: #ffffff;
   --ink-on-dark-soft: #c4bfd3;
   --ink-on-dark-faint: #9a93ad;
 
   /* ---- primary action ---- */
-  --brand: var(--ink);
-  --brand-hover: #2b2833;
+  --brand: #ffffff;
+  --brand-hover: #e9e4f5;
 
-  /* ---- semantic: finding status ---- */
-  --favorable-fg: #17603f;
-  --favorable-fg-strong: #124a31;
-  --favorable-bg: #e8f5ee;
-  --favorable-line: #bfe0cd;
-  --favorable-dot: #2f8f5f;
+  /* ---- semantic: finding status (tuned for dark glass) ---- */
+  --favorable-fg: #7ee2ad;
+  --favorable-fg-strong: #a6f0c8;
+  --favorable-bg: rgba(47, 143, 95, 0.16);
+  --favorable-line: rgba(126, 226, 173, 0.35);
+  --favorable-dot: #4fcf8b;
 
-  --investigate-fg: #85590a;
-  --investigate-fg-strong: #6b4708;
-  --investigate-bg: #fdf3e1;
-  --investigate-line: #f1d6a0;
-  --investigate-dot: #e8992c;
+  --investigate-fg: #fcc873;
+  --investigate-fg-strong: #ffdca3;
+  --investigate-bg: rgba(252, 178, 85, 0.14);
+  --investigate-line: rgba(252, 200, 115, 0.38);
+  --investigate-dot: #fcb255;
 
-  --constraint-fg: #a8321c;
-  --constraint-fg-strong: #82240f;
-  --constraint-bg: #feede7;
-  --constraint-line: #f8c7b6;
+  --constraint-fg: #ff9e80;
+  --constraint-fg-strong: #ffc1ad;
+  --constraint-bg: rgba(253, 92, 48, 0.16);
+  --constraint-line: rgba(255, 158, 128, 0.4);
   --constraint-dot: #fd5c30;
 
-  --unknown-fg: #4f4c58;
-  --unknown-fg-strong: #36343d;
-  --unknown-bg: #f1f0f4;
-  --unknown-line: #d6d3de;
-  --unknown-dot: #9895a3;
+  --unknown-fg: #c4bfd3;
+  --unknown-fg-strong: #e2deec;
+  --unknown-bg: rgba(255, 255, 255, 0.07);
+  --unknown-line: rgba(255, 255, 255, 0.2);
+  --unknown-dot: #9a93ad;
 
   /* ---- evidence basis (where a statement comes from) ---- */
-  --basis-record: #17603f;
-  --basis-derived: #4818b8;
-  --basis-estimate: #85590a;
-  --basis-missing: #67646f;
-  --basis-ai: #b02a5e;
-  --basis-ai-bg: #fdedf3;
-  --basis-ai-line: #f5c6d7;
+  --basis-record: #7ee2ad;
+  --basis-derived: #b9a0ff;
+  --basis-estimate: #fcc873;
+  --basis-missing: #9a93ad;
+  --basis-ai: #ff8fb8;
+  --basis-ai-bg: rgba(211, 60, 112, 0.16);
+  --basis-ai-line: rgba(255, 143, 184, 0.38);
 
   /* ---- map layers ---- */
-  --map-base-land: #efedf3;
-  --map-base-block: #dcd8e5;
-  --map-parcel: #e6e3ed;
-  --map-road: #ffffff;
-  --map-selected: #111111;
-  --map-selected-fill: rgba(120, 49, 253, 0.22);
-  --map-flood-ae: rgba(72, 24, 184, 0.3);
-  --map-flood-x: rgba(72, 24, 184, 0.1);
-  --map-zoning-r: rgba(47, 143, 95, 0.24);
-  --map-zoning-c: rgba(232, 153, 44, 0.26);
-  --map-zoning-mu: rgba(211, 60, 112, 0.24);
-  --map-infra-line: #4818b8;
-  --map-dev-marker: #111111;
+  --map-base-land: #140c26;
+  --map-base-block: #2a2046;
+  --map-parcel: #211838;
+  --map-road: #3b3058;
+  --map-selected: #ffffff;
+  --map-selected-fill: rgba(120, 49, 253, 0.42);
+  --map-flood-ae: rgba(96, 140, 255, 0.4);
+  --map-flood-x: rgba(96, 140, 255, 0.16);
+  --map-zoning-r: rgba(79, 207, 139, 0.3);
+  --map-zoning-c: rgba(252, 178, 85, 0.3);
+  --map-zoning-mu: rgba(255, 143, 184, 0.3);
+  --map-infra-line: #8fb0ff;
+  --map-dev-marker: #ffffff;
 
   /* ---- type ---- */
   --font-display: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -150,9 +158,9 @@
   --r-pill: 999px;
 
   /* ---- elevation ---- */
-  --shadow-sm: 0 1px 2px rgba(17, 17, 17, 0.06);
-  --shadow-md: 0 10px 30px rgba(17, 17, 17, 0.1);
-  --shadow-lg: 0 24px 60px rgba(12, 6, 29, 0.22);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.6);
   --glow-violet: 0 12px 40px rgba(120, 49, 253, 0.35);
 
   /* ---- motion ---- */
@@ -165,4 +173,19 @@
   --header-h: 64px;
   --mobile-bar-h: 62px;
   --max-w: 1360px;
+}
+
+/* Printing (Download PDF on reports): back to ink on white paper. */
+@media print {
+  :root {
+    color-scheme: light;
+    --ink: #111111; --ink-soft: #46434f; --ink-faint: #67646f; --paper: #ffffff;
+    --surface: #ffffff; --surface-sunken: #f1f0f4; --surface-solid: #ffffff;
+    --line: #e6e4eb; --line-strong: #cfccd8; --glass-border: #e6e4eb;
+    --accent-ink: #7831fd;
+    --favorable-fg: #17603f; --favorable-bg: #e8f5ee; --favorable-line: #bfe0cd;
+    --investigate-fg: #85590a; --investigate-bg: #fdf3e1; --investigate-line: #f1d6a0;
+    --constraint-fg: #a8321c; --constraint-bg: #feede7; --constraint-line: #f8c7b6;
+    --unknown-fg: #4f4c58; --unknown-bg: #f1f0f4; --unknown-line: #d6d3de;
+  }
 }

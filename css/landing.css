@@ -31,7 +31,7 @@
 .l-h2 { font-size: clamp(1.75rem, 3.4vw, 2.625rem); line-height: 1.1; letter-spacing: -0.03em; font-weight: 700; margin-bottom: var(--sp-4); max-width: 20ch; }
 .l-lede { font-size: clamp(1rem, 1.4vw, 1.1875rem); line-height: 1.55; color: var(--ink-soft); max-width: 58ch; }
 .l-section { padding: clamp(64px, 9vw, 120px) 0; }
-#problem { background: var(--aura-light); }
+
 
 /* ---------- 1. hero ---------- */
 .l-hero { background: var(--aura-dark); color: #fff; padding: clamp(48px, 7vw, 96px) 0 clamp(56px, 8vw, 110px); overflow: hidden; }
@@ -75,7 +75,7 @@
 .l-viz .map-controls { background: transparent; border-bottom-color: var(--line-on-dark); }
 .l-viz .map-control { color: var(--ink-on-dark-soft); }
 .l-viz .map-control:hover { color: #fff; }
-.l-viz .map-control[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: none; }
+.l-viz .map-control[aria-pressed="true"] { background: #fff; color: var(--ink-inverse); box-shadow: none; }
 .l-viz .map-stage { aspect-ratio: 640 / 470; }
 .l-viz .map-note { display: none; }
 .l-viz-card {
@@ -84,7 +84,7 @@
   right: -18px;
   bottom: -26px;
   width: min(300px, 78%);
-  background: #fff;
+  background: rgba(18, 11, 34, 0.72);
   color: var(--ink);
   border-radius: var(--r-md);
   padding: var(--sp-4);
@@ -112,11 +112,11 @@
 .l-sources .s-agency { font-weight: 650; color: var(--ink); font-size: 0.9375rem; }
 .l-sources .s-what { color: var(--ink-soft); font-size: 0.9375rem; }
 @media (max-width: 560px) { .l-sources li { grid-template-columns: 1fr; gap: 2px; } }
-.l-cost { margin-top: var(--sp-6); padding: var(--sp-5); border-left: 3px solid; border-image: var(--gradient-warm) 1; background: var(--surface); }
+.l-cost { margin-top: var(--sp-6); padding: var(--sp-5); border-width: 0 0 0 3px; border-style: solid; border-image: linear-gradient(180deg, var(--violet), var(--orange)) 1; background: var(--surface); }
 .l-cost p { margin: 0; color: var(--ink); font-size: 1rem; }
 
 /* ---------- 3. platform ---------- */
-.l-platform { background: var(--paper); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.l-platform { background: transparent; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .l-platform-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--sp-5); margin-bottom: var(--sp-7); }
 .l-flow { display: flex; align-items: center; gap: 10px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
 .l-flow li { font-size: var(--text-sm); font-weight: 650; color: var(--ink-soft); display: flex; align-items: center; gap: 10px; }
