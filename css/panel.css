@@ -1,22 +1,25 @@
-/* "Why?" contextual side panel — Conclusion → Explanation → Evidence. */
+/* Side panels: the evidence panel (conclusion → explanation → evidence)
+   and the AI explanation panel. */
 
 .side-panel {
   position: fixed;
   top: 0;
   right: 0;
-  height: 100vh;
-  width: 420px;
-  max-width: 92vw;
+  height: 100dvh;
+  width: 440px;
+  max-width: 100vw;
   background: var(--surface);
   border-left: 1px solid var(--line);
   box-shadow: var(--shadow-lg);
   z-index: 70;
   transform: translateX(100%);
-  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  visibility: hidden;
+  transition: transform var(--dur) var(--ease), visibility 0s linear var(--dur);
   display: flex;
   flex-direction: column;
 }
-.side-panel.is-open { transform: translateX(0); }
+.side-panel.is-open { transform: translateX(0); visibility: visible; transition: transform var(--dur) var(--ease); }
+.side-panel:focus-visible { outline: none; box-shadow: var(--shadow-lg); }
 
 .side-panel-head {
   display: flex;
@@ -26,98 +29,62 @@
   padding: var(--sp-5);
   border-bottom: 1px solid var(--line);
 }
-.side-panel-head .status { margin-bottom: 8px; }
-.side-panel-head h2 { font-size: 1.05rem; margin-bottom: 0; }
+.side-panel-head .status, .side-panel-head .tag { margin-bottom: 10px; }
+.side-panel-head h2 { font-size: var(--text-md); margin-bottom: 0; }
 .side-panel-close {
   background: none; border: none; cursor: pointer;
-  color: var(--ink-faint); padding: 4px; flex-shrink: 0;
-  border-radius: var(--r-xs);
+  color: var(--ink-faint);
+  width: 40px; height: 40px;
+  margin: -8px -8px 0 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  border-radius: var(--r-sm);
 }
 .side-panel-close:hover { color: var(--ink); background: var(--surface-sunken); }
-.side-panel-close svg { width: 16px; height: 16px; display: block; }
+.side-panel-close svg { width: 16px; height: 16px; }
 
-.side-panel-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--sp-5);
-}
+.side-panel-body { flex: 1; overflow-y: auto; padding: var(--sp-5); }
 .side-panel-section { margin-bottom: var(--sp-6); }
 .side-panel-section:last-child { margin-bottom: 0; }
 .side-panel-section .sp-label {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.6875rem;
+  font-weight: 650;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.08em;
   color: var(--ink-faint);
   margin-bottom: 8px;
 }
-.side-panel-section .sp-body { font-size: 0.9rem; color: var(--ink); line-height: 1.55; }
-.side-panel-section .sp-finding-key { font-family: var(--font-mono); font-size: 0.86rem; font-weight: 600; }
+.side-panel-section .sp-body { font-size: 0.9375rem; color: var(--ink); line-height: 1.55; }
+.side-panel-section .sp-note { font-size: var(--text-sm); color: var(--ink-soft); margin: 6px 0 0; }
+.side-panel-pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
 
 .evidence-block {
+  margin: 0;
   border: 1px solid var(--line);
   border-radius: var(--r-sm);
-  padding: var(--sp-4);
-  background: var(--surface-sunken);
+  padding: 4px var(--sp-4);
+  background: var(--paper);
 }
-.evidence-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 0.84rem; }
-.evidence-row:last-of-type { border-bottom: none; }
-.evidence-row .e-k { color: var(--ink-faint); }
-.evidence-row .e-v { font-weight: 600; text-align: right; max-width: 62%; }
+.evidence-row { display: flex; justify-content: space-between; gap: var(--sp-4); padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 0.875rem; }
+.evidence-row:last-child { border-bottom: none; }
+.evidence-row .e-k { color: var(--ink-faint); flex-shrink: 0; }
+.evidence-row .e-v { margin: 0; font-weight: 600; text-align: right; min-width: 0; overflow-wrap: anywhere; }
+.evidence-row .e-v a { color: var(--accent-ink); }
 
-.confidence-block {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+.verification-block { display: flex; align-items: center; gap: 8px; font-size: 0.875rem; font-weight: 600; }
+.verification-block svg { width: 14px; height: 14px; color: var(--ink-faint); flex-shrink: 0; }
 
-.verification-block {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.88rem;
-  font-weight: 600;
-}
-.verification-block svg { width: 14px; height: 14px; color: var(--ink-faint); }
+.side-panel-footer { padding: var(--sp-4) var(--sp-5); border-top: 1px solid var(--line); }
 
-.side-panel-footer {
-  padding: var(--sp-4) var(--sp-5);
-  border-top: 1px solid var(--line);
-  display: flex;
-  gap: var(--sp-3);
-}
-
-.source-detail {
-  margin-top: var(--sp-3);
-  display: none;
-  border-top: 1px dashed var(--line-strong);
-  padding-top: var(--sp-3);
-}
-.source-detail.is-open { display: block; }
-
-/* ---------- contextual AI panel ---------- */
-.ai-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 8px;
-}
-.ai-eyebrow svg { width: 12px; height: 12px; }
-.ai-panel-body p { font-size: 0.9rem; color: var(--ink); line-height: 1.6; }
+/* ---------- AI explanation panel ---------- */
+.side-panel-ai .side-panel-head { border-bottom-color: var(--basis-ai-line); background: var(--basis-ai-bg); }
+.ai-panel-body p { font-size: 0.9375rem; color: var(--ink); line-height: 1.6; }
 .ai-panel-body p:last-child { margin-bottom: 0; }
+.ai-panel-body .ai-status { display: flex; align-items: center; gap: 10px; color: var(--ink-soft); }
 .ai-disclaimer {
-  font-size: 0.76rem;
+  font-size: var(--text-sm);
   color: var(--ink-faint);
   padding-top: var(--sp-4);
   border-top: 1px solid var(--line);
-  margin-top: var(--sp-5);
+  margin: var(--sp-5) 0 0;
 }
-
-.ai-action-row { display: flex; gap: var(--sp-4); flex-wrap: wrap; margin-top: var(--sp-4); }
-.ai-action {
-  background: none; border: none; padding: 0;
-  color: var(--ink-soft); font-weight: 600; font-size: 0.8rem;
-  cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
-}
-.ai-action:hover { color: var(--ink); }
-.ai-action svg { width: 12px; height: 12px; }

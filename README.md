@@ -1,17 +1,32 @@
-# Parcela
+# ATERRA
 
-*"Know what you're getting into before you develop."*
+*See the potential in every parcel.*
 
-Parcela is a development-intelligence platform for Puerto Rico. A
-developer or investor enters an address or parcel and gets a structured
-read on the site — zoning, regulation, environment, infrastructure, and
-development history — before committing significant time and capital.
-Built for professional, $10M+ deals (B2B), in Spanish (default) and
-English.
+ATERRA is a real estate intelligence and development decision platform,
+starting with Puerto Rico. A developer or investor enters an address or
+cadastral number and gets a structured read on the site (zoning, district
+rules, flood and hazard layers) before committing significant time and
+capital. Built for professional development decisions, in Spanish (default)
+and English. ATERRA was previously called Parcela.
+
+The product follows one workflow: **Discover → Analyze → Evaluate → Decide.**
 
 Every finding is labeled **Favorable**, **Investigate**, **Constraint**, or
-**Unknown**, and every one links to the evidence behind it through the
-"Why?" panel. *AI explains. Data proves. Professionals decide.*
+**Unknown**, and carries its **evidence basis**, so the reader can tell what
+kind of statement it is:
+
+| Basis | Meaning |
+|---|---|
+| Official record | Stated by the cited source (CRIM, Planning Board, FEMA) for this parcel |
+| ATERRA interpretation | A published rule (Reglamento Conjunto 2023) applied to this parcel |
+| Estimate | A calculated range for order of magnitude, not a determination |
+| No data | The source has nothing, or ATERRA doesn't cover it; never filled in |
+| AI explanation | Written by AI only from the findings on the page; adds no facts |
+| Sample data | Fictional demonstration data |
+
+Market intelligence and financial modeling are not built yet. The app says
+so (dashboard "Data coverage", property "Sources & limits") rather than
+showing placeholder numbers.
 
 ## Running locally
 
@@ -23,14 +38,28 @@ npx serve .
 python -m http.server 5173
 ```
 
-Then open the printed local URL. `index.html` is the marketing landing page;
-`search.html` is the start of the app flow.
+Then open the printed local URL. `index.html` is the marketing site; `overview.html` is the workspace;
+`search.html` starts a new analysis.
 
 Real property lookups run in the browser (the Planning Board's map server
 doesn't answer cloud data centers, but allows browser requests), so a plain
 static server is enough for everything except the AI explanations, which
-are a Netlify Function (`npx netlify dev` runs both; needs
+are a serverless function (`npx vercel dev` or `npx netlify dev` runs both; needs
 `ANTHROPIC_API_KEY`).
+
+## Hosting
+
+The site runs on **Vercel** or **Netlify** from the same code. Both copy only
+the public files (`*.html`, `assets`, `css`, `js`) into `dist/`, so `db/`,
+`tasks/` and this README are never published.
+
+- Vercel: `vercel.json`; the AI endpoint is `api/explain.js`.
+- Netlify: `netlify.toml`; the AI endpoint is `netlify/functions/explain.mjs`.
+
+Both entries call the same handler in `lib/explain.mjs`. Each host needs
+`ANTHROPIC_API_KEY` set in its environment settings, and Supabase Auth must
+list the site's address under Authentication → URL Configuration so sign-in
+links return to it.
 
 ## Structure
 
@@ -57,7 +86,15 @@ App pages:
 
 Code:
 
-- `css/` — design tokens (`tokens.css`) + page styles
+- `css/tokens.css` — ATERRA design tokens: navy/cyan palette, status and
+  evidence-basis colors, type scale (Inter), spacing, radii, motion
+- `css/base.css` — shared components: app shell, buttons, cards, status
+  badges, evidence-basis tags, notices, forms, tabs, data tables, empty and
+  loading states, toasts
+- `js/ui/shell.js` — `<aterra-logo>`, `<aterra-sidebar>`, `<aterra-flowbar>`
+  custom elements, plus shared dialog (focus trap), tabs and toast helpers
+- `assets/brand/` — logo, favicon, app icon, social image
+- `assets/fonts/` — Inter (SIL OFL)
 - `js/i18n.js` — Spanish/English strings and language toggle
 - `js/ui/` — map, findings renderer, "Why?" panel, AI panel
 - `js/data/lookup.js` — address or cadastral number → real parcel, zoning,
@@ -67,7 +104,7 @@ Code:
   Reglamento Conjunto 2023, with page citations
 - `js/data/account.js` + `signin.html` — email-link sign-in (Supabase Auth)
   and saved projects; `projects.html` lists them
-- `netlify/functions/explain.mjs` — `/api/explain`: Claude explains the
+- `lib/explain.mjs` — `/api/explain`: Claude explains the
   page's findings (signed-in users, 20 a day)
 - `js/data/live.js` — runs the lookup and maps the result onto the
   pages; a page is in live mode when its URL has `?parcel=<cadastral>`

@@ -1,35 +1,38 @@
 /* Search / identify / project-setup — light chrome, centered, minimal. */
 
+aterra-flowbar { display: block; }
 .onboard-topbar {
-  height: var(--header-h);
-  display: flex;
+  min-height: var(--header-h);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--sp-4);
   padding: 0 var(--sp-6);
   border-bottom: 1px solid var(--line);
+  background: var(--surface);
 }
-.onboard-topbar .brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  text-decoration: none;
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1rem;
+.onboard-topbar .brand { display: inline-flex; justify-self: start; text-decoration: none; border-radius: var(--r-sm); }
+.onboard-topbar-right { display: flex; align-items: center; gap: var(--sp-4); justify-self: end; grid-column: 3; }
+
+/* three-step progress: Property → Confirm → Project */
+.flow-steps { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; gap: var(--sp-2); }
+.flow-step { display: flex; align-items: center; gap: 8px; font-size: var(--text-sm); font-weight: 600; color: var(--ink-faint); }
+.flow-step + .flow-step::before { content: ""; width: 28px; height: 1px; background: var(--line-strong); margin-right: var(--sp-2); }
+.flow-step-n {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.6875rem; font-weight: 700; font-variant-numeric: tabular-nums;
+  border: 1.5px solid var(--line-strong); color: var(--ink-faint); background: var(--surface);
 }
-.onboard-brand-mark {
-  width: 18px;
-  height: 18px;
-  border-radius: 3px;
-  background: var(--ink);
-  position: relative;
-}
-.onboard-brand-mark::after {
-  content: "";
-  position: absolute;
-  inset: 4px;
-  border: 1.5px solid var(--paper);
+.flow-step.is-current { color: var(--ink); }
+.flow-step.is-current .flow-step-n { background: var(--navy-900); border-color: var(--navy-900); color: #fff; }
+.flow-step.is-done { color: var(--ink-soft); }
+.flow-step.is-done .flow-step-n { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent-ink); }
+@media (max-width: 760px) {
+  .onboard-topbar { grid-template-columns: auto 1fr auto; padding: 0 var(--sp-4); gap: var(--sp-3); }
+  .onboard-topbar .logo-word, .onboard-exit, .flow-step:not(.is-current) .flow-step-label { display: none; }
+  .flow-steps { justify-self: center; }
+  .flow-step + .flow-step::before { width: 14px; }
 }
 
 .onboard-main {
@@ -44,15 +47,15 @@
   max-width: 620px;
 }
 .onboard-step {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--ink-faint);
   margin-bottom: var(--sp-3);
 }
 .onboard-stage h1 {
-  font-size: 1.7rem;
+  font-size: var(--text-2xl);
   margin-bottom: var(--sp-2);
 }
 .onboard-sub {
@@ -65,8 +68,9 @@
   position: relative;
 }
 .search-field input {
-  padding: 16px 18px 16px 44px;
+  padding: 14px 18px 14px 44px;
   font-size: 1rem;
+  min-height: 52px;
 }
 .search-field svg {
   position: absolute;
@@ -143,7 +147,7 @@
 }
 .identify-meta-list li:last-child { border-bottom: none; }
 .identify-meta-list .k { color: var(--ink-faint); }
-.identify-meta-list .v { font-weight: 600; font-family: var(--font-mono); font-size: 0.85rem; }
+.identify-meta-list .v { font-weight: 600; font-variant-numeric: tabular-nums; font-size: 0.875rem; text-align: right; }
 
 /* project setup */
 .type-grid {
@@ -166,9 +170,10 @@
   transition: border-color 0.12s ease, background 0.12s ease;
 }
 .type-option:hover { border-color: var(--ink-soft); }
-.type-option.is-selected {
-  border-color: var(--ink);
-  background: var(--surface-sunken);
+.type-option[aria-pressed="true"] {
+  border-color: var(--navy-900);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px var(--navy-900);
 }
 .assumption-row {
   display: grid;
@@ -193,7 +198,7 @@
 .analyzing-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(246, 245, 242, 0.97);
+  background: rgba(248, 250, 252, 0.98);
   display: none;
   align-items: center;
   justify-content: center;

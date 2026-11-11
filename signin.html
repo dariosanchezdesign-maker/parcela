@@ -3,20 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sign in — Parcela</title>
+  <title>Sign in — ATERRA</title>
+  <meta name="theme-color" content="#101D32" />
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/brand/app-icon.png" />
+  <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/onboarding.css" />
+  <script src="js/i18n.js"></script>
+  <script src="js/ui/shell.js"></script>
 </head>
 <body>
-  <header class="onboard-topbar">
-    <a href="index.html" class="brand">
-      <span class="onboard-brand-mark" aria-hidden="true"></span>
-      Parcela
-    </a>
-    <span id="lang-toggle-slot"></span>
-  </header>
+  <aterra-flowbar></aterra-flowbar>
 
-  <main class="onboard-main">
+  <main class="onboard-main" id="main" tabindex="-1">
     <div class="onboard-stage">
       <!-- Signed out: ask for an email -->
       <div id="signin-form-view">
@@ -27,7 +28,7 @@
             <label for="signin-email" class="sr-only" data-i18n="signin_email">Email</label>
             <input type="email" id="signin-email" autocomplete="email" required data-i18n-placeholder="signin_emailPlaceholder" placeholder="you@company.com" />
           </div>
-          <div class="field-error" id="signin-error">
+          <div class="field-error" id="signin-error" role="alert">
             <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11" r="0.75" fill="currentColor"/></svg>
             <span id="signin-error-text"></span>
           </div>
@@ -56,14 +57,13 @@
     </div>
   </main>
 
-  <script src="js/i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/data/supabaseClient.js"></script>
   <script src="js/data/account.js"></script>
   <script>
     (async function () {
-      const I = window.ParcelaI18N;
-      const A = window.ParcelaAccount;
+      const I = window.AterraI18N;
+      const A = window.AterraAccount;
       const views = {
         form: document.getElementById("signin-form-view"),
         sent: document.getElementById("signin-sent-view"),
@@ -95,18 +95,27 @@
       // URL hash (and may clear it) before firing onAuthStateChange, so note
       // it up front.
       const fromLink = location.hash.includes("access_token");
-      A.onChange((user) => {
-        if (user && next && fromLink) {
-          location.replace(next);
-          return;
-        }
-        render(user);
-      });
-      render(await A.user());
-
-      const form = document.getElementById("signin-form");
       const submit = document.getElementById("signin-submit");
       const errorBox = document.getElementById("signin-error");
+      try {
+        A.onChange((user) => {
+          if (user && next && fromLink) {
+            location.replace(next);
+            return;
+          }
+          render(user);
+        });
+        render(await A.user());
+      } catch (err) {
+        // Account service unreachable: keep the form, explain, and disable sending.
+        show("form");
+        document.getElementById("signin-error-text").textContent = I.t("signin_errUnavailable");
+        errorBox.classList.add("is-visible");
+        submit.disabled = true;
+        return;
+      }
+
+      const form = document.getElementById("signin-form");
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         const email = document.getElementById("signin-email").value.trim();

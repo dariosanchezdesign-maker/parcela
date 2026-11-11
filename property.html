@@ -3,205 +3,172 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>123 Example Avenue — Parcela</title>
+  <title>Property analysis — ATERRA</title>
+  <meta name="theme-color" content="#101D32" />
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/brand/app-icon.png" />
+  <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/intelligence.css" />
   <link rel="stylesheet" href="css/panel.css" />
+  <script src="js/i18n.js"></script>
+  <script src="js/ui/shell.js"></script>
 </head>
 <body>
   <div class="shell">
-    <aside class="shell-nav">
-      <a href="index.html" class="shell-brand">
-        <span class="shell-brand-mark" aria-hidden="true"></span>
-        Parcela
-      </a>
-      <ul class="shell-nav-list">
-        <li><a href="overview.html"><svg class="shell-nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg><span data-i18n="nav_overview">Overview</span><span class="nav-dot"></span></a></li>
-        <li><a href="explore.html"><svg class="shell-nav-icon" viewBox="0 0 20 20" fill="none"><path d="M3 6l5-2 4 2 5-2v10l-5 2-4-2-5 2V6z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span data-i18n="nav_explore">Explore</span><span class="nav-dot"></span></a></li>
-        <li><a href="properties.html" class="active"><svg class="shell-nav-icon" viewBox="0 0 20 20" fill="none"><path d="M10 2l7 4v8l-7 4-7-4V6l7-4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg><span data-i18n="nav_properties">Properties</span><span class="nav-dot"></span></a></li>
-        <li><a href="projects.html"><svg class="shell-nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3 8h14" stroke="currentColor" stroke-width="1.4"/></svg><span data-i18n="nav_projects">Projects</span><span class="nav-dot"></span></a></li>
-        <li><a href="reports.html"><svg class="shell-nav-icon" viewBox="0 0 20 20" fill="none"><path d="M5 2h7l3 3v13H5V2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 10h4M8 13h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span data-i18n="nav_reports">Reports</span><span class="nav-dot"></span></a></li>
-      </ul>
-      <div class="shell-nav-footer"><span data-i18n="nav_footer">Prototype data · Puerto Rico</span><span id="lang-toggle-slot"></span></div>
-    </aside>
+    <aterra-sidebar active="properties"></aterra-sidebar>
 
-    <div class="shell-main">
-      <header class="intel-header">
-        <div>
-          <h1 id="h-address">123 Example Avenue</h1>
-          <p class="intel-locality" id="h-locality">San Juan, Puerto Rico</p>
-          <span class="intel-project-tag" id="h-project-tag">Multifamily · 60–80 units</span>
-          <div class="intel-header-actions">
-            <button class="btn btn-primary btn-sm" id="save-btn" style="display:none">Save project</button>
-            <a href="reports.html" class="btn btn-ghost btn-sm" id="report-btn" data-i18n="property_generateReport">Generate feasibility report</a>
-            <button class="btn btn-ghost btn-sm" id="compare-btn" data-i18n="property_compareOther">Compare with other properties</button>
-          </div>
-        </div>
-        <div class="intel-meta">
-          <div>
-            <div class="m" data-i18n="property_parcelSize">Parcel size</div>
-            <div class="v" id="h-area"></div>
-          </div>
-          <div>
-            <div class="m" data-i18n="common_cadastralNumber">Cadastral number</div>
-            <div class="v" id="h-cadastral"></div>
-          </div>
-          <div>
-            <div class="m" data-i18n="common_lastAnalyzed">Last analyzed</div>
-            <div class="v" id="h-analyzed"></div>
-          </div>
-        </div>
-      </header>
-
-      <div class="intel-layout">
-        <div class="intel-map-wrap">
-          <div class="map-controls">
-            <button class="map-control" data-layer="satellite" data-i18n="property_layer_satellite">Satellite</button>
-            <button class="map-control" data-layer="zoning" data-i18n="property_layer_zoning">Zoning</button>
-            <button class="map-control" data-layer="flood" data-i18n="property_layer_flood">Flood</button>
-            <button class="map-control" data-layer="environmental" data-i18n="property_layer_environmental">Environmental</button>
-            <button class="map-control" data-layer="infrastructure" data-i18n="property_layer_infrastructure">Infrastructure</button>
-            <button class="map-control" data-layer="development" data-i18n="property_layer_development">Development</button>
-          </div>
-          <div class="map-stage" id="map-stage">
-            <div class="map-svg-slot"></div>
-            <div class="map-legend"></div>
-            <div class="map-note" id="map-note" data-i18n="property_mapNote">Prototype map data</div>
-          </div>
-        </div>
-
-        <aside>
-          <div class="card feasibility-card">
-            <div class="eyebrow" data-i18n="property_preliminaryFeasibility">Preliminary feasibility</div>
-            <div class="feasibility-status" id="feas-status"></div>
-            <p id="feas-summary"></p>
-            <div class="ai-action-row">
-              <button class="ai-action" id="ai-explain">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5l1.2 3.6 3.6 1.2-3.6 1.2L8 11.1l-1.2-3.6-3.6-1.2 3.6-1.2L8 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
-                <span data-i18n="property_aiExplain">Explain this</span>
-              </button>
-              <button class="ai-action" id="ai-next">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5l1.2 3.6 3.6 1.2-3.6 1.2L8 11.1l-1.2-3.6-3.6-1.2 3.6-1.2L8 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
-                <span data-i18n="property_aiNext">What should I investigate next?</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="finding-categories" id="finding-categories"></div>
-
-          <div class="info-section" id="section-unknowns">
-            <button class="info-section-toggle"><span data-i18n="property_whatDontKnow">What we don't know yet</span><svg class="chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            <div class="info-section-body" id="unknowns-list"></div>
-          </div>
-
-          <div class="info-section" id="section-actions">
-            <button class="info-section-toggle"><span data-i18n="property_beforeMoveForward">Before you move forward</span><svg class="chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            <div class="info-section-body" id="next-actions-list"></div>
-          </div>
-
-          <div class="info-section" id="section-regulatory">
-            <button class="info-section-toggle"><span data-i18n="property_regulatoryAnalysis">Regulatory analysis</span><svg class="chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            <div class="info-section-body">
-              <div class="field-grid" id="regulatory-fields"></div>
-            </div>
-          </div>
-
-          <div class="info-section" id="section-physical">
-            <button class="info-section-toggle"><span data-i18n="property_physicalConstraints">Physical constraints</span><svg class="chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            <div class="info-section-body">
-              <div class="pc-grid" id="physical-grid"></div>
-            </div>
-          </div>
-
-          <div class="info-section" id="section-infra">
-            <button class="info-section-toggle"><span data-i18n="common_infrastructure">Infrastructure</span><svg class="chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            <div class="info-section-body" id="infra-list"></div>
-          </div>
-
-          <div class="info-section" id="section-history">
-            <button class="info-section-toggle"><span data-i18n="property_developmentHistory">Development history</span><svg class="chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            <div class="info-section-body">
-              <div class="timeline" id="history-timeline"></div>
-            </div>
-          </div>
-        </aside>
+    <main class="shell-main" id="main" tabindex="-1">
+      <!-- Loading / error state for real parcels -->
+      <div class="intel-state" id="intel-state" hidden>
+        <h1 id="state-title"><span class="spinner" aria-hidden="true"></span><span id="state-text"></span></h1>
+        <p id="state-body"></p>
+        <div id="state-actions"></div>
       </div>
-    </div>
+
+      <div id="intel-content">
+        <!-- 1. Property identification -->
+        <header class="intel-header">
+          <ol class="breadcrumb">
+            <li><a href="properties.html" data-i18n="nav_properties">Properties</a></li>
+            <li aria-current="page" id="crumb-current"></li>
+          </ol>
+          <div class="intel-header-row">
+            <div>
+              <h1 id="h-address"></h1>
+              <p class="intel-locality" id="h-locality"></p>
+              <div class="intel-tags">
+                <span class="tag" id="h-project-tag"></span>
+                <span class="tag" id="h-data-tag"></span>
+              </div>
+            </div>
+            <dl class="intel-meta">
+              <div><dt data-i18n="property_parcelSize">Parcel size</dt><dd id="h-area"></dd></div>
+              <div><dt data-i18n="common_cadastralNumber">Cadastral number</dt><dd class="mono" id="h-cadastral"></dd></div>
+              <div><dt data-i18n="common_lastAnalyzed">Last analyzed</dt><dd id="h-analyzed"></dd></div>
+            </dl>
+          </div>
+          <div class="intel-header-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="save-btn" hidden>Save analysis</button>
+            <a href="reports.html" class="btn btn-ghost btn-sm" id="report-btn" data-i18n="property_generateReport">Generate feasibility report</a>
+            <a href="compare.html" class="btn btn-ghost btn-sm" id="compare-btn" data-i18n="property_compareOther">Compare with other properties</a>
+          </div>
+        </header>
+
+        <div class="intel-body">
+          <!-- 2. Decision brief: the read, the counts, the recommended next step -->
+          <section class="brief" aria-labelledby="brief-title">
+            <div class="brief-main">
+              <h2 class="eyebrow" id="brief-title" data-i18n="property_preliminaryFeasibility">Preliminary feasibility</h2>
+              <p class="feasibility-status" id="feas-status"></p>
+              <p class="brief-summary" id="feas-summary"></p>
+              <ul class="tally" id="tally" aria-label="Findings by status"></ul>
+              <div class="ai-action-row">
+                <span class="ai-label" id="ai-label">AI</span>
+                <button type="button" class="ai-action" id="ai-explain" aria-haspopup="dialog">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5l1.2 3.6 3.6 1.2-3.6 1.2L8 11.1l-1.2-3.6-3.6-1.2 3.6-1.2L8 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+                  <span data-i18n="property_aiExplain">Explain this</span>
+                </button>
+                <button type="button" class="ai-action" id="ai-next" aria-haspopup="dialog">
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5l1.2 3.6 3.6 1.2-3.6 1.2L8 11.1l-1.2-3.6-3.6-1.2 3.6-1.2L8 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+                  <span data-i18n="property_aiNext">What should I investigate first?</span>
+                </button>
+              </div>
+            </div>
+            <aside class="brief-next on-dark" aria-labelledby="next-title">
+              <div class="eyebrow" data-i18n="property_recommendedNext">Recommended next step</div>
+              <h2 id="next-title"></h2>
+              <p id="next-why"></p>
+              <p class="brief-who"><span data-i18n="common_suggestedProfessional">Suggested professional</span>: <strong id="next-who"></strong></p>
+              <div class="brief-next-actions">
+                <button type="button" class="btn btn-accent btn-sm" id="next-all" data-i18n="property_allSteps">See all next steps</button>
+                <button type="button" class="btn btn-on-dark btn-sm" id="next-evidence" hidden data-i18n="common_evidence">Evidence</button>
+              </div>
+            </aside>
+          </section>
+
+          <div class="intel-layout">
+            <!-- 3. Location and map -->
+            <section class="intel-map-wrap" aria-label="Map">
+              <div class="map-controls" role="group" data-i18n-label="property_mapLayers">
+                <button type="button" class="map-control" data-layer="satellite" data-i18n="property_layer_satellite">Base</button>
+                <button type="button" class="map-control" data-layer="zoning" data-i18n="property_layer_zoning">Zoning</button>
+                <button type="button" class="map-control" data-layer="flood" data-i18n="property_layer_flood">Flood</button>
+                <button type="button" class="map-control" data-layer="environmental" data-i18n="property_layer_environmental">Environmental</button>
+                <button type="button" class="map-control" data-layer="infrastructure" data-i18n="property_layer_infrastructure">Infrastructure</button>
+                <button type="button" class="map-control" data-layer="development" data-i18n="property_layer_development">Development</button>
+              </div>
+              <div class="map-stage" id="map-stage">
+                <div class="map-svg-slot"></div>
+                <div class="map-legend" aria-live="polite"></div>
+                <div class="map-note" id="map-note"></div>
+              </div>
+            </section>
+
+            <!-- 4. Detail, progressively disclosed -->
+            <section class="intel-detail" aria-label="Analysis detail">
+              <div class="tabs" role="tablist" id="detail-tabs">
+                <button type="button" class="tab" role="tab" id="tab-findings" data-tab="findings" aria-controls="panel-findings"><span data-i18n="property_tab_findings">Findings</span><span class="count" id="count-findings"></span></button>
+                <button type="button" class="tab" role="tab" id="tab-unknowns" data-tab="unknowns" aria-controls="panel-unknowns"><span data-i18n="property_tab_unknowns">Open questions</span><span class="count" id="count-unknowns"></span></button>
+                <button type="button" class="tab" role="tab" id="tab-actions" data-tab="actions" aria-controls="panel-actions"><span data-i18n="property_tab_actions">Next steps</span><span class="count" id="count-actions"></span></button>
+                <button type="button" class="tab" role="tab" id="tab-regulation" data-tab="regulation" aria-controls="panel-regulation"><span data-i18n="property_tab_regulation">Zoning & rules</span></button>
+                <button type="button" class="tab" role="tab" id="tab-site" data-tab="site" aria-controls="panel-site"><span data-i18n="property_tab_site">Site</span></button>
+                <button type="button" class="tab" role="tab" id="tab-limits" data-tab="limits" aria-controls="panel-limits"><span data-i18n="property_tab_limits">Sources & limits</span></button>
+              </div>
+
+              <div class="tab-panel" role="tabpanel" id="panel-findings" aria-labelledby="tab-findings" tabindex="0">
+                <div class="evidence-key" id="evidence-key"></div>
+                <div id="finding-categories"></div>
+              </div>
+
+              <div class="tab-panel" role="tabpanel" id="panel-unknowns" aria-labelledby="tab-unknowns" tabindex="0" hidden>
+                <p class="tab-intro" data-i18n="property_unknownsIntro">What the public record does not answer yet. Treat each as unresolved until a professional confirms it.</p>
+                <div id="unknowns-list"></div>
+              </div>
+
+              <div class="tab-panel" role="tabpanel" id="panel-actions" aria-labelledby="tab-actions" tabindex="0" hidden>
+                <p class="tab-intro" data-i18n="property_actionsIntro">Ordered by what unblocks the decision first, each with the professional who can resolve it.</p>
+                <div id="next-actions-list"></div>
+              </div>
+
+              <div class="tab-panel" role="tabpanel" id="panel-regulation" aria-labelledby="tab-regulation" tabindex="0" hidden>
+                <p class="tab-intro" id="regulation-intro"></p>
+                <div class="field-grid" id="regulatory-fields"></div>
+              </div>
+
+              <div class="tab-panel" role="tabpanel" id="panel-site" aria-labelledby="tab-site" tabindex="0" hidden>
+                <div id="site-sample">
+                  <h3 class="detail-subhead" data-i18n="property_physicalConstraints">Physical constraints</h3>
+                  <div class="pc-grid" id="physical-grid"></div>
+                  <h3 class="detail-subhead" data-i18n="common_infrastructure">Infrastructure</h3>
+                  <div id="infra-list"></div>
+                  <h3 class="detail-subhead" data-i18n="property_developmentHistory">Development history</h3>
+                  <div class="timeline" id="history-timeline"></div>
+                </div>
+                <div class="empty-state" id="site-live" hidden>
+                  <h3 data-i18n="property_siteLiveTitle">Site conditions are not in this analysis yet</h3>
+                  <p data-i18n="property_siteLiveBody">Flood, liquefaction, tsunami and historic-zone layers are read live and appear under Findings. Topography, soils, utility capacity and permit history are not available from public sources ATERRA reads today, so they are listed as open questions instead of being estimated.</p>
+                  <div class="btn-row"><button type="button" class="btn btn-ghost btn-sm" data-goto-tab="unknowns" data-i18n="property_seeUnknowns">See open questions</button></div>
+                </div>
+              </div>
+
+              <div class="tab-panel" role="tabpanel" id="panel-limits" aria-labelledby="tab-limits" tabindex="0" hidden>
+                <h3 class="detail-subhead" data-i18n="property_howToRead">How to read this analysis</h3>
+                <dl class="basis-defs" id="basis-defs"></dl>
+                <h3 class="detail-subhead" data-i18n="property_sourcesUsed">Sources used</h3>
+                <ul class="limit-list" id="sources-used"></ul>
+                <h3 class="detail-subhead" data-i18n="property_notCovered">Not covered</h3>
+                <ul class="limit-list" id="not-covered"></ul>
+                <p class="text-sm muted" data-i18n="property_disclaimer">A preliminary analysis from public records. It is not a legal, engineering, appraisal or permitting determination.</p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 
-  <div class="scrim" id="scrim"></div>
-  <aside class="side-panel" id="why-panel" aria-hidden="true">
-    <div class="side-panel-head">
-      <div>
-        <span class="status" id="wp-status"></span>
-        <h2 id="wp-title"></h2>
-      </div>
-      <button class="side-panel-close" id="wp-close" aria-label="Close">
-        <svg viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-    <div class="side-panel-body">
-      <div class="side-panel-section">
-        <div class="sp-label" data-i18n="panel_whatFound">What Parcela found</div>
-        <div class="sp-body" id="wp-found"></div>
-      </div>
-      <div class="side-panel-section">
-        <div class="sp-label" data-i18n="common_whyItMatters">Why it matters</div>
-        <div class="sp-body" id="wp-matters"></div>
-      </div>
-      <div class="side-panel-section">
-        <div class="sp-label" data-i18n="panel_evidence">Evidence</div>
-        <div class="evidence-block">
-          <div class="evidence-row"><span class="e-k" data-i18n="panel_source">Source</span><span class="e-v" id="wp-src-name"></span></div>
-          <div class="evidence-row"><span class="e-k" data-i18n="panel_agency">Agency</span><span class="e-v" id="wp-src-agency"></span></div>
-          <div class="evidence-row"><span class="e-k" data-i18n="panel_date">Date</span><span class="e-v" id="wp-src-date"></span></div>
-          <div class="source-detail" id="wp-source-detail">
-            <div class="evidence-row"><span class="e-k" data-i18n="panel_document">Document</span><span class="e-v" id="wp-src-doc"></span></div>
-            <div class="evidence-row"><span class="e-k" data-i18n="panel_section">Section</span><span class="e-v" id="wp-src-section"></span></div>
-          </div>
-        </div>
-      </div>
-      <div class="side-panel-section">
-        <div class="sp-label" data-i18n="panel_confidence">Confidence</div>
-        <span class="confidence" id="wp-confidence" data-level="">
-          <span class="confidence-bars"><span></span><span></span><span></span></span>
-          <span id="wp-confidence-label"></span>
-        </span>
-      </div>
-      <div class="side-panel-section">
-        <div class="sp-label" data-i18n="panel_professionalVerification">Professional verification</div>
-        <div class="verification-block">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5l5.5 2.2v4.1c0 3.6-2.3 6.4-5.5 7.7-3.2-1.3-5.5-4.1-5.5-7.7V3.7L8 1.5z" stroke="currentColor" stroke-width="1.3"/></svg>
-          <span id="wp-verification"></span>
-        </div>
-      </div>
-    </div>
-    <div class="side-panel-footer" style="flex-direction:column; gap:8px;">
-      <button class="btn btn-ghost btn-block" id="wp-view-source" data-i18n="panel_viewSource">View source</button>
-      <a href="sources.html" class="btn-text text-sm" style="text-align:center;" data-i18n="panel_viewAllSources">View all sources & evidence</a>
-    </div>
-  </aside>
-
-  <aside class="side-panel" id="ai-panel" aria-hidden="true">
-    <div class="side-panel-head">
-      <div>
-        <div class="ai-eyebrow eyebrow">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5l1.2 3.6 3.6 1.2-3.6 1.2L8 11.1l-1.2-3.6-3.6-1.2 3.6-1.2L8 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
-          <span data-i18n="ai_analyst">Parcela analyst</span>
-        </div>
-        <h2 id="ai-title">Explain this</h2>
-      </div>
-      <button class="side-panel-close" id="ai-close" aria-label="Close">
-        <svg viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-    <div class="side-panel-body">
-      <div class="ai-panel-body" id="ai-body"></div>
-      <div class="ai-disclaimer" data-i18n="ai_disclaimer">Generated from findings already shown on this page — not a substitute for professional review.</div>
-    </div>
-  </aside>
-
-  <script src="js/i18n.js"></script>
   <script src="js/data/mockData.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="js/data/supabaseClient.js"></script>
@@ -215,131 +182,55 @@
   <script src="js/ui/intelligence-render.js"></script>
   <script>
     (async function () {
-      const P = window.PARCELA;
-      const I = window.ParcelaI18N;
+      const P = window.ATERRA;
+      const I = window.AterraI18N;
+      const UI = window.AterraShell;
+      const R = window.AterraRender;
+      const esc = UI.esc;
+      const $ = (id) => document.getElementById(id);
 
-      // Registered synchronously, before any `await` below — awaiting the
-      // Supabase fetch yields control back to the parser, so plain
-      // `document.addEventListener("DOMContentLoaded", ...)` called *after*
-      // an await can lose the race and never fire. This resolves once
-      // parsing is done regardless of when we get around to checking it.
       const domReady = new Promise((resolve) => {
         if (document.readyState !== "loading") resolve();
         else document.addEventListener("DOMContentLoaded", resolve);
       });
 
-      // ---------- live backend (Supabase): header, feasibility, findings,
-      // unknowns, next actions. Regulatory/physical/infrastructure/
-      // development-history sections aren't modeled in the database yet,
-      // so they stay on the prototype's mock data below — findingById/
-      // sourceById fall back to that mock data for anything the live
-      // backend doesn't know about (e.g. the regulatory section's
-      // hardcoded finding references), so nothing already working breaks.
       // ---------- real parcel (?parcel=<cadastral>) ----------
-      // CRIM / Planning Board / FEMA via /api/lookup. Sections Parcela has no
-      // real data for yet are hidden rather than shown with demo content.
-      const liveCadastral = window.ParcelaLive.parcelParam();
+      // CRIM / Planning Board / FEMA lookups. Sections with no real data are
+      // replaced by an explicit "not covered" state rather than demo content.
+      const liveCadastral = window.AterraLive.parcelParam();
       if (liveCadastral) {
-        document.getElementById("h-address").textContent = I.t("live_loading");
+        $("intel-content").hidden = true;
+        $("intel-state").hidden = false;
+        $("state-text").textContent = I.t("live_loading");
         try {
-          window.ParcelaLive.apply(P, await window.ParcelaLive.lookup(liveCadastral));
+          window.AterraLive.apply(P, await window.AterraLive.lookup(liveCadastral));
         } catch (err) {
-          document.getElementById("h-address").textContent = I.t("live_loadError");
-          document.getElementById("feas-summary").innerHTML = `<a href="search.html">${I.t("live_retry")}</a>`;
-          document.getElementById("feas-status").textContent = "";
+          $("state-title").innerHTML = `<span>${esc(I.t("live_loadError"))}</span>`;
+          $("state-body").textContent = I.t("live_loadErrorBody");
+          $("state-actions").innerHTML = `<a class="btn btn-primary" href="search.html">${esc(I.t("live_retry"))}</a>`;
           return;
         }
-        ["section-physical", "section-infra", "section-history"].forEach((id) => { document.getElementById(id).style.display = "none"; });
-        const reportUrl = new URL("reports.html", location.href);
-        reportUrl.searchParams.set("parcel", liveCadastral);
-        const projectType = (window.ParcelaLive.loadProject() || {}).type;
-        if (projectType) reportUrl.searchParams.set("type", projectType);
-        document.getElementById("report-btn").href = `${reportUrl.pathname.split("/").pop()}${reportUrl.search}`;
-        ["compare-btn"].forEach((id) => { document.getElementById(id).style.display = "none"; });
-        // Drop data-i18n so the static translation pass can't put the
-        // prototype labels back over the live ones.
-        const mapNote = document.getElementById("map-note");
-        mapNote.removeAttribute("data-i18n");
-        mapNote.textContent = I.t("live_mapNote");
-        const navFooter = document.querySelector('[data-i18n="nav_footer"]');
-        navFooter.removeAttribute("data-i18n");
-        navFooter.textContent = I.t("live_navFooter");
-        wireSave();
+        $("intel-state").hidden = true;
+        $("intel-content").hidden = false;
       }
 
-      // ---------- save project (signed in) ----------
-      function wireSave() {
-        const btn = document.getElementById("save-btn");
-        btn.style.display = "";
-        btn.textContent = I.t("save_project");
-        const A = window.ParcelaAccount;
-        A.isSaved(P.property.cadastral)
-          .then((saved) => { if (saved) btn.textContent = I.t("save_update"); })
-          .catch(() => {});
-        btn.addEventListener("click", async () => {
-          if (!(await A.user())) {
-            const here = `property.html${location.search}`;
-            window.location.href = `signin.html?next=${encodeURIComponent(here)}`;
-            return;
-          }
-          btn.disabled = true;
-          btn.textContent = I.t("save_saving");
-          try {
-            await A.saveProject(P);
-            btn.textContent = I.t("save_saved");
-          } catch (err) {
-            console.error("Parcela: save failed", err);
-            btn.textContent = I.t("save_error");
-          } finally {
-            btn.disabled = false;
-          }
-        });
-      }
-
+      // ---------- sample property: prefer the database copy if reachable ----------
       const DEMO_PARCEL_ID = "a0000000-0000-4000-8000-000000000001";
       const mockFindingById = P.findingById;
       const mockSourceById = P.sourceById;
       if (!P.live) try {
-        const project = await window.ParcelaDB.projectByParcelId(DEMO_PARCEL_ID);
+        const project = await window.AterraDB.projectByParcelId(DEMO_PARCEL_ID);
         if (!project) throw new Error("No Supabase project found for this parcel.");
-
         const [dbFindings, dbQuestions, dbPermitSteps] = await Promise.all([
-          window.ParcelaDB.findingsByProjectId(project.id),
-          window.ParcelaDB.questionsByProjectId(project.id),
-          window.ParcelaDB.permitStepsByProjectId(project.id),
+          window.AterraDB.findingsByProjectId(project.id),
+          window.AterraDB.questionsByProjectId(project.id),
+          window.AterraDB.permitStepsByProjectId(project.id),
         ]);
-
         const findings = dbFindings.map((f) => ({
-          id: f.id,
-          category: f.category,
-          title: f.title,
-          summary: f.summary,
-          confidence: f.confidence,
+          id: f.id, category: f.category, title: f.title, summary: f.summary, confidence: f.confidence,
           sourceId: f.sources[0] ? f.sources[0].id : null,
           why: { found: f.why_found, matters: f.why_matters, verification: f.verification },
         }));
-        const findingCategories = ["favorable", "investigate", "constraint", "unknown"].map((key) => ({
-          key,
-          findings: findings.filter((f) => f.category === key),
-        }));
-        const unknowns = dbQuestions.map((q) => ({
-          title: q.title,
-          whyItMatters: q.why_it_matters,
-          nextStep: q.next_step,
-          relatedFindingId: q.related_finding_id,
-        }));
-        const nextActions = dbPermitSteps
-          .slice()
-          .sort((a, b) => a.step_order - b.step_order)
-          .map((p) => ({
-            order: p.step_order,
-            title: p.title,
-            whyItMatters: p.why_it_matters,
-            professional: p.professional,
-            evidenceRef: p.evidence_finding_id,
-            sourceId: p.source_id,
-          }));
-
         const dbSourceById = {};
         dbFindings.forEach((f) => f.sources.forEach((s) => {
           if (s) dbSourceById[s.id] = { name: s.name, agency: s.agency, date: s.published_at, section: s.section, document: s.document };
@@ -347,98 +238,196 @@
         dbPermitSteps.forEach((p) => {
           if (p.sources) dbSourceById[p.sources.id] = { name: p.sources.name, agency: p.sources.agency, date: p.sources.published_at, section: p.sources.section, document: p.sources.document };
         });
-
         P.property = {
-          id: project.parcels.id,
-          address: project.parcels.address,
-          municipality: project.parcels.municipality,
-          cadastral: project.parcels.cadastral,
-          parcelAreaSqm: project.parcels.parcel_area_sqm,
-          parcelAreaAcres: project.parcels.parcel_area_acres,
-          lastAnalyzed: project.last_analyzed_at
-            ? new Date(project.last_analyzed_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })
-            : "",
+          id: project.parcels.id, address: project.parcels.address, municipality: project.parcels.municipality,
+          cadastral: project.parcels.cadastral, parcelAreaSqm: project.parcels.parcel_area_sqm, parcelAreaAcres: project.parcels.parcel_area_acres,
+          lastAnalyzed: project.last_analyzed_at ? new Date(project.last_analyzed_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }) : "",
         };
         P.project = { name: project.name, type: project.project_type, unitsLabel: project.units_label, investmentLabel: project.investment_label };
         P.feasibility = { status: project.feasibility_status, summary: project.feasibility_summary };
         P.findings = findings;
-        P.findingCategories = findingCategories;
-        P.unknowns = unknowns;
-        P.nextActions = nextActions;
+        P.findingCategories = ["favorable", "investigate", "constraint", "unknown"].map((key) => ({ key, findings: findings.filter((f) => f.category === key) }));
+        P.unknowns = dbQuestions.map((q) => ({ title: q.title, whyItMatters: q.why_it_matters, nextStep: q.next_step, relatedFindingId: q.related_finding_id }));
+        P.nextActions = dbPermitSteps.slice().sort((a, b) => a.step_order - b.step_order).map((p) => ({
+          order: p.step_order, title: p.title, whyItMatters: p.why_it_matters, professional: p.professional, evidenceRef: p.evidence_finding_id, sourceId: p.source_id,
+        }));
         P.findingById = (id) => findings.find((f) => f.id === id) || mockFindingById(id);
         P.sourceById = (id) => (id && dbSourceById[id]) || mockSourceById(id);
-
-        console.info("Parcela: header, feasibility, findings, unknowns, and next actions are now live from Supabase.");
       } catch (err) {
-        console.error("Parcela: could not load live data from Supabase, falling back to prototype mock data.", err);
+        console.warn("ATERRA: sample database unreachable; using the bundled sample data.", err.message);
       }
 
-      document.getElementById("h-address").textContent = P.property.address;
-      document.getElementById("h-locality").textContent = P.property.municipality;
-      document.getElementById("h-project-tag").textContent = [I.tv(P.project.type), P.project.unitsLabel !== "—" ? I.tv(P.project.unitsLabel) : null].filter(Boolean).join(" · ");
-      document.getElementById("h-area").textContent = `${P.property.parcelAreaSqm.toLocaleString()} m²`;
-      document.getElementById("h-cadastral").textContent = P.property.cadastral;
-      document.getElementById("h-analyzed").textContent = P.property.lastAnalyzed;
-      document.title = `${P.property.address} — Parcela`;
+      // Order categories by what needs a decision first.
+      const CAT_ORDER = ["constraint", "investigate", "unknown", "favorable"];
+      const categories = CAT_ORDER.map((key) => ({ key, findings: P.findings.filter((f) => f.category === key) }));
 
-      document.getElementById("feas-status").textContent = I.tv(P.feasibility.status);
-      document.getElementById("feas-summary").textContent = I.tv(P.feasibility.summary);
+      // ---------- header ----------
+      $("h-address").textContent = P.property.address;
+      $("crumb-current").textContent = P.property.address;
+      $("h-locality").textContent = P.property.municipality;
+      $("h-project-tag").textContent = [I.tv(P.project.type), P.project.unitsLabel && P.project.unitsLabel !== "—" ? I.tv(P.project.unitsLabel) : null].filter(Boolean).join(" · ");
+      const area = P.property.parcelAreaSqm.toLocaleString(I.lang === "es" ? "es-PR" : "en-US");
+      $("h-area").textContent = P.property.parcelAreaCuerdas != null ? `${area} m² · ${P.property.parcelAreaCuerdas} cuerdas` : `${area} m²`;
+      $("h-cadastral").textContent = P.property.cadastral;
+      $("h-analyzed").textContent = P.property.lastAnalyzed;
+      $("h-data-tag").className = P.live ? "tag tag-live" : "tag";
+      $("h-data-tag").textContent = I.t(P.live ? "property_dataLive" : "property_dataSample");
+      document.title = `${P.property.address} — ATERRA`;
 
-      window.ParcelaMap.mount(document.querySelector(".intel-map-wrap"), P.map);
+      // ---------- decision brief ----------
+      $("feas-status").textContent = I.tv(P.feasibility.status);
+      $("feas-summary").textContent = I.tv(P.feasibility.summary);
+      $("tally").innerHTML = categories
+        .map((c) => `<li><button type="button" class="tally-item" data-cat="${c.key}"><span class="n">${c.findings.length}</span>${esc(I.t("common_status_" + c.key))}</button></li>`)
+        .join("");
 
-      window.ParcelaRender.renderFindingCategories(document.getElementById("finding-categories"), P.findingCategories, "constraint");
-      window.ParcelaRender.renderUnknowns(document.getElementById("unknowns-list"), P.unknowns);
-      window.ParcelaRender.renderNextActions(document.getElementById("next-actions-list"), P.nextActions);
-      window.ParcelaRender.renderRegulatory(document.getElementById("regulatory-fields"), P.regulatory);
-      if (!P.live) {
-        window.ParcelaRender.renderPhysical(document.getElementById("physical-grid"), P.physical);
-        window.ParcelaRender.renderInfrastructure(document.getElementById("infra-list"), P.infrastructure);
-        window.ParcelaRender.renderTimeline(document.getElementById("history-timeline"), P.developmentHistory);
+      const first = P.nextActions[0];
+      if (first) {
+        $("next-title").textContent = I.tv(first.title);
+        $("next-why").textContent = I.tv(first.whyItMatters);
+        $("next-who").textContent = R.professionalLabel(first);
+        if (first.evidenceRef && P.findingById(first.evidenceRef)) {
+          $("next-evidence").hidden = false;
+          $("next-evidence").addEventListener("click", () => window.AterraPanel.open(first.evidenceRef));
+        }
       }
 
-      document.querySelectorAll(".info-section-toggle").forEach((btn) => {
-        btn.addEventListener("click", () => btn.closest(".info-section").classList.toggle("is-open"));
-      });
-      document.getElementById("section-unknowns").classList.add("is-open");
-      document.getElementById("section-actions").classList.add("is-open");
+      // ---------- map ----------
+      $("map-note").textContent = I.t(P.live ? "live_mapNote" : "property_mapNote");
+      window.AterraMap.mount(document.querySelector(".intel-map-wrap"), P.map);
 
+      // ---------- detail tabs ----------
+      $("count-findings").textContent = P.findings.length;
+      $("count-unknowns").textContent = P.unknowns.length;
+      $("count-actions").textContent = P.nextActions.length;
+      const tabs = UI.tabs($("detail-tabs"));
+
+      R.renderEvidenceKey($("evidence-key"), P.live ? ["record", "derived", "estimate", "missing"] : ["sample"]);
+      R.renderFindingCategories($("finding-categories"), categories, true);
+      R.renderUnknowns($("unknowns-list"), P.unknowns);
+      R.renderNextActions($("next-actions-list"), P.nextActions);
+      R.renderRegulatory($("regulatory-fields"), P.regulatory);
+      $("regulation-intro").textContent = I.t(P.live ? "property_regIntroLive" : "property_regIntroSample");
       if (P.live) {
-        document.getElementById("ai-explain").addEventListener("click", () => askAI("explain", I.t("property_aiExplain")));
-        document.getElementById("ai-next").addEventListener("click", () => askAI("next", I.t("property_aiNext")));
+        $("site-sample").hidden = true;
+        $("site-live").hidden = false;
       } else {
-        document.getElementById("ai-explain").addEventListener("click", () => {
-          window.ParcelaAI.open(I.t("property_aiExplain"), [I.tv(P.aiInsights.explainThis)]);
+        R.renderPhysical($("physical-grid"), P.physical);
+        R.renderInfrastructure($("infra-list"), P.infrastructure);
+        R.renderTimeline($("history-timeline"), P.developmentHistory);
+      }
+      tabs.select("findings");
+
+      document.querySelectorAll("[data-goto-tab]").forEach((b) => b.addEventListener("click", () => tabs.select(b.dataset.gotoTab, true)));
+      $("next-all").addEventListener("click", () => {
+        tabs.select("actions", true);
+        $("detail-tabs").scrollIntoView({ block: "start" });
+      });
+      // Tally → open that category on the Findings tab.
+      document.querySelectorAll(".tally-item").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          tabs.select("findings");
+          const group = document.querySelector(`.category-group[data-category="${btn.dataset.cat}"]`);
+          document.querySelectorAll(".category-group").forEach((g) => {
+            g.classList.toggle("is-open", g === group);
+            g.querySelector(".category-toggle").setAttribute("aria-expanded", g === group ? "true" : "false");
+          });
+          group.scrollIntoView({ block: "start" });
+          group.querySelector(".category-toggle").focus({ preventScroll: true });
         });
-        document.getElementById("ai-next").addEventListener("click", () => {
-          const top2 = P.nextActions.slice(0, 2).map((a) => `<strong>${I.tv(a.title)}</strong> — ${I.tv(a.whyItMatters)}`);
-          window.ParcelaAI.open(I.t("property_aiNext"), [I.tv(P.aiInsights.investigateNext), ...top2]);
+      });
+
+      // ---------- sources & limits ----------
+      const kinds = P.live ? ["record", "derived", "estimate", "missing", "ai"] : ["sample", "ai"];
+      $("basis-defs").innerHTML = kinds.map((k) => `<div><dt>${R.basisTag(k)}</dt><dd>${esc(I.t("basis_" + k + "_def"))}</dd></div>`).join("");
+      const usedIds = [...new Set([...P.findings.map((f) => f.sourceId), ...P.nextActions.map((a) => a.sourceId)].filter(Boolean))];
+      $("sources-used").innerHTML = usedIds
+        .map((id) => P.sourceById(id))
+        .filter(Boolean)
+        .map((s) => `<li><div><div class="ll-name">${esc(s.name)}</div><div class="ll-detail">${esc([s.agency, s.section].filter(Boolean).join(" · "))}</div></div><span class="ll-detail">${esc(s.date || "—")}</span></li>`)
+        .join("");
+      const notCovered = ["limits_market", "limits_financial", "limits_utilities", "limits_soils", "limits_title"];
+      $("not-covered").innerHTML = notCovered.map((k) => `<li><div><div class="ll-name">${esc(I.t(k))}</div><div class="ll-detail">${esc(I.t(k + "_detail"))}</div></div><span class="tag">${esc(I.t("coverage_unavailable"))}</span></li>`).join("");
+
+      // ---------- report / compare / save ----------
+      if (P.live) {
+        const reportUrl = new URL("reports.html", location.href);
+        reportUrl.searchParams.set("parcel", liveCadastral);
+        const projectType = (window.AterraLive.loadProject() || {}).type;
+        if (projectType) reportUrl.searchParams.set("type", projectType);
+        $("report-btn").href = `reports.html${reportUrl.search}`;
+        $("compare-btn").hidden = true;
+        const navFooter = $("nav-footer");
+        navFooter.removeAttribute("data-i18n");
+        navFooter.textContent = I.t("live_navFooter");
+        wireSave();
+      } else {
+        $("compare-btn").addEventListener("click", () => sessionStorage.removeItem("aterra-compare-ids"));
+      }
+
+      function wireSave() {
+        const btn = $("save-btn");
+        const A = window.AterraAccount;
+        btn.hidden = false;
+        btn.textContent = I.t("save_project");
+        A.isSaved(P.property.cadastral).then((saved) => { if (saved) btn.textContent = I.t("save_update"); }).catch(() => {});
+        btn.addEventListener("click", async () => {
+          if (!(await A.user())) {
+            window.location.href = `signin.html?next=${encodeURIComponent(`property.html${location.search}`)}`;
+            return;
+          }
+          btn.disabled = true;
+          btn.textContent = I.t("save_saving");
+          try {
+            await A.saveProject(P);
+            btn.textContent = I.t("save_update");
+            UI.toast(I.t("save_saved"));
+          } catch (err) {
+            console.error("ATERRA: save failed", err);
+            btn.textContent = I.t("save_project");
+            UI.toast(I.t("save_error"));
+          } finally {
+            btn.disabled = false;
+          }
         });
       }
 
-      // ---------- AI explanations (/api/explain, signed in, 20/day) ----------
-      // Answers are kept for the browser session so re-opening one doesn't
-      // spend another credit.
+      // ---------- AI explanations ----------
+      $("ai-label").textContent = I.t(P.live ? "ai_rowLabel" : "ai_rowLabelSample");
+      if (P.live) {
+        $("ai-explain").addEventListener("click", () => askAI("explain", I.t("property_aiExplain")));
+        $("ai-next").addEventListener("click", () => askAI("next", I.t("property_aiNext")));
+      } else {
+        // Sample property: pre-written text, labeled as such.
+        $("ai-explain").addEventListener("click", () => window.AterraAI.open(I.t("property_aiExplain"), [esc(I.tv(P.aiInsights.explainThis))], { mode: "sample" }));
+        $("ai-next").addEventListener("click", () => {
+          const top2 = P.nextActions.slice(0, 2).map((a) => `<strong>${esc(I.tv(a.title))}</strong> — ${esc(I.tv(a.whyItMatters))}`);
+          window.AterraAI.open(I.t("property_aiNext"), [esc(I.tv(P.aiInsights.investigateNext)), ...top2], { mode: "sample" });
+        });
+      }
+
+      // /api/explain: signed in, 20 a day. Answers are kept for the browser
+      // session so reopening one doesn't spend another credit.
       async function askAI(kind, title) {
-        const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
         const toHtml = (text) => text.split(/\n{2,}/).map((para) => esc(para.trim()).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br>"));
-        const cacheKey = `parcela-ai:${P.property.cadastral}:${kind}:${I.lang}:${(window.ParcelaLive.loadProject() || {}).type || ""}`;
+        const cacheKey = `aterra-ai:${P.property.cadastral}:${kind}:${I.lang}:${(window.AterraLive.loadProject() || {}).type || ""}`;
         try {
           const cached = sessionStorage.getItem(cacheKey);
-          if (cached) return window.ParcelaAI.open(title, toHtml(cached));
+          if (cached) return window.AterraAI.open(title, toHtml(cached));
         } catch (e) {}
 
-        const token = await window.ParcelaAccount.accessToken();
+        const token = await window.AterraAccount.accessToken().catch(() => null);
         if (!token) {
           window.location.href = `signin.html?next=${encodeURIComponent(`property.html${location.search}`)}`;
           return;
         }
-        window.ParcelaAI.open(title, [esc(I.t("ai_thinking"))]);
-        let res, data;
+        window.AterraAI.open(title, [esc(I.t("ai_thinking"))], { mode: "status" });
+        let data;
         try {
-          res = await fetch("/api/explain", {
+          const res = await fetch("/api/explain", {
             method: "POST",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-            body: JSON.stringify({ question: kind, lang: I.lang, context: window.ParcelaLive.aiContext(P) }),
+            body: JSON.stringify({ question: kind, lang: I.lang, context: window.AterraLive.aiContext(P) }),
           });
           data = await res.json();
         } catch (e) {
@@ -450,32 +439,21 @@
         }
         if (data.error) {
           const key = { daily_limit: "ai_errLimit", declined: "ai_errDeclined", busy: "ai_errBusy" }[data.error] || "ai_errUnavailable";
-          window.ParcelaAI.open(title, [esc(I.t(key))]);
+          window.AterraAI.open(title, [esc(I.t(key))]);
           return;
         }
         try { sessionStorage.setItem(cacheKey, data.text); } catch (e) {}
-        window.ParcelaAI.open(title, [
+        window.AterraAI.open(title, [
           ...toHtml(data.text),
-          `<span class="text-sm">${esc(I.t("ai_remaining").replace("{n}", data.remaining).replace("{limit}", data.limit))}</span>`,
+          `<span class="text-sm muted">${esc(I.t("ai_remaining").replace("{n}", data.remaining).replace("{limit}", data.limit))}</span>`,
         ]);
       }
 
-      document.getElementById("compare-btn").addEventListener("click", () => {
-        // P.comparisonProperties here is still the prototype's static mock
-        // list (this page's own migration only covers the property detail
-        // data, not this cross-page list) and its ids no longer match the
-        // real database ids compare.html now fetches live. Rather than pass
-        // stale ids that would match nothing, clear any leftover selection
-        // so compare.html falls through to its own "show every property"
-        // default — which is exactly this button's intent anyway.
-        sessionStorage.removeItem("parcela-compare-ids");
-        window.location.href = "compare.html";
-      });
-
+      // Deep link from elsewhere: property.html?why=<finding id>
       const deepLinkFindingId = new URLSearchParams(location.search).get("why");
       if (deepLinkFindingId && P.findingById(deepLinkFindingId)) {
         await domReady;
-        window.ParcelaPanel.open(deepLinkFindingId);
+        window.AterraPanel.open(deepLinkFindingId);
       }
     })();
   </script>

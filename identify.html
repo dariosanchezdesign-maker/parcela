@@ -3,20 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Confirm property — Parcela</title>
+  <title>Confirm property — ATERRA</title>
+  <meta name="theme-color" content="#101D32" />
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/brand/app-icon.png" />
+  <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/onboarding.css" />
+  <script src="js/i18n.js"></script>
+  <script src="js/ui/shell.js"></script>
 </head>
 <body>
-  <header class="onboard-topbar">
-    <a href="index.html" class="brand">
-      <span class="onboard-brand-mark" aria-hidden="true"></span>
-      Parcela
-    </a>
-    <span id="lang-toggle-slot"></span>
-  </header>
+  <aterra-flowbar step="2"></aterra-flowbar>
 
-  <main class="onboard-main">
+  <main class="onboard-main" id="main" tabindex="-1">
     <div class="onboard-stage" style="max-width: 860px;">
       <div class="onboard-step" data-i18n="identify_step">Step 2 of 3</div>
       <h1 id="prop-address">123 Example Avenue</h1>
@@ -41,7 +42,6 @@
     </div>
   </main>
 
-  <script src="js/i18n.js"></script>
   <script src="js/data/mockData.js"></script>
   <script src="js/data/lookup.js"></script>
   <script src="js/data/zoning-rules.js"></script>
@@ -49,14 +49,14 @@
   <script src="js/ui/map.js"></script>
   <script>
     (async function () {
-      const I = window.ParcelaI18N;
-      const P = window.PARCELA;
-      const cadastral = window.ParcelaLive.parcelParam();
+      const I = window.AterraI18N;
+      const P = window.ATERRA;
+      const cadastral = window.AterraLive.parcelParam();
       if (cadastral) {
         document.getElementById("prop-address").textContent = I.t("live_loading");
         document.getElementById("prop-locality").textContent = "";
         try {
-          window.ParcelaLive.apply(P, await window.ParcelaLive.lookup(cadastral));
+          window.AterraLive.apply(P, await window.AterraLive.lookup(cadastral));
         } catch (err) {
           document.getElementById("prop-address").textContent = I.t("live_loadError");
           document.getElementById("identify-cta").href = "search.html";
@@ -76,7 +76,7 @@
       document.getElementById("prop-municipality").textContent = P.live ? P.liveData.property.municipality : p.municipality.split(",")[0];
 
       const ns = "http://www.w3.org/2000/svg";
-      const shape = window.ParcelaMap.shape;
+      const shape = window.AterraMap.shape;
       const map = P.map;
       const svg = document.createElementNS(ns, "svg");
       svg.setAttribute("viewBox", map.viewBox);

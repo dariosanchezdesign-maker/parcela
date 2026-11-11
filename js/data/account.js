@@ -2,8 +2,8 @@
    saved_projects table from db/migration_004_accounts.sql). Needs the
    Supabase CDN client and supabaseClient.js loaded first. */
 
-window.ParcelaAccount = (function () {
-  const db = () => window.ParcelaDB.client();
+window.AterraAccount = (function () {
+  const db = () => window.AterraDB.client();
 
   async function user() {
     const { data } = await db().auth.getSession();
@@ -35,7 +35,7 @@ window.ParcelaAccount = (function () {
   async function saveProject(P) {
     const u = await user();
     if (!u) throw Object.assign(new Error("signed out"), { code: "signed_out" });
-    const project = window.ParcelaLive.loadProject() || {};
+    const project = window.AterraLive.loadProject() || {};
     const counts = {};
     P.findingCategories.forEach((c) => { counts[c.key] = c.findings.length; });
     const fit = P.findingById("project-fit");

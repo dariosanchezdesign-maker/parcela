@@ -1,11 +1,11 @@
-/* Parcela i18n. Spanish is the default language (Puerto Rico), English is
+/* ATERRA i18n. Spanish is the default language (Puerto Rico), English is
    the toggle. Official Spanish-language names (agencies, regulations,
    documents, municipalities) are treated as proper nouns and stay in
    Spanish in both languages, same as "Reglamento Conjunto" would stay
    untranslated in an English-language legal brief. */
 
-window.ParcelaI18N = (function () {
-  const STORAGE_KEY = "parcela-lang";
+window.AterraI18N = (function () {
+  const STORAGE_KEY = "aterra-lang";
 
   const STRINGS = {
     // ---- nav ----
@@ -14,7 +14,169 @@ window.ParcelaI18N = (function () {
     nav_properties: { es: "Propiedades", en: "Properties" },
     nav_projects: { es: "Proyectos", en: "Projects" },
     nav_reports: { es: "Informes", en: "Reports" },
-    nav_footer: { es: "Datos de prototipo · Puerto Rico", en: "Prototype data · Puerto Rico" },
+    nav_footer: { es: "Datos de muestra", en: "Sample data" },
+    nav_compare: { es: "Comparar", en: "Compare" },
+    nav_sources: { es: "Fuentes", en: "Sources" },
+    nav_newAnalysis: { es: "Nuevo análisis", en: "New analysis" },
+    nav_account: { es: "Cuenta e inicio de sesión", en: "Account & sign-in" },
+    nav_group_workspace: { es: "Espacio de trabajo", en: "Workspace" },
+    nav_group_discover: { es: "Descubrir", en: "Discover" },
+    nav_group_analyze: { es: "Analizar", en: "Analyze" },
+    nav_group_evaluate: { es: "Evaluar", en: "Evaluate" },
+    nav_group_decide: { es: "Decidir", en: "Decide" },
+    a11y_skip: { es: "Saltar al contenido", en: "Skip to content" },
+    a11y_mainNav: { es: "Navegación principal", en: "Main navigation" },
+    a11y_home: { es: "ATERRA — ir al resumen", en: "ATERRA — go to overview" },
+    a11y_progress: { es: "Progreso", en: "Progress" },
+    a11y_close: { es: "Cerrar", en: "Close" },
+    flow_step_property: { es: "Propiedad", en: "Property" },
+    flow_step_confirm: { es: "Confirmar", en: "Confirm" },
+    flow_step_project: { es: "Proyecto", en: "Project" },
+    flow_exit: { es: "Salir al espacio de trabajo", en: "Exit to workspace" },
+    // ---- ATERRA additions ----
+    signin_errUnavailable: { es: "El servicio de cuentas no responde ahora. Puedes seguir analizando propiedades sin iniciar sesión.", en: "The account service isn't responding right now. You can keep analyzing properties without signing in." },
+    // ---- landing (index.html) ----
+    l_nav_problem: { es: "Por qué ATERRA", en: "Why ATERRA" },
+    l_nav_platform: { es: "Plataforma", en: "Platform" },
+    l_nav_outcome: { es: "Principios", en: "Principles" },
+    l_nav_cta: { es: "Abrir espacio de trabajo", en: "Open workspace" },
+    l_hero_eyebrow: { es: "Inteligencia inmobiliaria · Puerto Rico", en: "Real estate intelligence · Puerto Rico" },
+    l_hero_title_a: { es: "Descubre el potencial de", en: "See the potential in" },
+    l_hero_title_b: { es: "cada parcela.", en: "every parcel." },
+    l_hero_sub: { es: "Inteligencia inmobiliaria para mejores decisiones de desarrollo. Entiende el terreno, evalúa oportunidades y avanza con claridad.", en: "Real estate intelligence for better development decisions. Understand the land, evaluate opportunities, and move forward with clarity." },
+    l_hero_cta: { es: "Explorar ATERRA", en: "Explore ATERRA" },
+    l_hero_cta2: { es: "Cómo funciona", en: "How it works" },
+    l_hero_note: { es: "Construido sobre registros públicos en vivo del CRIM, la Junta de Planificación y FEMA. Cobertura actual: San Juan.", en: "Built on live public records from CRIM, the Planning Board and FEMA. Coverage today: San Juan." },
+    l_viz_sample: { es: "Análisis de muestra · parcela ficticia", en: "Sample analysis · fictional parcel" },
+    l_problem_eyebrow: { es: "El problema", en: "The problem" },
+    l_problem_title: { es: "La respuesta a «¿qué puede llegar a ser este terreno?» está dispersa entre agencias.", en: "The answer to \"what can this land become?\" is scattered across agencies." },
+    l_problem_body: { es: "Los registros de parcelas, los mapas de calificación, los mapas de inundación y los reglamentos que los conectan se publican por separado, en formatos y sistemas distintos. Reunirlos para un solo sitio toma días, y es fácil pasar por alto lo que falta.", en: "Parcel records, zoning maps, flood maps and the regulations that tie them together are published separately, in different formats, on different systems. Assembling them for a single site takes days, and the gaps are easy to miss." },
+    l_problem_cost: { es: "El costo no es solo tiempo. Una restricción descubierta después de firmar una opción, o después de empezar el diseño, cambia el negocio en peores términos.", en: "The cost isn't only time. A constraint found after an option is signed, or after design has started, changes the deal on worse terms." },
+    l_src_crim: { es: "Límites, área y número de catastro", en: "Parcel boundaries, area and cadastral number" },
+    l_src_jp: { es: "Mapa de calificación, licuación, tsunami y zonas históricas", en: "Zoning map, liquefaction, tsunami and historic zones" },
+    l_src_fema: { es: "Zonas de inundación y elevaciones base", en: "Flood zones and base flood elevations" },
+    l_src_rc: { es: "Qué permite cada distrito: usos, densidad, altura, estacionamiento", en: "What each district allows: uses, density, height, parking" },
+    l_src_ogpe: { es: "Historial de permisos y consultas previas", en: "Permit history and prior consultations" },
+    l_src_util: { es: "Capacidad de agua, alcantarillado y energía, a menudo no publicada por parcela", en: "Water, sewer and power capacity, often not published per parcel" },
+    l_platform_eyebrow: { es: "La plataforma", en: "The platform" },
+    l_platform_title: { es: "Un análisis, de la parcela a la decisión.", en: "One analysis, from parcel to decision." },
+    l_cap1_title: { es: "Entiende el terreno", en: "Understand the land" },
+    l_cap1_body: { es: "Ingresa una dirección o número de catastro. ATERRA identifica la parcela y lee su calificación, exposición a inundación y capas de riesgo en las fuentes oficiales.", en: "Enter an address or cadastral number. ATERRA identifies the parcel and reads its zoning, flood exposure and hazard layers from the official sources." },
+    l_cap2_title: { es: "Evalúa el potencial de desarrollo", en: "Evaluate development potential" },
+    l_cap2_body: { es: "Ve si un tipo de proyecto encaja en el distrito y qué podría albergar el solar, con cada dato identificado como registro oficial, interpretación de ATERRA, estimado o faltante.", en: "See whether a project type fits the district and what the lot could hold, with every statement labeled as an official record, ATERRA's interpretation, an estimate, or missing." },
+    l_cap2_f1: { es: "Calificación en el mapa de la Junta", en: "Zoning on the Planning Board map" },
+    l_cap2_f2: { es: "Tipo de proyecto permitido en el distrito actual", en: "Project type allowed in the current district" },
+    l_cap2_f3: { es: "Rango de unidades antes de patios y estacionamiento", en: "Unit range before yards and parking" },
+    l_cap2_f4: { es: "Capacidad de servicios", en: "Utility capacity" },
+    l_cap3_title: { es: "Toma decisiones de inversión informadas", en: "Make informed investment decisions" },
+    l_cap3_body: { es: "Sabe qué sigue abierto y quién lo resuelve. Cada análisis termina en próximos pasos ordenados y un informe que puedes compartir con tu equipo.", en: "Know what is still open and who resolves it. Every analysis ends in ordered next steps and a report you can share with your team." },
+    l_platform_note: { es: "La inteligencia de mercado y el modelo financiero están en desarrollo. ATERRA no estima precios, costos ni rendimientos hasta poder mostrar sus fuentes.", en: "Market intelligence and financial modeling are in development. ATERRA does not estimate prices, costs or returns until it can show its sources." },
+    l_outcome_eyebrow: { es: "El resultado", en: "The outcome" },
+    l_outcome_title: { es: "Terreno, reglas y riesgo en un solo lugar, con la evidencia adjunta.", en: "Land, rules and risk in one place, with the evidence attached." },
+    l_outcome_body: { es: "Decide qué sitios merecen tu tiempo, entra a la debida diligencia sabiendo qué preguntar y dale a tu arquitecto, ingeniero y abogado un punto de partida claro.", en: "Decide which sites deserve your time, go into due diligence knowing what to ask, and bring your architect, engineer and attorney a clear starting point." },
+    l_p1_t: { es: "Evidencia antes que conclusiones", en: "Evidence before conclusions" },
+    l_p1_b: { es: "Cada hallazgo enlaza al registro en que se basa, con su fecha.", en: "Every finding links to the record it rests on, with its date." },
+    l_p2_t: { es: "Lo desconocido sigue siendo desconocido", en: "Unknowns stay unknown" },
+    l_p2_b: { es: "Los datos faltantes se muestran como faltantes, nunca se rellenan.", en: "Missing data is shown as missing, never filled in." },
+    l_p3_t: { es: "La IA explica, no decide", en: "AI explains, it doesn't decide" },
+    l_p3_b: { es: "Los resúmenes con IA están identificados y usan solo los hallazgos de la página.", en: "AI summaries are labeled and use only the findings on the page." },
+    l_final_title: { es: "Empieza a explorar oportunidades.", en: "Start exploring opportunities." },
+    l_footer_tag: { es: "La infraestructura de inteligencia detrás del desarrollo inmobiliario en el Caribe.", en: "The intelligence infrastructure powering real estate development across the Caribbean." },
+    l_footer_sample: { es: "Análisis de muestra", en: "Sample analysis" },
+    l_footer_legal: { es: "ATERRA ofrece inteligencia preliminar de propiedades a partir de registros públicos. No es una determinación legal, de ingeniería, de tasación ni de permisos; verifica los hallazgos con un profesional licenciado o la agencia responsable antes de actuar.", en: "ATERRA provides preliminary property intelligence from public records. It is not a legal, engineering, appraisal or permitting determination; verify findings with a licensed professional or the responsible agency before acting." },
+    properties_selectFor: { es: "Incluir {a} en la comparación", en: "Include {a} in the comparison" },
+    analyzing_titleFor: { es: "Analizando {p}…", en: "Analyzing {p}…" },
+    setup_unitsHelp: { es: "Se usa para revisar la densidad del distrito. Déjalo en blanco si no lo has decidido.", en: "Used to check the district's density. Leave blank if undecided." },
+    setup_invHelp: { es: "Solo como referencia; ATERRA aún no modela rendimientos.", en: "For your reference only; ATERRA does not model returns yet." },
+    // ---- evidence basis ----
+    basis_keyTitle: { es: "Origen de cada dato", en: "Where each statement comes from" },
+    basis_record: { es: "Registro oficial", en: "Official record" },
+    basis_record_def: { es: "Lo dice la fuente oficial citada (CRIM, Junta de Planificación, FEMA), consultada para esta parcela.", en: "Stated by the cited official source (CRIM, Planning Board, FEMA), queried for this parcel." },
+    basis_derived: { es: "Interpretación de ATERRA", en: "ATERRA interpretation" },
+    basis_derived_def: { es: "ATERRA aplicó una regla publicada (p. ej. Reglamento Conjunto 2023) a los datos de esta parcela. Requiere confirmación profesional.", en: "ATERRA applied a published rule (e.g. Reglamento Conjunto 2023) to this parcel's data. Needs professional confirmation." },
+    basis_estimate: { es: "Estimado", en: "Estimate" },
+    basis_estimate_def: { es: "Un rango calculado para dar orden de magnitud. No es una determinación y excluye factores que aún no se conocen.", en: "A calculated range for order of magnitude. Not a determination, and it leaves out factors not yet known." },
+    basis_missing: { es: "Sin datos", en: "No data" },
+    basis_missing_def: { es: "La fuente no tiene información para esta parcela, o ATERRA aún no la cubre. No se rellena con suposiciones.", en: "The source has nothing for this parcel, or ATERRA doesn't cover it yet. It is not filled in with assumptions." },
+    basis_ai: { es: "Explicación con IA", en: "AI explanation" },
+    basis_ai_def: { es: "Texto escrito por IA solo a partir de los hallazgos mostrados. No añade datos y no sustituye la fuente.", en: "Text written by AI only from the findings shown. It adds no data and does not replace the source." },
+    basis_sample: { es: "Datos de muestra", en: "Sample data" },
+    basis_sample_def: { es: "Datos ficticios de demostración. No describen una propiedad real.", en: "Fictional demonstration data. It does not describe a real property." },
+    common_evidence: { es: "Evidencia", en: "Evidence" },
+    common_noSource: { es: "Sin fuente específica", en: "No specific source" },
+    panel_basis: { es: "Tipo de evidencia", en: "Evidence type" },
+    panel_noSource: { es: "Sin fuente: dato faltante", en: "No source: data missing" },
+    panel_retrieved: { es: "Consultado", en: "Retrieved" },
+    // ---- AI ----
+    ai_rowLabel: { es: "Explicación con IA", en: "AI explanation" },
+    ai_rowLabelSample: { es: "Explicación de muestra", en: "Sample explanation" },
+    ai_tagAI: { es: "Explicación con IA", en: "AI explanation" },
+    ai_tagSample: { es: "Texto de muestra", en: "Sample text" },
+    ai_disclaimerSample: { es: "Texto prescrito para la propiedad de muestra. En una parcela real, la explicación se genera con IA a partir de los hallazgos de la página.", en: "Pre-written for the sample property. On a real parcel, the explanation is AI-generated from the page's findings." },
+    // ---- overview ----
+    overview_qaTitle: { es: "Analizar una propiedad", en: "Analyze a property" },
+    overview_qaBody: { es: "Ingresa una dirección o número de catastro. ATERRA lee el registro público y te dice qué se sabe, qué es estimado y qué falta verificar.", en: "Enter an address or cadastral number. ATERRA reads the public record and tells you what is known, what is estimated, and what still needs verification." },
+    overview_qaHint: { es: "Registros públicos en vivo: CRIM, Junta de Planificación, FEMA. Cobertura actual: San Juan.", en: "Live public records: CRIM, Planning Board, FEMA. Current coverage: San Juan." },
+    overview_recent: { es: "Continúa donde lo dejaste", en: "Continue where you left off" },
+    overview_recentNote: { es: "Analizadas en esta sesión", en: "Analyzed in this session" },
+    overview_saved: { es: "Análisis guardados", en: "Saved analyses" },
+    overview_savedSignedOutTitle: { es: "Guarda tus análisis", en: "Keep your analyses" },
+    overview_savedSignedOutBody: { es: "Inicia sesión para guardar análisis y volver a ellos desde cualquier dispositivo.", en: "Sign in to save analyses and return to them from any device." },
+    overview_savedEmptyTitle: { es: "Aún no hay análisis guardados", en: "No saved analyses yet" },
+    overview_savedUnavailable: { es: "No pudimos conectar con tu cuenta. Tus análisis guardados no se muestran ahora; inténtalo de nuevo en un momento.", en: "We couldn't reach your account. Saved analyses can't be shown right now; try again in a moment." },
+    overview_signIn: { es: "Iniciar sesión", en: "Sign in" },
+    overview_sample: { es: "Espacio de muestra", en: "Sample workspace" },
+    overview_sampleNote: { es: "Estas propiedades son ficticias. Muestran cómo se lee un análisis antes de correrlo en una parcela real.", en: "These properties are fictional. They show how an analysis reads before you run one on a real parcel." },
+    overview_attention: { es: "Requiere atención", en: "Needs attention" },
+    overview_coverage: { es: "Cobertura de datos", en: "Data coverage" },
+    overview_coverageFoot: { es: "Los comparables de mercado y el modelo financiero aún no forman parte de ATERRA. Ningún análisis se estima a partir de ellos.", en: "Market comparables and financial modeling are not part of ATERRA yet. Nothing in an analysis is estimated from them." },
+    coverage_live: { es: "En vivo", en: "Live" },
+    coverage_unavailable: { es: "Aún no disponible", en: "Not yet available" },
+    coverage_notYet: { es: "En desarrollo; no se usa en los análisis.", en: "In development; not used in analyses." },
+    coverage_crim: { es: "Límites, área y catastro de cada parcela", en: "Parcel boundaries, area, and cadastral number" },
+    coverage_jpName: { es: "Junta de Planificación", en: "Planning Board" },
+    coverage_jp: { es: "Calificación, licuación, tsunami y zonas históricas", en: "Zoning, liquefaction, tsunami, and historic zones" },
+    coverage_fema: { es: "Zonas de inundación y niveles base", en: "Flood zones and base flood elevations" },
+    coverage_rc: { es: "Usos, densidad y altura por distrito (San Juan)", en: "Uses, density, and height by district (San Juan)" },
+    coverage_marketName: { es: "Inteligencia de mercado", en: "Market intelligence" },
+    coverage_financeName: { es: "Modelo financiero", en: "Financial modeling" },
+    // ---- property analysis ----
+    property_dataLive: { es: "Registros públicos en vivo", en: "Live public records" },
+    property_dataSample: { es: "Propiedad de muestra · datos ficticios", en: "Sample property · fictional data" },
+    property_recommendedNext: { es: "Siguiente paso recomendado", en: "Recommended next step" },
+    property_allSteps: { es: "Ver todos los pasos", en: "See all next steps" },
+    property_mapLayers: { es: "Capas del mapa", en: "Map layers" },
+    property_tab_findings: { es: "Hallazgos", en: "Findings" },
+    property_tab_unknowns: { es: "Preguntas abiertas", en: "Open questions" },
+    property_tab_actions: { es: "Próximos pasos", en: "Next steps" },
+    property_tab_regulation: { es: "Calificación y reglas", en: "Zoning & rules" },
+    property_tab_site: { es: "Sitio", en: "Site" },
+    property_tab_limits: { es: "Fuentes y límites", en: "Sources & limits" },
+    property_noFindings: { es: "Ningún hallazgo en esta categoría.", en: "No findings in this category." },
+    property_noUnknowns: { es: "No hay preguntas abiertas registradas.", en: "No open questions recorded." },
+    property_unknownsIntro: { es: "Lo que el registro público aún no responde. Trata cada punto como no resuelto hasta que un profesional lo confirme.", en: "What the public record does not answer yet. Treat each as unresolved until a professional confirms it." },
+    property_actionsIntro: { es: "Ordenados por lo que desbloquea la decisión primero, cada uno con el profesional que puede resolverlo.", en: "Ordered by what unblocks the decision first, each with the professional who can resolve it." },
+    property_regIntroLive: { es: "La calificación viene del mapa vigente de la Junta de Planificación. Las reglas del distrito son la lectura de ATERRA del Reglamento Conjunto 2023 y deben confirmarse.", en: "Zoning comes from the Planning Board's current map. District rules are ATERRA's reading of the Reglamento Conjunto 2023 and need confirmation." },
+    property_regIntroSample: { es: "Valores de muestra para ilustrar el análisis regulatorio.", en: "Sample values illustrating the regulatory analysis." },
+    property_siteLiveTitle: { es: "Las condiciones del sitio aún no están en este análisis", en: "Site conditions are not in this analysis yet" },
+    property_siteLiveBody: { es: "Las capas de inundación, licuación, tsunami y zonas históricas se leen en vivo y aparecen en Hallazgos. Topografía, suelos, capacidad de servicios e historial de permisos no están disponibles en las fuentes públicas que ATERRA lee hoy, así que se listan como preguntas abiertas en lugar de estimarse.", en: "Flood, liquefaction, tsunami and historic-zone layers are read live and appear under Findings. Topography, soils, utility capacity and permit history are not available from the public sources ATERRA reads today, so they are listed as open questions instead of being estimated." },
+    property_seeUnknowns: { es: "Ver preguntas abiertas", en: "See open questions" },
+    property_howToRead: { es: "Cómo leer este análisis", en: "How to read this analysis" },
+    property_sourcesUsed: { es: "Fuentes usadas", en: "Sources used" },
+    property_notCovered: { es: "No cubierto", en: "Not covered" },
+    property_disclaimer: { es: "Análisis preliminar a partir de registros públicos. No es una determinación legal, de ingeniería, de tasación ni de permisos.", en: "A preliminary analysis from public records. It is not a legal, engineering, appraisal or permitting determination." },
+    limits_market: { es: "Mercado y comparables", en: "Market and comparables" },
+    limits_market_detail: { es: "Ventas, rentas y absorción no forman parte del análisis.", en: "Sales, rents and absorption are not part of the analysis." },
+    limits_financial: { es: "Costos y rendimiento", en: "Costs and returns" },
+    limits_financial_detail: { es: "ATERRA no proyecta costos, valor ni retorno.", en: "ATERRA does not project costs, value or returns." },
+    limits_utilities: { es: "Capacidad de servicios", en: "Utility capacity" },
+    limits_utilities_detail: { es: "AAA y LUMA no publican capacidad por parcela.", en: "PRASA and LUMA don't publish parcel-level capacity." },
+    limits_soils: { es: "Suelos y topografía", en: "Soils and topography" },
+    limits_soils_detail: { es: "Requiere estudio geotécnico y agrimensura.", en: "Requires a geotechnical study and survey." },
+    limits_title: { es: "Título y gravámenes", en: "Title and liens" },
+    limits_title_detail: { es: "Requiere estudio de título.", en: "Requires a title search." },
+    live_loadErrorBody: { es: "Una de las fuentes del gobierno no respondió o la parcela no se encontró. Nada se muestra en su lugar.", en: "A government source didn't respond or the parcel wasn't found. Nothing is shown in its place." },
+
 
     // ---- common ----
     common_analyzeProperty: { es: "Analizar propiedad", en: "Analyze property" },
@@ -45,30 +207,28 @@ window.ParcelaI18N = (function () {
     common_project: { es: "Proyecto", en: "Project" },
     common_status_favorable: { es: "Favorable", en: "Favorable" },
     common_status_investigate: { es: "Por investigar", en: "Investigate" },
-    common_status_constraint: { es: "Posibles limitaciones", en: "Potential constraints" },
+    common_status_constraint: { es: "Restricción", en: "Constraint" },
     common_status_unknown: { es: "Desconocido", en: "Unknown" },
 
     // ---- search (search.html) ----
-    search_step: { es: "Paso 1 de 3", en: "Step 1 of 3" },
+    search_step: { es: "Nuevo análisis", en: "New analysis" },
     search_title: { es: "¿Qué propiedad estás evaluando?", en: "What are you looking at?" },
     search_subtitle: { es: "Ingresa una dirección, número de catastro o ubicación para iniciar un análisis preliminar de viabilidad.", en: "Enter an address, cadastral number, or location to start a preliminary feasibility analysis." },
     search_placeholder: { es: "Busca una dirección, parcela o ubicación", en: "Search an address, parcel, or location" },
     search_exploreMap: { es: "Explorar el mapa", en: "Explore the map" },
-    search_hint: { es: "Datos de prototipo: la información de propiedad, zonificación y regulación mostrada en esta demostración es ficticia.", en: "Prototype data — property, zoning, and regulatory information shown throughout this demo is fictional." },
     search_sugg1: { es: "Condado, San Juan · Catastro 040-028-001-25", en: "Condado, San Juan · Cadastral 040-028-001-25" },
     search_sugg2: { es: "Santurce, San Juan · Catastro 041-041-134-02", en: "Santurce, San Juan · Cadastral 041-041-134-02" },
     search_sugg3: { es: "Viejo San Juan · búsqueda por número de catastro", en: "Old San Juan · search by cadastral number" },
-    search_notFound: { es: "No encontramos una coincidencia segura para esa dirección en los datos de este prototipo. Prueba con una de las direcciones de muestra a continuación.", en: "We couldn't find a confident match for that address in this prototype's data. Try one of the sample addresses below." },
 
     // ---- identify.html ----
-    identify_step: { es: "Paso 2 de 3", en: "Step 2 of 3" },
+    identify_step: { es: "Confirma la parcela", en: "Confirm the parcel" },
     identify_cta: { es: "Analizar esta propiedad", en: "Analyze this property" },
     identify_change: { es: "Cambiar propiedad", en: "Change property" },
     identify_subjectParcel: { es: "Parcela en estudio", en: "Subject parcel" },
     identify_baseMap: { es: "Mapa base", en: "Base map" },
 
     // ---- setup.html ----
-    setup_step: { es: "Paso 3 de 3", en: "Step 3 of 3" },
+    setup_step: { es: "Define el proyecto", en: "Define the project" },
     setup_title: { es: "¿Qué estás pensando construir?", en: "What are you thinking of building?" },
     setup_multifamily: { es: "Multifamiliar", en: "Multifamily" },
     setup_commercial: { es: "Comercial", en: "Commercial" },
@@ -93,15 +253,15 @@ window.ParcelaI18N = (function () {
     property_generateReport: { es: "Generar informe de viabilidad", en: "Generate feasibility report" },
     property_compareOther: { es: "Comparar con otras propiedades", en: "Compare with other properties" },
     property_parcelSize: { es: "Tamaño de parcela", en: "Parcel size" },
-    property_mapNote: { es: "Datos de mapa de prototipo", en: "Prototype map data" },
-    property_layer_satellite: { es: "Satélite", en: "Satellite" },
+    property_mapNote: { es: "Mapa de muestra", en: "Sample map" },
+    property_layer_satellite: { es: "Mapa base", en: "Base map" },
     property_layer_zoning: { es: "Zonificación", en: "Zoning" },
     property_layer_flood: { es: "Inundación", en: "Flood" },
     property_layer_environmental: { es: "Ambiental", en: "Environmental" },
     property_layer_infrastructure: { es: "Infraestructura", en: "Infrastructure" },
     property_layer_development: { es: "Desarrollo", en: "Development" },
     property_aiExplain: { es: "Explica esto", en: "Explain this" },
-    property_aiNext: { es: "¿Qué debería investigar primero?", en: "What should I investigate next?" },
+    property_aiNext: { es: "¿Qué debería investigar primero?", en: "What should I investigate first?" },
     property_findings_one: { es: "hallazgo", en: "finding" },
     property_findings_many: { es: "hallazgos", en: "findings" },
     property_whatDontKnow: { es: "Lo que aún no sabemos", en: "What we don't know yet" },
@@ -123,7 +283,7 @@ window.ParcelaI18N = (function () {
     property_electricity: { es: "Electricidad", en: "Electricity" },
 
     // ---- why / ai panel ----
-    panel_whatFound: { es: "Lo que Parcela encontró", en: "What Parcela found" },
+    panel_whatFound: { es: "Qué muestra el registro", en: "What the record shows" },
     panel_evidence: { es: "Evidencia", en: "Evidence" },
     panel_source: { es: "Fuente", en: "Source" },
     panel_agency: { es: "Agencia", en: "Agency" },
@@ -147,7 +307,7 @@ window.ParcelaI18N = (function () {
     verification_Recommended: { es: "Recomendada", en: "Recommended" },
     verification_Required: { es: "Requerida", en: "Required" },
     verification_Optional: { es: "Opcional", en: "Optional" },
-    ai_analyst: { es: "Analista de Parcela", en: "Parcela analyst" },
+    ai_analyst: { es: "Analista de ATERRA", en: "ATERRA analyst" },
     ai_disclaimer: { es: "Generado a partir de los hallazgos ya mostrados en esta página; no sustituye la revisión profesional.", en: "Generated from findings already shown on this page — not a substitute for professional review." },
     ai_summarizeTitle: { es: "Resumir este reglamento", en: "Summarize this regulation" },
     professional_Engineer: { es: "Ingeniero", en: "Engineer" },
@@ -187,11 +347,11 @@ window.ParcelaI18N = (function () {
     signin_signOut: { es: "Cerrar sesión", en: "Sign out" },
     signin_errSend: { es: "No pudimos enviar el enlace. Revisa el correo e inténtalo de nuevo.", en: "We couldn't send the link. Check the email address and try again." },
     signin_errRate: { es: "Se enviaron demasiados enlaces. Espera unos minutos e inténtalo de nuevo.", en: "Too many links were sent. Wait a few minutes and try again." },
-    save_project: { es: "Guardar proyecto", en: "Save project" },
+    save_project: { es: "Guardar análisis", en: "Save analysis" },
     save_saving: { es: "Guardando…", en: "Saving…" },
-    save_saved: { es: "Guardado ✓", en: "Saved ✓" },
-    save_update: { es: "Actualizar guardado", en: "Update saved project" },
-    save_error: { es: "No se pudo guardar", en: "Couldn't save" },
+    save_saved: { es: "Análisis guardado", en: "Analysis saved" },
+    save_update: { es: "Actualizar guardado", en: "Update saved analysis" },
+    save_error: { es: "No se pudo guardar. Inténtalo de nuevo.", en: "Couldn't save. Try again." },
     myprojects_title: { es: "Mis proyectos", en: "My projects" },
     myprojects_signedOut: { es: "Inicia sesión para ver y guardar tus proyectos.", en: "Sign in to see and save your projects." },
     myprojects_empty: { es: "Aún no has guardado proyectos. Analiza una propiedad y pulsa «Guardar proyecto».", en: "You haven't saved any projects yet. Analyze a property and press \"Save project\"." },
@@ -207,7 +367,7 @@ window.ParcelaI18N = (function () {
     ai_errBusy: { es: "El servicio de IA está ocupado. Inténtalo en un momento.", en: "The AI service is busy. Try again in a moment." },
     ai_errUnavailable: { es: "La explicación no está disponible ahora. Inténtalo de nuevo.", en: "The explanation isn't available right now. Try again." },
     rep_eyebrow: { es: "Análisis preliminar de viabilidad · Datos públicos", en: "Preliminary feasibility analysis · Public records" },
-    rep_meta: { es: "Catastro {cad} · Generado {date} · useparcela.netlify.app", en: "Cadastral {cad} · Generated {date} · useparcela.netlify.app" },
+    rep_meta: { es: "Catastro {cad} · Generado {date}", en: "Cadastral {cad} · Generated {date}" },
     rep_s_summary: { es: "Resumen", en: "Summary" },
     rep_s_property: { es: "Propiedad", en: "Property" },
     rep_s_maps: { es: "Mapas", en: "Maps" },
@@ -237,14 +397,14 @@ window.ParcelaI18N = (function () {
     rep_investment: { es: "Inversión", en: "Investment" },
     live_navFooter: { es: "Datos reales · CRIM, JP, FEMA", en: "Real data · CRIM, JP, FEMA" },
     live_parcel: { es: "Parcela", en: "Parcel" },
-    live_mapNoData: { es: "Parcela aún no tiene datos para esta capa", en: "No data for this layer in Parcela yet" },
+    live_mapNoData: { es: "ATERRA aún no tiene datos para esta capa", en: "No data for this layer in ATERRA yet" },
     live_mapNote: { es: "Fuentes: CRIM, Junta de Planificación, FEMA", en: "Sources: CRIM, Planning Board, FEMA" },
     live_loading: { es: "Consultando CRIM, la Junta de Planificación y FEMA…", en: "Checking CRIM, the Planning Board, and FEMA…" },
     live_loadError: { es: "No pudimos cargar esta parcela.", en: "We couldn't load this parcel." },
     live_retry: { es: "Buscar otra propiedad", en: "Search another property" },
     search_err_not_found: { es: "No encontramos esa dirección en Puerto Rico. Revisa la dirección o usa el número de catastro (p. ej. 040-028-001-25).", en: "We couldn't find that address in Puerto Rico. Check the address or use the cadastral number (e.g. 040-028-001-25)." },
     search_err_no_parcel: { es: "Encontramos la dirección, pero no hay una parcela del CRIM en ese punto. Prueba con el número de catastro.", en: "We found the address, but there's no CRIM parcel at that point. Try the cadastral number." },
-    search_err_outside: { es: "Por ahora Parcela solo cubre San Juan. Esta propiedad está en {m}.", en: "For now Parcela only covers San Juan. This property is in {m}." },
+    search_err_outside: { es: "Por ahora ATERRA solo cubre San Juan. Esta propiedad está en {m}.", en: "For now ATERRA only covers San Juan. This property is in {m}." },
     search_err_unavailable: { es: "Una de las fuentes del gobierno no respondió. Inténtalo de nuevo en un momento.", en: "One of the government sources didn't respond. Try again in a moment." },
     search_hint_live: { es: "Datos reales de CRIM (feb. 2025), la Junta de Planificación y FEMA. Cobertura actual: San Juan. Es un análisis preliminar, no una determinación legal ni profesional.", en: "Real data from CRIM (Feb 2025), the Planning Board, and FEMA. Current coverage: San Juan. This is a preliminary analysis, not a legal or professional determination." },
     search_err_empty: { es: "Ingresa una dirección o número de catastro.", en: "Enter an address or cadastral number." },
@@ -254,7 +414,7 @@ window.ParcelaI18N = (function () {
     overview_goodMorning: { es: "Buenos días.", en: "Good morning." },
     overview_goodAfternoon: { es: "Buenas tardes.", en: "Good afternoon." },
     overview_goodEvening: { es: "Buenas noches.", en: "Good evening." },
-    overview_subtitle: { es: "Aquí está el estado de tus propiedades y proyectos.", en: "Here's where your properties and projects stand." },
+    overview_subtitle: { es: "Tu espacio de trabajo: qué estás analizando, qué requiere atención y a dónde ir después.", en: "Your workspace: what you're analyzing, what needs attention, and where to go next." },
     overview_recentProperties: { es: "Propiedades recientes", en: "Recent properties" },
     overview_activeProjects: { es: "Proyectos activos", en: "Active projects" },
     overview_intelligenceUpdates: { es: "Actualizaciones de inteligencia", en: "Intelligence updates" },
@@ -262,12 +422,12 @@ window.ParcelaI18N = (function () {
 
     // ---- properties.html ----
     properties_title: { es: "Propiedades", en: "Properties" },
-    properties_subtitle: { es: "Cada propiedad que has analizado. Selecciona dos o más para comparar.", en: "Every property you've analyzed. Select two or more to compare." },
+    properties_subtitle: { es: "Propiedades de muestra con datos ficticios. Selecciona dos o más para comparar. Tus análisis reales están en Proyectos.", en: "Sample properties with fictional data. Select two or more to compare. Your real analyses live in Projects." },
     properties_selected: { es: "seleccionadas", en: "selected" },
 
     // ---- compare.html ----
     compare_title: { es: "Comparar propiedades", en: "Compare properties" },
-    compare_subtitle: { es: "Una comparación lado a lado de lo conocido y lo pendiente. Parcela no elige un ganador — tú lo haces.", en: "A side-by-side read of what's known and unresolved. Parcela doesn't pick a winner — you do." },
+    compare_subtitle: { es: "Una comparación lado a lado de lo conocido y lo pendiente. ATERRA no elige un ganador — tú lo haces.", en: "A side-by-side read of what's known and unresolved. ATERRA doesn't pick a winner — you do." },
     compare_status: { es: "Estado", en: "Status" },
     compare_regulatoryCompat: { es: "Compatibilidad regulatoria", en: "Regulatory compatibility" },
     compare_floodExposure: { es: "Exposición a inundación", en: "Flood exposure" },
@@ -277,7 +437,7 @@ window.ParcelaI18N = (function () {
     compare_unresolved: { es: "sin resolver", en: "unresolved" },
     compare_flagged: { es: "señaladas", en: "flagged" },
     compare_keyDifferences: { es: "Diferencias clave", en: "Key differences" },
-    compare_disclaimer: { es: "Cada dato anterior refleja únicamente datos de prototipo disponibles. Nada de esto es una recomendación — confirma cualquier hallazgo relevante para tu decisión con el profesional correspondiente antes de actuar.", en: "Every field above reflects available prototype data only. None of it is a recommendation — confirm any finding relevant to your decision with the appropriate professional before acting on it." },
+    compare_disclaimer: { es: "Cada dato anterior refleja únicamente datos de muestra. Nada de esto es una recomendación — confirma cualquier hallazgo relevante para tu decisión con el profesional correspondiente antes de actuar.", en: "Every field above reflects sample data only. None of it is a recommendation — confirm any finding relevant to your decision with the appropriate professional before acting on it." },
 
     // ---- explore.html ----
     explore_title: { es: "Explorar", en: "Explore" },
@@ -303,116 +463,15 @@ window.ParcelaI18N = (function () {
     explore_emptyTitle: { es: "Ninguna propiedad coincide con estos filtros", en: "No properties match these filters" },
     explore_emptySub: { es: "Intenta ampliar tus criterios o restablece los filtros para ver todas las propiedades.", en: "Try widening your criteria, or reset the filters to see every property." },
 
-    // ---- index.html ----
-    // 1. nav
-    landing_nav_explore: { es: "Explorar", en: "Explore" },
-    landing_nav_how: { es: "Cómo funciona", en: "How it works" },
-    landing_nav_trust: { es: "Confianza", en: "Trust" },
-    landing_nav_signIn: { es: "Iniciar sesión", en: "Sign in" },
-    landing_nav_cta: { es: "Analizar propiedad →", en: "Analyze property →" },
-    landing_notAvailable: { es: "No disponible en el prototipo", en: "Not available in prototype" },
 
-    // 2. hero
-    landing_hero_eyebrow: { es: "INTELIGENCIA DE DESARROLLO PARA PUERTO RICO", en: "DEVELOPMENT INTELLIGENCE FOR PUERTO RICO" },
-    landing_hero_title_main: { es: "Sepa en qué se está metiendo", en: "Know what you're getting into" },
-    landing_hero_title_accent: { es: "antes de desarrollar.", en: "before you develop." },
-    landing_hero_sub: { es: "Parcela reúne información de propiedad, zonificación, regulación, ambiente, infraestructura e historial de desarrollo para que usted entienda un sitio antes de comprometer tiempo y capital significativos.", en: "Parcela brings property, zoning, regulatory, environmental, infrastructure, and development data together so you can understand a site before committing significant time and capital." },
-    landing_hero_placeholder: { es: "Ingrese una dirección, parcela o ubicación", en: "Enter an address, parcel, or location" },
-    landing_hero_cta: { es: "Analizar propiedad →", en: "Analyze property →" },
-    landing_hero_noAccount: { es: "No se requiere cuenta para explorar.", en: "No account required to explore." },
 
-    // 3. hero product visualization
-    landing_viz_status: { es: "VIABILIDAD PRELIMINAR", en: "PRELIMINARY FEASIBILITY" },
-    landing_viz_worthInvestigating: { es: "Vale la pena investigar", en: "Worth investigating" },
-    landing_viz_favorableLabel: { es: "Favorable", en: "Favorable" },
-    landing_viz_investigateLabel: { es: "Investigar", en: "Investigate" },
-    landing_viz_constraintLabel: { es: "Posible limitación", en: "Potential constraint" },
-    landing_viz_unknownLabel: { es: "Desconocido", en: "Unknown" },
-    landing_viz_finding_favorable: { es: "Zonificación permite uso multifamiliar", en: "Zoning permits multifamily use" },
-    landing_viz_finding_investigate: { es: "Revisar requisitos de zonificación aplicables", en: "Review applicable zoning requirements" },
-    landing_viz_finding_constraint: { es: "Exposición a inundación identificada", en: "Flood exposure identified" },
-    landing_viz_finding_unknown: { es: "Capacidad de servicios públicos", en: "Utility capacity" },
 
-    // 4. problem + solution (merged)
-    landing_ps_h1_main: { es: "Una propiedad es más que", en: "A property is more than" },
-    landing_ps_h1_accent: { es: "una parcela en un mapa.", en: "a parcel on a map." },
-    landing_problem_zoning: { es: "Zonificación", en: "Zoning" },
-    landing_problem_flood: { es: "Inundación", en: "Flood" },
-    landing_problem_permits: { es: "Permisos", en: "Permits" },
-    landing_problem_regulations: { es: "Reglamentos", en: "Regulations" },
-    landing_problem_infrastructure: { es: "Infraestructura", en: "Infrastructure" },
-    landing_problem_environmental: { es: "Ambiente", en: "Environment" },
-    landing_problem_history: { es: "Historial de desarrollo", en: "Development history" },
-    landing_ps_oneView: { es: "Una sola vista de inteligencia.", en: "One intelligence view." },
 
-    // 5. product / intelligence (merged: four questions + showcase)
-    landing_product_h1_main: { es: "Antes de tramitar una propiedad,", en: "Before you pursue a property," },
-    landing_product_h1_accent: { es: "sepa en qué se está metiendo.", en: "know what you're getting into." },
-    landing_q1_title: { es: "¿Qué puedo hacer aquí?", en: "What can I potentially do here?" },
-    landing_q1_body: { es: "Entienda el contexto regulatorio de la propiedad, sus características físicas y sus limitaciones de desarrollo antes de comprometerse a una debida diligencia más profunda.", en: "Understand the property's regulatory context, physical characteristics, and development constraints before committing to deeper due diligence." },
-    landing_q2_title: { es: "¿Qué podría interponerse?", en: "What could get in the way?" },
-    landing_q2_body: { es: "Identifique limitaciones de inundación, ambientales o regulatorias antes de que se conviertan en sorpresas costosas más adelante en el proceso.", en: "Identify flood, environmental, or regulatory constraints before they become costly surprises later in the process." },
-    landing_q3_title: { es: "¿Qué no sé todavía?", en: "What don't I know yet?" },
-    landing_q3_body: { es: "Vea con claridad qué preguntas siguen abiertas, en lugar de asumir que el silencio significa que todo está en orden.", en: "See clearly which questions are still open, instead of assuming silence means everything checks out." },
-    landing_q4_title: { es: "¿Qué debería investigar primero?", en: "What should I investigate next?" },
-    landing_q4_body: { es: "Reciba una lista concreta de próximos pasos, cada uno con el profesional adecuado para resolverlo.", en: "Get a concrete list of next steps, each paired with the right professional to resolve it." },
 
-    landing_showcase_h1: { es: "Véalo en acción.", en: "See it in action." },
-    landing_showcase_ann1_title: { es: "01 — Propiedad", en: "01 — Property" },
-    landing_showcase_ann1_body: { es: "El sitio que está evaluando.", en: "The site you're evaluating." },
-    landing_showcase_ann2_title: { es: "02 — Inteligencia", en: "02 — Intelligence" },
-    landing_showcase_ann2_body: { es: "Lo que Parcela encontró.", en: "What Parcela found." },
-    landing_showcase_ann3_title: { es: "03 — Evidencia", en: "03 — Evidence" },
-    landing_showcase_ann3_body: { es: "Por qué Parcela llegó a esa conclusión.", en: "Why Parcela reached the conclusion." },
-    landing_showcase_ann4_title: { es: "04 — Incógnitas", en: "04 — Unknowns" },
-    landing_showcase_ann4_body: { es: "Lo que aún necesita verificación.", en: "What still needs verification." },
-    landing_showcase_ann5_title: { es: "05 — Próximas acciones", en: "05 — Next actions" },
-    landing_showcase_ann5_body: { es: "Qué debería investigar a continuación.", en: "What you should investigate next." },
 
-    // 4b. problem+solution flow row
-    landing_diff_flow1: { es: "DATOS", en: "DATA" },
-    landing_diff_flow2: { es: "INTELIGENCIA", en: "INTELLIGENCE" },
-    landing_diff_flow3: { es: "DECISIÓN", en: "DECISION" },
 
-    // 6. trust / differentiation (merged)
-    landing_diff_flow_evidence: { es: "EVIDENCIA", en: "EVIDENCE" },
-    landing_trust_h1_main: { es: "Inteligencia que puede", en: "Intelligence you can" },
-    landing_trust_h1_accent: { es: "rastrear hasta la fuente.", en: "trace back to the source." },
-    landing_trust_statement2: { es: "Parcela no sustituye la debida diligencia profesional. Le ayuda a saber dónde mirar antes de invertir tiempo y dinero.", en: "Parcela doesn't replace professional due diligence. It helps you know where to look before you spend the time and money." },
-    landing_trust_finding: { es: "Exposición a inundación", en: "Flood exposure" },
-    landing_trust_status: { es: "Posible limitación", en: "Potential constraint" },
-    landing_trust_summary: { es: "La parcela interseca un área mapeada de riesgo de inundación.", en: "The parcel intersects a mapped flood-risk area." },
-    landing_trust_whyLabel: { es: "¿Por qué?", en: "Why?" },
-    landing_trust_whyValue: { es: "Zona de inundación AE", en: "Flood Zone AE" },
-    landing_trust_sourceLabel: { es: "Fuente", en: "Source" },
-    landing_trust_sourceValue: { es: "FEMA", en: "FEMA" },
-    landing_trust_dataLabel: { es: "Dato relevante", en: "Relevant data" },
-    landing_trust_dataValue: { es: "SIG de Puerto Rico", en: "Puerto Rico GIS" },
-    landing_trust_confidenceLabel: { es: "Confianza", en: "Confidence" },
-    landing_trust_confidenceValue: { es: "Alta", en: "High" },
-    landing_trust_viewSource: { es: "Ver fuente →", en: "View source →" },
-    landing_trust_docLabel: { es: "Documento", en: "Document" },
-    landing_trust_docValue: { es: "Panel FIRM 72000C0245J", en: "FIRM Panel 72000C0245J" },
-    landing_trust_sectionLabel: { es: "Sección", en: "Section" },
-    landing_trust_sectionValue: { es: "Delimitación de Zona AE", en: "Zone AE delineation" },
-    landing_trust_demoNote: { es: "Ejemplo de demostración — no es un hallazgo gubernamental verificado.", en: "Demonstration example — not a verified government finding." },
 
-    // 7. final cta
-    landing_final_h1_main: { es: "¿Tiene", en: "Have" },
-    landing_final_h1_accent: { es: "una propiedad en mente?", en: "a property in mind?" },
-    landing_final_sub: { es: "Vea qué puede decirle Parcela.", en: "See what Parcela can tell you." },
-    landing_final_placeholder: { es: "Busque una dirección o parcela", en: "Search an address or parcel" },
-    landing_final_note: { es: "Empiece a explorar sin crear una cuenta.", en: "Start exploring without creating an account." },
 
-    // 8. footer
-    landing_footer_tagline: { es: "Inteligencia de desarrollo para Puerto Rico.", en: "Development intelligence for Puerto Rico." },
-    landing_footer_product: { es: "Producto", en: "Product" },
-    landing_footer_about: { es: "Acerca de", en: "About" },
-    landing_footer_legal: { es: "Legal", en: "Legal" },
-    landing_footer_privacy: { es: "Privacidad", en: "Privacy" },
-    landing_footer_terms: { es: "Términos", en: "Terms" },
-    landing_footer_disclaimerLabel: { es: "Aviso", en: "Disclaimer" },
-    landing_footer_disclaimer: { es: "Parcela ofrece inteligencia preliminar de propiedad basada en datos disponibles. La información debe verificarse de forma independiente y no sustituye el asesoramiento profesional legal, arquitectónico, de ingeniería, ambiental, de planificación o regulatorio.", en: "Parcela provides preliminary property intelligence based on available data. Information should be independently verified and does not replace professional legal, architectural, engineering, environmental, planning, or regulatory advice." },
 
     // ---- projects.html ----
     projects_project: { es: "Proyecto", en: "Project" },
@@ -429,7 +488,7 @@ window.ParcelaI18N = (function () {
     reports_preparing: { es: "Preparando…", en: "Preparing…" },
     reports_downloaded: { es: "Descargado", en: "Downloaded" },
     reports_linkCopied: { es: "Enlace copiado", en: "Link copied" },
-    reports_docEyebrow: { es: "Análisis preliminar de viabilidad · Datos de prototipo", en: "Preliminary feasibility analysis · Prototype data" },
+    reports_docEyebrow: { es: "Análisis preliminar de viabilidad · Datos de muestra", en: "Preliminary feasibility analysis · Sample data" },
     reports_cadastralGenerated: { es: "Catastro {cad} · Generado {date}", en: "Cadastral {cad} · Generated {date}" },
     reports_s01: { es: "Resumen ejecutivo", en: "Executive summary" },
     reports_s02: { es: "Propiedad", en: "Property" },
@@ -445,13 +504,13 @@ window.ParcelaI18N = (function () {
     reports_address: { es: "Dirección", en: "Address" },
     reports_projectType: { es: "Tipo de proyecto", en: "Project type" },
     reports_viewLibrary: { es: "Ver biblioteca completa de fuentes y qué hallazgos citan cada una →", en: "View full source library & which findings cite each one →" },
-    reports_disclaimer: { es: "Parcela es un prototipo de apoyo a la decisión, no una determinación legal o profesional. Cada hallazgo debe verificarse con el profesional autorizado o la agencia gubernamental correspondiente antes de tomar una decisión de desarrollo. Todos los datos de este informe son ficticios.", en: "Parcela is a decision-support prototype, not a legal or professional determination. Every finding above should be verified with the appropriate licensed professional or government agency before it informs a development decision. All data in this report is fictional prototype data." },
+    reports_disclaimer: { es: "ATERRA es una herramienta de apoyo a la decisión, no una determinación legal o profesional. Cada hallazgo debe verificarse con el profesional autorizado o la agencia gubernamental correspondiente antes de tomar una decisión de desarrollo. Todos los datos de este informe son ficticios.", en: "ATERRA is a decision-support tool, not a legal or professional determination. Every finding above should be verified with the appropriate licensed professional or government agency before it informs a development decision. All data in this report is fictional sample data." },
 
     // ---- sources.html ----
     sources_title: { es: "Fuentes y evidencia", en: "Sources & evidence" },
     sources_subtitle: { es: "Cada fuente detrás de cada hallazgo de 123 Example Avenue, en un solo lugar.", en: "Every source behind every finding on 123 Example Avenue, in one place." },
     sources_chainFinding: { es: "Hallazgo", en: "Finding" },
-    sources_chainFindingSub: { es: "Lo que Parcela concluyó", en: "What Parcela concluded" },
+    sources_chainFindingSub: { es: "Lo que ATERRA concluyó", en: "What ATERRA concluded" },
     sources_chainEvidenceSub: { es: "Por qué importa y qué tan seguros estamos", en: "Why it matters, and how sure we are" },
     sources_chainSourceSub: { es: "El registro subyacente", en: "The underlying record" },
     sources_tagline: { es: "La IA explica. Los datos prueban. Los profesionales deciden.", en: "AI explains. Data proves. Professionals decide." },
@@ -460,12 +519,14 @@ window.ParcelaI18N = (function () {
     sources_referencedBy: { es: "Citado por", en: "Referenced by" },
     sources_notCited: { es: "No está citada actualmente por un hallazgo específico.", en: "Not currently cited by a specific finding." },
     sources_opening: { es: "Abriendo…", en: "Opening…" },
-    sources_notAvailable: { es: "No disponible en el prototipo", en: "Not available in prototype" },
+    sources_notAvailable: { es: "Documento no enlazado en la muestra", en: "Document not linked in the sample" },
   };
 
   function getLang() {
     try {
-      const v = localStorage.getItem(STORAGE_KEY);
+      // "parcela-lang" is the key the product used before it became ATERRA;
+      // read it once so returning users keep their language.
+      const v = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("parcela-lang");
       if (v === "en" || v === "es") return v;
     } catch (e) {}
     return "es";
@@ -499,6 +560,9 @@ window.ParcelaI18N = (function () {
     (root || document).querySelectorAll("[data-i18n]").forEach((el) => {
       el.textContent = t(el.getAttribute("data-i18n"));
     });
+    (root || document).querySelectorAll("[data-i18n-label]").forEach((el) => {
+      el.setAttribute("aria-label", t(el.getAttribute("data-i18n-label")));
+    });
     (root || document).querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
       el.setAttribute("placeholder", t(el.getAttribute("data-i18n-placeholder")));
     });
@@ -506,21 +570,25 @@ window.ParcelaI18N = (function () {
 
   function toggleHTML() {
     return `
-      <div class="lang-toggle" role="group" aria-label="Language / Idioma">
-        <button type="button" class="lang-btn${lang === "es" ? " is-active" : ""}" data-set-lang="es">ES</button>
-        <button type="button" class="lang-btn${lang === "en" ? " is-active" : ""}" data-set-lang="en">EN</button>
+      <div class="lang-toggle" role="group" aria-label="Idioma / Language">
+        <button type="button" class="lang-btn" aria-pressed="${lang === "es"}" data-set-lang="es" lang="es" aria-label="Español">ES</button>
+        <button type="button" class="lang-btn" aria-pressed="${lang === "en"}" data-set-lang="en" lang="en" aria-label="English">EN</button>
       </div>`;
   }
 
   document.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-set-lang]");
-    if (btn) setLang(btn.dataset.setLang);
+    if (btn && btn.dataset.setLang !== lang) setLang(btn.dataset.setLang);
   });
 
-  const slot = document.getElementById("lang-toggle-slot");
-  if (slot) slot.innerHTML = toggleHTML();
-
-  document.addEventListener("DOMContentLoaded", () => applyStatic(document));
+  // Pages can drop <span data-lang-toggle></span> anywhere; the shell
+  // components render their own.
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("[data-lang-toggle], #lang-toggle-slot").forEach((slot) => {
+      if (!slot.children.length) slot.innerHTML = toggleHTML();
+    });
+    applyStatic(document);
+  });
 
   return { lang, getLang, setLang, t, tv, applyStatic, toggleHTML, STRINGS };
 })();

@@ -4,7 +4,7 @@
  * mirrors what a real cadastral/GIS + zoning + FEMA feed would return, so
  * a live provider can replace this file without touching the engine or UI.
  */
-window.PARCELA_PROPERTIES = [
+window.ATERRA_PROPERTIES = [
   {
     id: "santurce-loiza",
     address: "Calle Loíza 1420",
@@ -115,7 +115,7 @@ window.PARCELA_PROPERTIES = [
   }
 ];
 
-window.PARCELA_GOALS = [
+window.ATERRA_GOALS = [
   { id: "build-home", label: "Build a home", icon: "home" },
   { id: "adu", label: "Add an ADU / second unit", icon: "adu" },
   { id: "multifamily", label: "Build multifamily", icon: "multifamily" },

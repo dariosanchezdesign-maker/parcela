@@ -1,17 +1,17 @@
-/* Parcela V3 — mock dataset for the demo property + project.
+/* ATERRA V3 — mock dataset for the demo property + project.
    All findings, sources, and dates are fictional prototype data — clearly
    labeled as such in the UI. Structured so a real cadastral/zoning/GIS
    backend can fill the same shape later.
 
-   Bilingual fields (Parcela's own analysis prose) are {es, en} objects —
-   read them with window.ParcelaI18N.tv(value). Official Spanish-language
+   Bilingual fields (ATERRA's own analysis prose) are {es, en} objects —
+   read them with window.AterraI18N.tv(value). Official Spanish-language
    institution/regulation/document names (agencies, "Reglamento Conjunto",
    source titles) are treated as proper nouns and stay a single string in
    both languages, same as a legal citation would in an English brief.
    Dates are left as a single formatted string in both languages to keep
    scope sane for a prototype. */
 
-window.PARCELA = (function () {
+window.ATERRA = (function () {
   const property = {
     id: "example-ave-123",
     address: "123 Example Avenue",

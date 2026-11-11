@@ -10,7 +10,7 @@
    that district's uses table and design parameters. Lots governed by other
    plans (special-area plans, other regla codes) aren't covered. */
 
-window.ParcelaZoning = (function () {
+window.AterraZoning = (function () {
   const SOURCE = {
     name: "Reglamento Conjunto 2023 (de emergencia)",
     agency: "Junta de Planificación de Puerto Rico",
@@ -368,8 +368,8 @@ window.ParcelaZoning = (function () {
       if (r.status === "other_plan") {
         title = bi("Reglas del distrito no cubiertas", "District rules not covered");
         found = bi(
-          `Este solar se rige por otro plan o reglamento (código ${r.regla ?? "—"} en el mapa de calificación), no por el Plan Territorial de San Juan que Parcela traduce con la Tabla 6.14.`,
-          `This lot is governed by another plan or regulation (code ${r.regla ?? "—"} on the zoning map), not the San Juan Territorial Plan that Parcela translates through Table 6.14.`
+          `Este solar se rige por otro plan o reglamento (código ${r.regla ?? "—"} en el mapa de calificación), no por el Plan Territorial de San Juan que ATERRA traduce con la Tabla 6.14.`,
+          `This lot is governed by another plan or regulation (code ${r.regla ?? "—"} on the zoning map), not the San Juan Territorial Plan that ATERRA translates through Table 6.14.`
         );
       } else if (r.status === "no_equivalent") {
         title = bi(`Sin equivalencia oficial para ${r.from}`, `No official equivalent for ${r.from}`);
@@ -379,13 +379,13 @@ window.ParcelaZoning = (function () {
         found = bi(`La Tabla 6.14 convierte ${r.from} en ${r.options.es}.`, `Table 6.14 converts ${r.from} to ${r.options.en}.`);
       } else {
         title = bi(`Equivale a ${r.to} — ${r.name.es}`, `Equivalent to ${r.to} — ${r.name.en}`);
-        found = bi(`La Tabla 6.14 convierte ${r.from} en ${r.to} (${r.name.es}), un distrito público o de conservación que Parcela aún no resume.`, `Table 6.14 converts ${r.from} to ${r.to} (${r.name.en}), a public or conservation district Parcela doesn't summarize yet.`);
+        found = bi(`La Tabla 6.14 convierte ${r.from} en ${r.to} (${r.name.es}), un distrito público o de conservación que ATERRA aún no resume.`, `Table 6.14 converts ${r.from} to ${r.to} (${r.name.en}), a public or conservation district ATERRA doesn't summarize yet.`);
       }
       findings.push({
         id: "district-rules",
         category: "unknown",
         title,
-        summary: bi("Parcela no puede decir qué permite este distrito todavía.", "Parcela can't say yet what this district allows."),
+        summary: bi("ATERRA no puede decir qué permite este distrito todavía.", "ATERRA can't say yet what this district allows."),
         confidence: "none",
         sourceId: "src-rc2023",
         why: {
@@ -406,6 +406,7 @@ window.ParcelaZoning = (function () {
       const [status, note] = d.fit[type];
       findings.push({
         id: "project-fit",
+        basis: "derived",
         category: STATUS_CATEGORY[status],
         title: bi(`${TYPE_LABEL[type].es}: ${STATUS_LABEL[status].es} en ${r.to}`, `${TYPE_LABEL[type].en}: ${STATUS_LABEL[status].en} in ${r.to}`),
         summary: note || bi(`Según la tabla de usos del distrito ${r.to}.`, `Per the ${r.to} district's uses table.`),
@@ -436,6 +437,7 @@ window.ParcelaZoning = (function () {
     if (capParts.length || belowMin) {
       findings.push({
         id: "capacity",
+        basis: belowMin ? "derived" : "estimate",
         category: belowMin ? "constraint" : "investigate",
         title: belowMin
           ? bi(`Solar menor que el mínimo del distrito (${fmt(Math.min(...minLots))} m²)`, `Lot below the district minimum (${fmt(Math.min(...minLots))} m²)`)

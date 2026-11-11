@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Parcela — Know what you're getting into before you develop</title>
-  <meta name="description" content="Parcela is a development-intelligence platform for Puerto Rico. Give it a property and a project — get a preliminary feasibility analysis with evidence, confidence, and next actions." />
+  <title>Analyze a property — ATERRA</title>
+  <meta name="theme-color" content="#101D32" />
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/brand/app-icon.png" />
+  <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/onboarding.css" />
+  <script src="js/i18n.js"></script>
+  <script src="js/ui/shell.js"></script>
 </head>
 <body>
-  <header class="onboard-topbar">
-    <a href="index.html" class="brand">
-      <span class="onboard-brand-mark" aria-hidden="true"></span>
-      Parcela
-    </a>
-    <span id="lang-toggle-slot"></span>
-  </header>
+  <aterra-flowbar step="1"></aterra-flowbar>
 
-  <main class="onboard-main">
+  <main class="onboard-main" id="main" tabindex="-1">
     <div class="onboard-stage">
       <div class="onboard-step" data-i18n="search_step">Step 1 of 3</div>
       <h1 data-i18n="search_title">What are you looking at?</h1>
@@ -55,12 +55,11 @@
     </div>
   </main>
 
-  <script src="js/i18n.js"></script>
   <script src="js/data/lookup.js"></script>
   <script src="js/data/live.js"></script>
   <script>
     (function () {
-      const I = window.ParcelaI18N;
+      const I = window.AterraI18N;
       const input = document.getElementById("search-input");
       const suggestions = document.getElementById("search-suggestions");
       const form = document.getElementById("search-form");
@@ -105,7 +104,7 @@
         suggestions.classList.remove("is-open");
         setBusy(true);
         try {
-          const data = await window.ParcelaLive.lookup(q);
+          const data = await window.AterraLive.lookup(q);
           window.location.href = `identify.html?parcel=${encodeURIComponent(data.property.cadastral)}`;
         } catch (err) {
           setBusy(false);

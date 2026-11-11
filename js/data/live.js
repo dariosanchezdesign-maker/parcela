@@ -1,14 +1,14 @@
-/* Real property data. Runs ParcelaLookup (CRIM parcels, Planning Board
+/* Real property data. Runs AterraLookup (CRIM parcels, Planning Board
    zoning, FEMA flood zones — see lookup.js) and reshapes its result into
-   the same window.PARCELA shape the prototype pages already render, so the
+   the same window.ATERRA shape the prototype pages already render, so the
    UI modules don't need to know whether data is live or demo.
 
    A page is in live mode when its URL carries ?parcel=<cadastral number>;
    without it, pages keep showing the labeled demo property. */
 
-window.ParcelaLive = (function () {
-  const CACHE_PREFIX = "parcela-lookup:";
-  const PROJECT_KEY = "parcela-project";
+window.AterraLive = (function () {
+  const CACHE_PREFIX = "aterra-lookup:";
+  const PROJECT_KEY = "aterra-project";
 
   function parcelParam() {
     return new URLSearchParams(location.search).get("parcel");
@@ -36,7 +36,7 @@ window.ParcelaLive = (function () {
     if (cached) return cached;
     let res;
     try {
-      res = await window.ParcelaLookup.run(q);
+      res = await window.AterraLookup.run(q);
     } catch (e) {
       throw Object.assign(new Error("lookup failed"), { code: "source_unavailable" });
     }
@@ -118,7 +118,7 @@ window.ParcelaLive = (function () {
   }
 
   function buildMap(data) {
-    const I = window.ParcelaI18N;
+    const I = window.AterraI18N;
     const project = projector(data.map.envelope);
     const subjectCode = data.zoning ? data.zoning.code : null;
 
@@ -183,12 +183,12 @@ window.ParcelaLive = (function () {
     return { es: `Zona ${z}`, en: `Zone ${z}` };
   }
 
-  // ---------- reshape into window.PARCELA ----------
+  // ---------- reshape into window.ATERRA ----------
 
   function displayAddress(data) {
     const p = data.property;
     if (p.address) return p.address.split(",")[0];
-    return `${window.ParcelaI18N.t("live_parcel")} ${p.cadastral}`;
+    return `${window.AterraI18N.t("live_parcel")} ${p.cadastral}`;
   }
 
   const PROJECT_TYPE_KEYS = {
@@ -199,11 +199,11 @@ window.ParcelaLive = (function () {
   // Setup stores the English type id; show it in the page's language.
   function projectTypeLabel(type) {
     const key = PROJECT_TYPE_KEYS[type];
-    return key ? window.ParcelaI18N.STRINGS[key] : type;
+    return key ? window.AterraI18N.STRINGS[key] : type;
   }
 
   function apply(P, data) {
-    const I = window.ParcelaI18N;
+    const I = window.AterraI18N;
     const p = data.property;
     const project = loadProject() || { type: "Multifamily", units: "", investment: "" };
 
@@ -223,7 +223,7 @@ window.ParcelaLive = (function () {
     // District rules (Reglamento Conjunto 2023) depend on the project type,
     // which setup collects after the lookup, so they're assessed here rather
     // than in lookup.js.
-    const rules = window.ParcelaZoning.assess(data.zoning, project.type, p.areaSqm);
+    const rules = window.AterraZoning.assess(data.zoning, project.type, p.areaSqm);
     const findings = [...data.findings, ...rules.findings];
     const sources = { ...data.sources, "src-rc2023": rules.source };
     const unknowns = data.unknowns.slice();
@@ -264,7 +264,7 @@ window.ParcelaLive = (function () {
 
     const z = data.zoning;
     const reg = rules.regulatory;
-    const notCovered = { es: "Por confirmar — Parcela aún no cubre este dato", en: "To confirm — not covered by Parcela yet" };
+    const notCovered = { es: "Por confirmar — ATERRA aún no cubre este dato", en: "To confirm — not covered by ATERRA yet" };
     const rulesWhy = reg ? (findings.some((f) => f.id === "capacity") ? "capacity" : "project-fit") : "district-rules";
     P.regulatory = {
       rows: [
@@ -285,7 +285,7 @@ window.ParcelaLive = (function () {
   // The facts /api/explain may use: everything the page shows, in the
   // page's language, and nothing else.
   function aiContext(P) {
-    const I = window.ParcelaI18N;
+    const I = window.AterraI18N;
     const t = (v) => (v == null ? null : I.tv(v));
     const source = (id) => {
       const src = P.sourceById(id);

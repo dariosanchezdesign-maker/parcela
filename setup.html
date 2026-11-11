@@ -3,33 +3,34 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Project setup — Parcela</title>
+  <title>Project setup — ATERRA</title>
+  <meta name="theme-color" content="#101D32" />
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/brand/app-icon.png" />
+  <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/onboarding.css" />
+  <script src="js/i18n.js"></script>
+  <script src="js/ui/shell.js"></script>
 </head>
 <body>
-  <header class="onboard-topbar">
-    <a href="index.html" class="brand">
-      <span class="onboard-brand-mark" aria-hidden="true"></span>
-      Parcela
-    </a>
-    <span id="lang-toggle-slot"></span>
-  </header>
+  <aterra-flowbar step="3"></aterra-flowbar>
 
-  <main class="onboard-main">
+  <main class="onboard-main" id="main" tabindex="-1">
     <div class="onboard-stage">
       <div class="onboard-step" data-i18n="setup_step">Step 3 of 3</div>
-      <h1 data-i18n="setup_title">What are you thinking of building?</h1>
-      <p class="onboard-sub">123 Example Avenue, San Juan, Puerto Rico</p>
+      <h1 id="setup-title" data-i18n="setup_title">What are you thinking of building?</h1>
+      <p class="onboard-sub" id="setup-sub"></p>
 
-      <div class="type-grid" id="type-grid">
-        <button class="type-option is-selected" data-type="Multifamily" data-i18n="setup_multifamily">Multifamily</button>
-        <button class="type-option" data-type="Commercial" data-i18n="setup_commercial">Commercial</button>
-        <button class="type-option" data-type="Hospitality" data-i18n="setup_hospitality">Hospitality</button>
-        <button class="type-option" data-type="Industrial" data-i18n="setup_industrial">Industrial</button>
-        <button class="type-option" data-type="Mixed-use" data-i18n="setup_mixedUse">Mixed-use</button>
-        <button class="type-option" data-type="Residential" data-i18n="setup_residential">Residential</button>
-        <button class="type-option" data-type="Other" data-i18n="setup_other">Other</button>
+      <div class="type-grid" id="type-grid" role="group" aria-labelledby="setup-title">
+        <button type="button" class="type-option" aria-pressed="true" data-type="Multifamily" data-i18n="setup_multifamily">Multifamily</button>
+        <button type="button" class="type-option" aria-pressed="false" data-type="Commercial" data-i18n="setup_commercial">Commercial</button>
+        <button type="button" class="type-option" aria-pressed="false" data-type="Hospitality" data-i18n="setup_hospitality">Hospitality</button>
+        <button type="button" class="type-option" aria-pressed="false" data-type="Industrial" data-i18n="setup_industrial">Industrial</button>
+        <button type="button" class="type-option" aria-pressed="false" data-type="Mixed-use" data-i18n="setup_mixedUse">Mixed-use</button>
+        <button type="button" class="type-option" aria-pressed="false" data-type="Residential" data-i18n="setup_residential">Residential</button>
+        <button type="button" class="type-option" aria-pressed="false" data-type="Other" data-i18n="setup_other">Other</button>
       </div>
 
       <div class="assumption-row">
@@ -38,14 +39,16 @@
             <label for="units" data-i18n="setup_targetUnits">Target units</label>
             <span class="optional-tag" data-i18n="common_optional">Optional</span>
           </div>
-          <input type="text" id="units" placeholder="e.g. 60–80" />
+          <input type="text" id="units" inputmode="numeric" placeholder="60–80" aria-describedby="units-help" />
+          <p class="field-help" id="units-help" data-i18n="setup_unitsHelp">Used to check the district's density. Leave blank if undecided.</p>
         </div>
         <div class="assumption-field">
           <div class="field-label-row">
             <label for="investment" data-i18n="setup_approxInvestment">Approximate investment</label>
             <span class="optional-tag" data-i18n="common_optional">Optional</span>
           </div>
-          <input type="text" id="investment" placeholder="e.g. $10M–$15M" />
+          <input type="text" id="investment" placeholder="$10M–$15M" aria-describedby="inv-help" />
+          <p class="field-help" id="inv-help" data-i18n="setup_invHelp">For your reference only; ATERRA does not model returns yet.</p>
         </div>
       </div>
 
@@ -59,7 +62,7 @@
   <div class="analyzing-overlay" id="analyzing-overlay" role="status" aria-live="polite">
     <div class="analyzing-box">
       <div class="eyebrow" data-i18n="property_preliminaryFeasibility">Preliminary feasibility</div>
-      <h2 data-i18n="analyzing_title">Analyzing 123 Example Avenue…</h2>
+      <h2 id="analyzing-title"></h2>
       <p class="analyzing-sub" data-i18n="analyzing_subtitle">This usually takes a few seconds.</p>
       <ul class="analyzing-steps" id="analyzing-steps">
         <li class="analyzing-step" data-step="0">
@@ -82,35 +85,47 @@
     </div>
   </div>
 
-  <script src="js/i18n.js"></script>
   <script src="js/data/live.js"></script>
   <script>
     (function () {
+      const I = window.AterraI18N;
       const grid = document.getElementById("type-grid");
       grid.querySelectorAll(".type-option").forEach((btn) => {
         btn.addEventListener("click", () => {
-          grid.querySelectorAll(".type-option").forEach((b) => b.classList.remove("is-selected"));
-          btn.classList.add("is-selected");
+          grid.querySelectorAll(".type-option").forEach((b) => b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
         });
       });
 
       const overlay = document.getElementById("analyzing-overlay");
       const steps = [...document.querySelectorAll(".analyzing-step")];
-      const cadastral = window.ParcelaLive.parcelParam();
-      const saved = window.ParcelaLive.loadProject();
+      const cadastral = window.AterraLive.parcelParam();
+      // Name the parcel being set up: the cached lookup for a real parcel,
+      // or the sample property.
+      let subject = "123 Example Avenue, San Juan";
+      if (cadastral) {
+        try {
+          const d = JSON.parse(sessionStorage.getItem("aterra-lookup:" + cadastral));
+          if (d) subject = `${window.AterraLive.displayAddress(d)} · ${d.property.municipality}`;
+          else subject = `${I.t("live_parcel")} ${cadastral}`;
+        } catch (e) {}
+      }
+      document.getElementById("setup-sub").textContent = subject;
+      document.getElementById("analyzing-title").textContent = I.t("analyzing_titleFor").replace("{p}", subject.split(" · ")[0]);
+      const saved = window.AterraLive.loadProject();
       if (saved) {
-        grid.querySelectorAll(".type-option").forEach((b) => b.classList.toggle("is-selected", b.dataset.type === saved.type));
+        grid.querySelectorAll(".type-option").forEach((b) => b.setAttribute("aria-pressed", b.dataset.type === saved.type ? "true" : "false"));
         document.getElementById("units").value = saved.units || "";
         document.getElementById("investment").value = saved.investment || "";
       }
 
       document.getElementById("analyze-cta").addEventListener("click", () => {
-        const selected = grid.querySelector(".type-option.is-selected");
-        window.ParcelaLive.saveProject({
+        const selected = grid.querySelector('.type-option[aria-pressed="true"]');
+        window.AterraLive.saveProject({
           type: selected ? selected.dataset.type : "Other",
           units: document.getElementById("units").value.trim(),
           investment: document.getElementById("investment").value.trim(),
         });
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         overlay.classList.add("is-visible");
         let i = 0;
         function advance() {
@@ -119,7 +134,7 @@
           if (i < steps.length) {
             steps[i].classList.add("is-active");
             i++;
-            setTimeout(advance, 480);
+            setTimeout(advance, reduce ? 60 : 420);
           } else {
             setTimeout(() => { window.location.href = cadastral ? `property.html?parcel=${encodeURIComponent(cadastral)}` : "property.html"; }, 350);
           }
